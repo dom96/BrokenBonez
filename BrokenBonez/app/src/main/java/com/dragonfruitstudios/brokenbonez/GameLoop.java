@@ -6,28 +6,30 @@ import android.util.Log;
 import android.widget.TextView;
 
 /**
- * Created by nathaniel on 03/11/15.
+ *  Created by Nathaniel on 03/11/15.
  */
-public class GameLoop extends Activity{
-    private RunGameLoop mGameLoop;
-    StringBuilder builder = new StringBuilder();
+
+public class GameLoop extends Activity {
+    private RunGameLoop gameLoop;
     TextView textView;
+
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        mGameLoop = new RunGameLoop(60);
+        gameLoop = new RunGameLoop(60);
         textView = new TextView(this);
-        textView.setText(builder.toString());
+        textView.setText("Foobar");
         setContentView(textView);
+        new Thread(gameLoop).start();
     }
     @Override
     public void onPause(){
-        mGameLoop.pause();
+        gameLoop.pause();
         super.onPause();
     }
     @Override
     public void onResume(){
-        mGameLoop.resume();
+        gameLoop.resume();
         super.onResume();
     }
 
@@ -43,6 +45,10 @@ public class GameLoop extends Activity{
         }
         long lastFPSTime;
         int counter;
+
+        // These flags are used to report the current FPS.
+        long lastFPSReport = System.currentTimeMillis(); // The time that FPS was reported last.
+        long currFPS = 0; // The current amount of frames rendered.
 
         @Override
         public void run(){
@@ -62,20 +68,31 @@ public class GameLoop extends Activity{
 
                     gameUpdate();
                     gameDraw();
+                    currFPS++;
 
                     lastTime = System.nanoTime();
                     sleepTime = (targetTime + (lastTime - presentTime));
                     if (sleepTime > 0) {
                         Thread.sleep(sleepTime / 1000000L);
                     }
+
+                    // Report the amount of frames that have been rendered.
+                    if (System.currentTimeMillis() - lastFPSReport >= 1000) {
+                        Log.d("FPS", "Current FPS: " + currFPS );
+                        currFPS = 0;
+                        lastFPSReport = System.currentTimeMillis();
+                    }
                 }
             } catch (InterruptedException e) {
             }
         }
-        protected void gameUpdate(){
-            Log.d("Loop", "Updating" + counter); }
-        protected void gameDraw(){
-            Log.d("Loop", "Drawing" + counter);
+
+        protected void gameUpdate() {
+            //Log.d("Loop", "Updating" + counter);
+        }
+
+        protected void gameDraw() {
+            //Log.d("Loop", "Drawing" + counter);
         }
 
         public void pause(){
