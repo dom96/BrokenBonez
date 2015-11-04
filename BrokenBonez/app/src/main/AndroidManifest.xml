@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.dragonfruitstudios.brokenbonez" >
+android:versionCode="1"
+android:versionName="1.0">
+<uses-sdk
+    android:minSdkVersion="8"
+    android:targetSdkVersion="23"/>
+<!--allows an application to write to external storage-->
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+<!--allows using PowerManager WakeLocks to keep processor from sleeping or screen from dimming-->
+<uses-permission android:name="android.permission.WAKE_LOCK"/>
+<!--the device's touch screen is capable of tracking two or more fingers fully independently-->
+<uses-feature android:name="android.hardware.touchscreen.multitouch.distinct" android:required="true"/>
+
+<application
+    android:allowBackup="true"
+    android:icon="@mipmap/ic_launcher"
+    android:label="@string/app_name"
+    android:supportsRtl="true"
+    android:theme="@style/AppTheme" >
+    <activity
+        android:name=".MenuActivity"
+        android:label="@string/app_name"
+        android:screenOrientation="sensorLandscape"
+        android:theme="@style/AppTheme.NoActionBar" >
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+    </activity>
+    <activity
+        android:label=""
+        android:name="com.dragonfruitstudios.brokenbonez.GameLoop"
+        android:configChanges="orientation|keyboard|keyboardHidden">
+    </activity>
+</application>
+</manifest>
