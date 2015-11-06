@@ -30,40 +30,41 @@ public class GameLoop implements Runnable {
 
     @Override
     public void run(){
-        try {
-            while (run) {
-                long presentTime = System.nanoTime();
-                long sleepTime;
-                long updateTime = presentTime - lastTime;
-                lastTime = presentTime;
-                lastTime += updateTime;
-                counter++;
+        while (run) {
+            long presentTime = System.nanoTime();
+            long sleepTime;
+            long updateTime = presentTime - lastTime;
+            lastTime = presentTime;
+            lastTime += updateTime;
+            counter++;
 
-                if (lastFPSTime >= 1000000000) {
-                    lastFPSTime = 0;
-                    counter = 0;
-                }
+            if (lastFPSTime >= 1000000000) {
+                lastFPSTime = 0;
+                counter = 0;
+            }
 
-                gameUpdate();
-                gameDraw();
-                currFrames++;
+            gameUpdate();
+            gameDraw();
+            currFrames++;
 
 
-                lastTime = System.nanoTime();
-                sleepTime = (targetTime + (lastTime - presentTime));
-                if (sleepTime > 0) {
+            lastTime = System.nanoTime();
+            sleepTime = (targetTime + (lastTime - presentTime));
+            if (sleepTime > 0) {
+                try {
                     Thread.sleep(sleepTime / 1000000L);
                 }
-                // Report the amount of frames that have been rendered.
-                if (System.currentTimeMillis() - lastFPSReport >= 1000) {
-                    Log.d("FPS", "Current FPS: " + currFPS );
-                    currFPS = currFrames;
-                    currFrames = 0;
-                    lastFPSReport = System.currentTimeMillis();
+                catch (InterruptedException exc) {
+                    Log.d("Error", "Interrupted exception was caught.");
                 }
             }
-        } catch (InterruptedException e) {
-
+            // Report the amount of frames that have been rendered.
+            if (System.currentTimeMillis() - lastFPSReport >= 1000) {
+                Log.d("FPS", "Current FPS: " + currFPS );
+                currFPS = currFrames;
+                currFrames = 0;
+                lastFPSReport = System.currentTimeMillis();
+            }
         }
     }
 
@@ -79,7 +80,8 @@ public class GameLoop implements Runnable {
         }
         gameView.lockCanvas();
         gameView.clear(Color.BLACK);
-        gameView.drawText("FPS: " + currFPS, 200, 100, Color.WHITE);
+
+        gameView.drawText("FPS: " + currFPS, 20, 30, Color.WHITE);
         gameView.unlockCanvas();
     }
 

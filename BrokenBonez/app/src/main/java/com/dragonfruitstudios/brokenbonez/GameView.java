@@ -13,11 +13,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     Canvas lockedCanvas;
     boolean ready;
 
-    public GameView(Context context) {
+    int width, height;
+
+    public GameView(Context context, int width, int height) {
         super(context);
 
         holder = getHolder();
         holder.addCallback(this);
+        holder.setFixedSize(width, height);
+        this.width = width;
+        this.height = height;
     }
 
     public void lockCanvas() {
@@ -46,15 +51,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     public void clear(int color) {
         checkCanvas();
-        lockedCanvas.drawColor(color);
-        lockedCanvas.drawRect(0, 0, 480, 320, new Paint());
+        Paint p = new Paint();
+        p.setColor(color);
+        lockedCanvas.drawRect(0, 0, width, height, p);
     }
 
     public void drawText(String text, float x, float y, int color) {
         checkCanvas();
         Paint paint = new Paint();
         paint.setColor(color);
-        paint.setTextSize(60);
+        paint.setTextSize(30);
         paint.setStyle(Paint.Style.FILL);
         paint.setAntiAlias(true);
         lockedCanvas.drawText(text, x, y, paint);
