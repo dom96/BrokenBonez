@@ -1,6 +1,7 @@
 package com.dragonfruitstudios.brokenbonez;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
@@ -11,15 +12,14 @@ import android.widget.TextView;
 
 public class GameLoop extends Activity {
     private RunGameLoop gameLoop;
-    TextView textView;
+    GameView gameView;
 
     @Override
-    public void onCreate(Bundle savedInstanceState){
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         gameLoop = new RunGameLoop(60);
-        textView = new TextView(this);
-        textView.setText("Foobar");
-        setContentView(textView);
+        gameView = new GameView(this);
+        setContentView(gameView);
         new Thread(gameLoop).start();
     }
     @Override
@@ -48,7 +48,8 @@ public class GameLoop extends Activity {
 
         // These flags are used to report the current FPS.
         long lastFPSReport = System.currentTimeMillis(); // The time that FPS was reported last.
-        long currFPS = 0; // The current amount of frames rendered.
+        long currFrames = 0; // The current amount of frames rendered.
+        long currFPS = 0; // The current FPS
 
         @Override
         public void run(){
@@ -68,7 +69,7 @@ public class GameLoop extends Activity {
 
                     gameUpdate();
                     gameDraw();
-                    currFPS++;
+                    currFrames++;
 
                     lastTime = System.nanoTime();
                     sleepTime = (targetTime + (lastTime - presentTime));
@@ -78,21 +79,31 @@ public class GameLoop extends Activity {
 
                     // Report the amount of frames that have been rendered.
                     if (System.currentTimeMillis() - lastFPSReport >= 1000) {
-                        Log.d("FPS", "Current FPS: " + currFPS );
-                        currFPS = 0;
+                        Log.d("FPS", "Current FPS: " + currFrames );
+                        currFPS = currFrames;
+                        currFrames = 0;
                         lastFPSReport = System.currentTimeMillis();
                     }
                 }
             } catch (InterruptedException e) {
+                Log.d("InterruptedException", "Caught an interrupted exception");
             }
         }
 
         protected void gameUpdate() {
             //Log.d("Loop", "Updating" + counter);
+
         }
 
         protected void gameDraw() {
             //Log.d("Loop", "Drawing" + counter);
+            if (!gameView.isReady()) {
+                return;
+            }
+            gameView.lockCanvas();
+            gameView.clear(Color.BLACK);
+            gameView.drawText("FPS: " + currFPS, 200, 100, Color.WHITE);
+            gameView.unlockCanvas();
         }
 
         public void pause(){
