@@ -18,7 +18,7 @@ public class GameLoop implements Runnable {
         targetFPS = inputFPS;
         targetTime = 1000000000 / targetFPS;
         this.gameView = gameView;
-        this.gameState = new GameState();
+        this.gameState = new GameState(gameView);
     }
 
     long lastFPSTime;
@@ -83,7 +83,7 @@ public class GameLoop implements Runnable {
         gameView.lockCanvas();
         gameView.clear(Color.BLACK);
 
-        gameState.draw(gameView);
+        gameState.draw();
 
         gameView.drawText("FPS: " + currFPS, 20, 30, Color.WHITE);
         gameView.unlockCanvas();
