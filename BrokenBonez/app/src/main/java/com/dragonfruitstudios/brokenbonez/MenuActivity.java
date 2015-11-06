@@ -6,8 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-public class MenuActivity extends Activity
-        implements View.OnClickListener {
+public class MenuActivity extends Activity implements View.OnClickListener {
     Button startGame;
 
     @Override
@@ -21,8 +20,8 @@ public class MenuActivity extends Activity
 
     public void onClick(View v) {
         try {
-            Class GameLoop = Class.forName("com.dragonfruitstudios.brokenbonez.GameLoop");
-            Intent intent = new Intent(this, GameLoop);
+            Class GameActivity = Class.forName("com.dragonfruitstudios.brokenbonez.GameActivity");
+            Intent intent = new Intent(this, GameActivity);
             startActivity(intent);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();

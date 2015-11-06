@@ -30,8 +30,9 @@ android:versionName="1.0">
         </intent-filter>
     </activity>
     <activity
-        android:label=""
-        android:name="com.dragonfruitstudios.brokenbonez.GameLoop"
+        android:name=".GameActivity"
+        android:screenOrientation="sensorLandscape"
+        android:theme="@style/AppTheme.NoActionBar" >
         android:configChanges="orientation|keyboard|keyboardHidden">
     </activity>
 </application>
