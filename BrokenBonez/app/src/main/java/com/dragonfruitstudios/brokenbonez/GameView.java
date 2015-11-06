@@ -7,13 +7,22 @@ import android.graphics.Paint;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+
+/**
+ *  This class implements a View which supports drawing. Currently implemented as a SurfaceView,
+ *  but the API has been designed to support other backends.
+ *  It may for example utilise a GlSurfaceView backend in the future depending on performance.
+ *
+ *  The `lockCanvas` method must be called before any draw method is called. After the drawing ends
+ *  you should call the complementary `unlockCanvas` method.
+ */
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
-    SurfaceHolder holder;
+    SurfaceHolder holder; // Underlying holder for this SurfaceView
 
-    Canvas lockedCanvas;
-    boolean ready;
+    Canvas lockedCanvas; // Currently locked canvas to perform drawing on.
+    boolean ready; // Determines whether the SurfaceView has been created.
 
-    int width, height;
+    int width, height; // The width and height of this SurfaceView.
 
     public GameView(Context context, int width, int height) {
         super(context);
@@ -49,6 +58,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
+    /**
+     * Clear the GameView with the specified color.
+     * @param color
+     */
     public void clear(int color) {
         checkCanvas();
         Paint p = new Paint();
@@ -56,16 +69,34 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         lockedCanvas.drawRect(0, 0, width, height, p);
     }
 
+    /**
+     * Draw the specified text at the specified x,y coords with the specified color.
+     * @param text
+     * @param x
+     * @param y
+     * @param color
+     */
     public void drawText(String text, float x, float y, int color) {
         checkCanvas();
         Paint paint = new Paint();
         paint.setColor(color);
-        paint.setTextSize(30);
+        paint.setTextSize(15);
         paint.setStyle(Paint.Style.FILL);
         paint.setAntiAlias(true);
         lockedCanvas.drawText(text, x, y, paint);
     }
 
+    public void drawRect(float left, float top, float right, float bottom, int color) {
+        checkCanvas();
+        Paint paint = new Paint();
+        paint.setColor(color);
+
+        lockedCanvas.drawRect(left, top, right, bottom, paint);
+    }
+
+    /**
+     * Determines whether this GameView can be drawn to.
+     */
     public boolean isReady() {
         return ready;
     }

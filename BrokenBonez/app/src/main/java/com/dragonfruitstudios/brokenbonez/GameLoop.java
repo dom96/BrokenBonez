@@ -12,11 +12,13 @@ public class GameLoop implements Runnable {
     final long targetTime;
     volatile boolean run = false;
     GameView gameView;
+    GameState gameState;
 
     public GameLoop(int inputFPS, GameView gameView) {
         targetFPS = inputFPS;
         targetTime = 1000000000 / targetFPS;
         this.gameView = gameView;
+        this.gameState = new GameState();
     }
 
     long lastFPSTime;
@@ -70,7 +72,7 @@ public class GameLoop implements Runnable {
 
     protected void gameUpdate() {
         //Log.d("Loop", "Updating" + counter);
-
+        gameState.update();
     }
 
     protected void gameDraw() {
@@ -80,6 +82,8 @@ public class GameLoop implements Runnable {
         }
         gameView.lockCanvas();
         gameView.clear(Color.BLACK);
+
+        gameState.draw(gameView);
 
         gameView.drawText("FPS: " + currFPS, 20, 30, Color.WHITE);
         gameView.unlockCanvas();
