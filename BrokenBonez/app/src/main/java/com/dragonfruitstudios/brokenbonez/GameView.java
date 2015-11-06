@@ -101,6 +101,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         return ready;
     }
 
+    public int getRealWidth() {
+        return width;
+    }
+
+    public int getRealHeight() {
+        return height;
+    }
+
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         ready = true;

@@ -12,16 +12,16 @@ public class Level {
     }
 
     public void draw(GameView gameView) {
-        float currHeight = gameView.getHeight() / 2 + 50;
+        float currHeight = gameView.getRealHeight() / 2 + 50;
         // Draw the sky
-        gameView.drawRect(0, 0, gameView.getWidth(), currHeight,
+        gameView.drawRect(0, 0, gameView.getRealWidth(), currHeight,
                 Color.parseColor("#06A1D3"));
         // Draw the grass.
-        gameView.drawRect(0, currHeight, gameView.getWidth(),
+        gameView.drawRect(0, currHeight, gameView.getRealWidth(),
                 currHeight + 20, Color.parseColor("#069418"));
         currHeight += 20;
         // Draw the ground.
-        gameView.drawRect(0, currHeight, gameView.getWidth(),
-                gameView.getHeight(), Color.parseColor("#976600"));
+        gameView.drawRect(0, currHeight, gameView.getRealWidth(),
+                gameView.getRealHeight(), Color.parseColor("#976600"));
     }
 }
