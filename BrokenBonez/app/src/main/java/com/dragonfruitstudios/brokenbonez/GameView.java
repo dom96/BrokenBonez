@@ -94,6 +94,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         lockedCanvas.drawRect(left, top, right, bottom, paint);
     }
 
+
     /**
      * Determines whether this GameView can be drawn to.
      */
