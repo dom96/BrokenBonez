@@ -7,15 +7,14 @@ import android.widget.TextView;
 public class GameActivity extends Activity {
 
     private GameLoop gameLoop;
-    TextView textView;
+    GameView gameView;
 
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        gameLoop = new GameLoop(60);
-        textView = new TextView(this);
-        textView.setText("Foobar");
-        setContentView(textView);
+        gameView = new GameView(this, 480, 320);
+        gameLoop = new GameLoop(60, gameView);
+        setContentView(gameView);
         new Thread(gameLoop).start();
     }
     @Override
