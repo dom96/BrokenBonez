@@ -50,7 +50,8 @@ public class AssetLoader {
             b = this.assets.get(key);
         } else{
             b = null;
-            Log.e("AssetLoader", "Unable to load asset with name " + key);
+            //Log.e("AssetLoader", "Unable to load asset with name " + key);
+            throw new RuntimeException("Unable to select asset as asset does not exist with that name.");
         }
         return b;
     }
@@ -72,7 +73,8 @@ public class AssetLoader {
             if (inputStream != null)
                 try {
                     inputStream.close();
-                } catch (IOException e) { /* Let's just return with a null */ }
+                } catch (IOException e) {
+                    throw new RuntimeException("Unable to close inputstream");}
         }
         Log.e("AssetLoader", "Bitmap loaded " + asset);
         return image;
