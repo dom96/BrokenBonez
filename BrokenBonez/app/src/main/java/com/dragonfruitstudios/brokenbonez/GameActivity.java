@@ -12,7 +12,7 @@ public class GameActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        gameView = new GameView(this, 480, 320);
+        gameView = new GameView(this);
         gameLoop = new GameLoop(60, gameView);
         setContentView(gameView);
         new Thread(gameLoop).start();
