@@ -14,12 +14,14 @@ public class GameState {
 
     public void update() {
         bike.update();
+    }
 
+    public void updateSize(int w, int h) {
+        bike.updateStartPos(currentLevel.getStartPoint(w, h));
     }
 
     public void draw() {
         currentLevel.draw();
         bike.draw(gameView);
     }
-
 }

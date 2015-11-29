@@ -1,12 +1,12 @@
 package com.dragonfruitstudios.brokenbonez;
 
-import android.app.Activity;
 import android.graphics.Color;
-import android.os.Bundle;
 import android.util.Log;
 
+/**
+ * Core game loop class which handles drawing and updating of the game.
+ */
 public class GameLoop implements Runnable {
-
     long lastTime = System.nanoTime();
     final int targetFPS;
     final long targetTime;
@@ -14,10 +14,32 @@ public class GameLoop implements Runnable {
     GameView gameView;
     GameState gameState;
 
+    /**
+     * A method for taking the input fps i.e. fps entered when declaring a new game loop in
+     * GameActivity class or the fps we want our game loop to constantly run at.
+     */
     public GameLoop(int inputFPS, GameView gameView) {
         targetFPS = inputFPS;
         targetTime = 1000000000 / targetFPS;
+
         this.gameView = gameView;
+        // TODO: The following would be so much simpler and nicer if Android Studio would support
+        // Java 8 :(
+        // Could we use retrolambda? https://github.com/evant/gradle-retrolambda
+        // If so the code would just be something like:
+        // this.gameView.setDrawingFunction(this::gameDraw);
+        this.gameView.setCallbacks(new GameView.GVCallbacks() {
+            @Override
+            public void performDraw(GameView gameView) {
+                gameDraw(gameView);
+            }
+
+            @Override
+            public void onSizeChanged(GameView gameView, int w, int h, int oldw, int oldh) {
+                gameUpdateSize(w, h);
+            }
+        });
+
         this.gameState = new GameState(gameView);
     }
 
@@ -29,34 +51,44 @@ public class GameLoop implements Runnable {
     long currFrames = 0; // The current amount of frames rendered.
     long currFPS = 0; // The current FPS
 
-
     @Override
     public void run(){
-        while (run) {
-            long presentTime = System.nanoTime();
-            long sleepTime;
+        while (true) { //
+            long presentTime = System.nanoTime(); // Sets the present time to the current system time.
+            long sleepTime; // Variable for the amount of time the thread needs to sleep for.
+            // Setting the update time to the present time subtracted from the last time
+            // in which the game loop was run.
             long updateTime = presentTime - lastTime;
-            lastTime = presentTime;
+            lastTime = presentTime; // Setting the last time to the present time.
+            // Adding the update time to the last time and setting the result to last time.
             lastTime += updateTime;
             counter++;
 
+            // If statement for checking if the last fps time was over 1 million.
+            // If it was then set the lastFPSTime to 0
             if (lastFPSTime >= 1000000000) {
                 lastFPSTime = 0;
                 counter = 0;
             }
 
             gameUpdate();
-            gameDraw();
+            gameView.postInvalidate();
             currFrames++;
 
-
+            // Sets the last time the loop was run to the present time.
             lastTime = System.nanoTime();
+            // Sleep time will be equal to the last time subtracted from the current time added
+            // to the target time. If the sleep time is more than 0 it will try to sleep
+            // for the sleep time divided by 1 million in long type.
             sleepTime = (targetTime + (lastTime - presentTime));
             if (sleepTime > 0) {
                 try {
                     Thread.sleep(sleepTime / 1000000L);
                 }
                 catch (InterruptedException exc) {
+                    // TODO: Dom: Look up what to do in this case properly.
+                    // TODO: I recall that there is some method that should be called in the
+                    // TODO: event of this.
                     Log.d("Error", "Interrupted exception was caught.");
                 }
             }
@@ -70,31 +102,31 @@ public class GameLoop implements Runnable {
         }
     }
 
+    // Update method
     protected void gameUpdate() {
         //Log.d("Loop", "Updating" + counter);
         gameState.update();
     }
 
-    protected void gameDraw() {
-        //Log.d("Loop", "Drawing" + counter);
-        if (!gameView.isReady()) {
-            return;
-        }
-        gameView.lockCanvas();
+    protected void gameUpdateSize(int w, int h) {
+        gameState.updateSize(w, h);
+    }
+
+    protected void gameDraw(GameView gameView) {
         gameView.clear(Color.BLACK);
 
         gameState.draw();
 
         gameView.drawText("FPS: " + currFPS, 20, 30, Color.WHITE);
-        gameView.unlockCanvas();
     }
 
-
-    public void pause(){
+    // Called when the user minimizes the game.
+    public void pause() {
         run = false;
     }
 
-    public void resume(){
+    // Called when the user resumes the game from the android menu.
+    public void resume() {
         run = true;
     }
 }

@@ -4,8 +4,12 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 
 /**
@@ -16,45 +20,47 @@ import android.view.SurfaceView;
  *  The `lockCanvas` method must be called before any draw method is called. After the drawing ends
  *  you should call the complementary `unlockCanvas` method.
  */
-public class GameView extends SurfaceView implements SurfaceHolder.Callback {
-    SurfaceHolder holder; // Underlying holder for this SurfaceView
+public class GameView extends View {
+    boolean ready;
+    Canvas canvas;
 
-    Canvas lockedCanvas; // Currently locked canvas to perform drawing on.
-    boolean ready; // Determines whether the SurfaceView has been created.
+    public interface GVCallbacks {
+        void performDraw(GameView gameView);
+        void onSizeChanged(GameView gameView, int w, int h, int oldw, int oldh);
+    }
 
-    int width, height; // The width and height of this SurfaceView.
+    GVCallbacks callbacks;
 
-    public GameView(Context context, int width, int height) {
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        ready = true;
+        this.canvas = canvas;
+        callbacks.performDraw(this);
+        ready = false;
+        this.canvas = null;
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        Log.d("GameView", String.format("Size changed. W: %s, H: %s, oldW: %s, oldH: %s",
+                w, h, oldw, oldh));
+        callbacks.onSizeChanged(this, w, h, oldw, oldh);
+
+    }
+
+    public GameView(Context context) {
         super(context);
-
-        holder = getHolder();
-        holder.addCallback(this);
-        holder.setFixedSize(width, height);
-        this.width = width;
-        this.height = height;
     }
 
-    public void lockCanvas() {
-        if (lockedCanvas != null) {
-            // The canvas is currently locked, cannot lock again.
-            throw new RuntimeException("Locking of canvas failed: canvas already locked.");
-        }
-        lockedCanvas = holder.lockCanvas();
-        if (lockedCanvas == null) {
-            // This happens if the surface has not been created yet.
-            // http://developer.android.com/reference/android/view/SurfaceHolder.html#lockCanvas%28%29
-            throw new RuntimeException("Locking of canvas failed: lockCanvas returned null.");
-        }
-    }
-
-    public void unlockCanvas() {
-        holder.unlockCanvasAndPost(lockedCanvas);
-        lockedCanvas = null;
+    public void setCallbacks(GVCallbacks drawingFunction) {
+        this.callbacks = drawingFunction;
     }
 
     private void checkCanvas() {
-        if (lockedCanvas == null) {
-            throw new RuntimeException("Canvas has not been locked.");
+        if (!ready) {
+            throw new IllegalArgumentException("Cannot draw right now, Canvas not ready.");
         }
     }
 
@@ -66,7 +72,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         checkCanvas();
         Paint p = new Paint();
         p.setColor(color);
-        lockedCanvas.drawRect(0, 0, width, height, p);
+        canvas.drawRect(0, 0, canvas.getWidth(), canvas.getHeight(), p);
     }
 
     /**
@@ -83,45 +89,15 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         paint.setTextSize(15);
         paint.setStyle(Paint.Style.FILL);
         paint.setAntiAlias(true);
-        lockedCanvas.drawText(text, x, y, paint);
+        canvas.drawText(text, x, y, paint);
     }
 
     public void drawRect(float left, float top, float right, float bottom, int color) {
         checkCanvas();
+
         Paint paint = new Paint();
         paint.setColor(color);
-
-        lockedCanvas.drawRect(left, top, right, bottom, paint);
-    }
-
-    /**
-     * Determines whether this GameView can be drawn to.
-     */
-    public boolean isReady() {
-        return ready;
-    }
-
-    public int getRealWidth() {
-        return width;
-    }
-
-    public int getRealHeight() {
-        return height;
-    }
-
-    @Override
-    public void surfaceCreated(SurfaceHolder holder) {
-        ready = true;
-    }
-
-    @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
-    }
-
-    @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
-        ready = false;
+        canvas.drawRect(left, top, right, bottom, paint);
     }
 
 
