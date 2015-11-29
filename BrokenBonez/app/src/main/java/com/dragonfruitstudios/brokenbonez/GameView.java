@@ -23,6 +23,7 @@ import android.widget.RelativeLayout;
 public class GameView extends View {
     boolean ready;
     Canvas canvas;
+    Paint paint;
 
     public interface GVCallbacks {
         void performDraw(GameView gameView);
@@ -52,6 +53,7 @@ public class GameView extends View {
 
     public GameView(Context context) {
         super(context);
+        paint = new Paint();
     }
 
     public void setCallbacks(GVCallbacks drawingFunction) {
@@ -70,9 +72,8 @@ public class GameView extends View {
      */
     public void clear(int color) {
         checkCanvas();
-        Paint p = new Paint();
-        p.setColor(color);
-        canvas.drawRect(0, 0, canvas.getWidth(), canvas.getHeight(), p);
+        paint.setColor(color);
+        canvas.drawRect(0, 0, canvas.getWidth(), canvas.getHeight(), paint);
     }
 
     /**
@@ -84,7 +85,6 @@ public class GameView extends View {
      */
     public void drawText(String text, float x, float y, int color) {
         checkCanvas();
-        Paint paint = new Paint();
         paint.setColor(color);
         paint.setTextSize(15);
         paint.setStyle(Paint.Style.FILL);
@@ -94,8 +94,6 @@ public class GameView extends View {
 
     public void drawRect(float left, float top, float right, float bottom, int color) {
         checkCanvas();
-
-        Paint paint = new Paint();
         paint.setColor(color);
         canvas.drawRect(left, top, right, bottom, paint);
     }
