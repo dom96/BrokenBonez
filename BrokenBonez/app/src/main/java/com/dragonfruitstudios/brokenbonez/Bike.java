@@ -8,7 +8,8 @@ public class Bike {
     PointF pos; // The x,y coords of the bottom left of the bike.
     PointF startPos;
 
-    boolean back;
+    boolean accel;
+    boolean brake;
     public Bike(PointF startPos) {
         // TODO: Can't do `new PointF(startPos)`?
         pos = new PointF(startPos.x, startPos.y);
@@ -30,21 +31,23 @@ public class Bike {
     }
 
     public void update() {
-        if (pos.x >= 380) {
-            back = true;
+
+    	if(brake) {
+           pos.x -= 2;
         }
 
-        if (pos.x <= startPos.x) {
-            back = false;
+    	if(accel) {
+           pos.x += 4;
         }
 
-        if (back)
-        {
-            pos.x -= 2;
+        if(pos.x >= 380) {
+           brake = true;
+           accel = false;
         }
-        else {
-            pos.x += 2;
+
+        if(pos.x <= startPos.x) {
+           accel = true;
+           brake = false;
         }
     }
-
 }

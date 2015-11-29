@@ -24,5 +24,4 @@ public class GameState {
         currentLevel.draw();
         bike.draw(gameView);
     }
-
 }

@@ -97,7 +97,6 @@ public class GameView extends View {
 
         Paint paint = new Paint();
         paint.setColor(color);
-
         canvas.drawRect(left, top, right, bottom, paint);
     }
 
