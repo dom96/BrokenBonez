@@ -3,6 +3,7 @@ package com.dragonfruitstudios.brokenbonez;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.PointF;
+import android.util.Log;
 
 // Currently just a simple class to draw the level.
 // TODO: Load level design from file.
@@ -19,6 +20,7 @@ public class Level {
         // Draw the sky
         gameView.drawRect(0, 0, gameView.getWidth(), currHeight,
                 Color.parseColor("#06A1D3"));
+        //Log.d("Level", "Grass height" + Float.valueOf(currHeight));
         // Draw the grass.
         gameView.drawRect(0, currHeight, gameView.getWidth(),
                 currHeight + 20, Color.parseColor("#069418"));
@@ -29,9 +31,18 @@ public class Level {
     }
 
     public PointF getStartPoint() {
-        // Calculate the surface level.
-        float surfaceLevel = gameView.getHeight() / 2 + 50;
-        return new PointF(5, surfaceLevel);
+        return getStartPoint(gameView.getWidth(), gameView.getHeight());
     }
 
+    /**
+     * An overloaded `getStartPoint` which accepts a width and height.
+     * @param w
+     * @param h
+     * @return
+     */
+    public PointF getStartPoint(int w, int h) {
+        // Calculate the surface level.
+        float surfaceLevel = h / 2 + 50;
+        return new PointF(5, surfaceLevel);
+    }
 }

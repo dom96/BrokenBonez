@@ -24,36 +24,38 @@ public class GameView extends View {
     boolean ready;
     Canvas canvas;
 
-    public interface PerformDraw {
+    public interface GVCallbacks {
         void performDraw(GameView gameView);
+        void onSizeChanged(GameView gameView, int w, int h, int oldw, int oldh);
     }
 
-    PerformDraw drawingFunction;
+    GVCallbacks callbacks;
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         ready = true;
         this.canvas = canvas;
-        drawingFunction.performDraw(this);
+        callbacks.performDraw(this);
         ready = false;
         this.canvas = null;
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        Log.d("GameView", String.format("Size changed. W: %s, H: %s, oldW: %s, oldH: %s",
+                w, h, oldw, oldh));
+        callbacks.onSizeChanged(this, w, h, oldw, oldh);
+
     }
 
     public GameView(Context context) {
         super(context);
     }
 
-    public void setDrawingFunction(PerformDraw drawingFunction) {
-        this.drawingFunction = drawingFunction;
-    }
-
-    public void lockCanvas() {
-        // nop
-    }
-
-    public void unlockCanvas() {
-        // nop
+    public void setCallbacks(GVCallbacks drawingFunction) {
+        this.callbacks = drawingFunction;
     }
 
     private void checkCanvas() {

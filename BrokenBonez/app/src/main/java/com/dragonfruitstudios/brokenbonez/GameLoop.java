@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.util.Log;
 
 public class GameLoop implements Runnable {
-
     long lastTime = System.nanoTime();
     final int targetFPS;
     final long targetTime;
@@ -22,11 +21,17 @@ public class GameLoop implements Runnable {
         // TODO: The following would be so much simpler and nicer if Android Studio would support
         // Java 8 :(
         // Could we use retrolambda? https://github.com/evant/gradle-retrolambda
-        // If so the code would just be: this.gameView.setDrawingFunction(this::gameDraw);
-        this.gameView.setDrawingFunction(new GameView.PerformDraw() {
+        // If so the code would just be something like:
+        // this.gameView.setDrawingFunction(this::gameDraw);
+        this.gameView.setCallbacks(new GameView.GVCallbacks() {
             @Override
             public void performDraw(GameView gameView) {
                 gameDraw(gameView);
+            }
+
+            @Override
+            public void onSizeChanged(GameView gameView, int w, int h, int oldw, int oldh) {
+                gameUpdateSize(w, h);
             }
         });
         this.gameState = new GameState(gameView);
@@ -39,7 +44,6 @@ public class GameLoop implements Runnable {
     long lastFPSReport = System.currentTimeMillis(); // The time that FPS was reported last.
     long currFrames = 0; // The current amount of frames rendered.
     long currFPS = 0; // The current FPS
-
 
     @Override
     public void run(){
@@ -86,9 +90,11 @@ public class GameLoop implements Runnable {
         gameState.update();
     }
 
-    protected void gameDraw(GameView gameView) {
-        //Log.d("Loop", "Drawing" + counter);
+    protected void gameUpdateSize(int w, int h) {
+        gameState.updateSize(w, h);
+    }
 
+    protected void gameDraw(GameView gameView) {
         gameView.clear(Color.BLACK);
 
         gameState.draw();
