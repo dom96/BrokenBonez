@@ -1,4 +1,4 @@
-package com.dragonfruitstudios.brokenbonez;
+package com.dragonfruitstudios.brokenbonez.Input;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +7,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.dragonfruitstudios.brokenbonez.Pool;
-import com.dragonfruitstudios.brokenbonez.Input.TouchEvent;
+import com.dragonfruitstudios.brokenbonez.Input.Input.TouchEvent;
 import com.dragonfruitstudios.brokenbonez.Pool.PoolObjectFactory;
 
 /**

@@ -1,12 +1,10 @@
-package com.dragonfruitstudios.brokenbonez;
+package com.dragonfruitstudios.brokenbonez.Input;
 
 import java.util.List;
 
 import android.content.Context;
 import android.os.Build.VERSION;
 import android.view.View;
-
-import com.dragonfruitstudios.brokenbonez.Input;
 
 /**
  * Created by rmsfan on 16/11/2015.

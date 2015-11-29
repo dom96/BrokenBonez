@@ -1,4 +1,4 @@
-package com.dragonfruitstudios.brokenbonez;
+package com.dragonfruitstudios.brokenbonez.Input;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,7 +6,6 @@ import java.util.List;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.dragonfruitstudios.brokenbonez.Input.TouchEvent;
 import com.dragonfruitstudios.brokenbonez.Pool;
 import com.dragonfruitstudios.brokenbonez.Pool.PoolObjectFactory;
 
@@ -20,18 +19,18 @@ public class MultiTouchHandler implements TouchHandler {
     int[] touchX = new int[MAX_TOUCHPOINTS];
     int[] touchY = new int[MAX_TOUCHPOINTS];
     int[] id = new int[MAX_TOUCHPOINTS];
-    Pool <TouchEvent> touchEventPool;
-    List <TouchEvent> touchEvents = new ArrayList <TouchEvent> ();
-    List <TouchEvent> touchEventsBuffer = new ArrayList <TouchEvent> ();
+    Pool <Input.TouchEvent> touchEventPool;
+    List <Input.TouchEvent> touchEvents = new ArrayList <Input.TouchEvent> ();
+    List <Input.TouchEvent> touchEventsBuffer = new ArrayList <Input.TouchEvent> ();
     float scaleX;
     float scaleY;
     public MultiTouchHandler(View view, float scaleX, float scaleY) {
-        PoolObjectFactory <TouchEvent> factory = new PoolObjectFactory <TouchEvent> () {
-            public TouchEvent createObject() {
-                return new TouchEvent();
+        PoolObjectFactory <Input.TouchEvent> factory = new PoolObjectFactory <Input.TouchEvent> () {
+            public Input.TouchEvent createObject() {
+                return new Input.TouchEvent();
             }
         };
-        touchEventPool = new Pool <TouchEvent> (factory, 100);
+        touchEventPool = new Pool <Input.TouchEvent> (factory, 100);
         view.setOnTouchListener(this);
 
         this.scaleX = scaleX;
@@ -43,7 +42,7 @@ public class MultiTouchHandler implements TouchHandler {
             int pointerIndex = (event.getAction() & MotionEvent.ACTION_POINTER_INDEX_MASK
                     >> MotionEvent.ACTION_POINTER_INDEX_SHIFT);
             int pointerCount = event.getPointerCount();
-            TouchEvent touchEvent;
+            Input.TouchEvent touchEvent;
             for (int i = 0; i < MAX_TOUCHPOINTS; i++) {
                 if (i >= pointerCount) {
                     isTouched[i] = false;
@@ -62,7 +61,7 @@ public class MultiTouchHandler implements TouchHandler {
                     case MotionEvent.ACTION_DOWN:
                     case MotionEvent.ACTION_POINTER_DOWN:
                         touchEvent = touchEventPool.newObject();
-                        touchEvent.type = TouchEvent.TOUCH_DOWN;
+                        touchEvent.type = Input.TouchEvent.TOUCH_DOWN;
                         touchEvent.pointer = pointerId;
                         touchEvent.x = touchX[i] = (int) (event.getX(i) * scaleX);
                         touchEvent.y = touchY[i] = (int) (event.getY(i) * scaleY);
@@ -75,7 +74,7 @@ public class MultiTouchHandler implements TouchHandler {
                     case MotionEvent.ACTION_POINTER_UP:
                     case MotionEvent.ACTION_CANCEL:
                         touchEvent = touchEventPool.newObject();
-                        touchEvent.type = TouchEvent.TOUCH_UP;
+                        touchEvent.type = Input.TouchEvent.TOUCH_UP;
                         touchEvent.pointer = pointerId;
                         touchEvent.x = touchX[i] = (int) (event.getX(i) * scaleX);
                         touchEvent.y = touchY[i] = (int) (event.getY(i) * scaleY);
@@ -85,7 +84,7 @@ public class MultiTouchHandler implements TouchHandler {
                         break;
                     case MotionEvent.ACTION_MOVE:
                         touchEvent = touchEventPool.newObject();
-                        touchEvent.type = TouchEvent.TOUCH_DRAGGED;
+                        touchEvent.type = Input.TouchEvent.TOUCH_DRAGGED;
                         touchEvent.pointer = pointerId;
                         touchEvent.x = touchX[i] = (int) (event.getX(i) * scaleX);
                         touchEvent.y = touchY[i] = (int) (event.getY(i) * scaleY);
@@ -125,7 +124,7 @@ public class MultiTouchHandler implements TouchHandler {
                 return touchY[index];
         }
     }
-    public List <TouchEvent> getTouchEvents() {
+    public List <Input.TouchEvent> getTouchEvents() {
         synchronized (this) {
             int len = touchEvents.size();
             for (int i = 0; i < len; i++)

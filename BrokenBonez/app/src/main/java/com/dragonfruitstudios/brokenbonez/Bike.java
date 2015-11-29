@@ -32,20 +32,20 @@ public class Bike {
 
     public void update() {
 
-    	if(brake) {
+    	if (brake) {
            pos.x -= 2;
         }
 
-    	if(accel) {
+    	if (accel) {
            pos.x += 4;
         }
 
-        if(pos.x >= 380) {
+        if (pos.x >= 380) {
            brake = true;
            accel = false;
         }
 
-        if(pos.x <= startPos.x) {
+        if (pos.x <= startPos.x) {
            accel = true;
            brake = false;
         }

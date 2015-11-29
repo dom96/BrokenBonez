@@ -1,10 +1,8 @@
-package com.dragonfruitstudios.brokenbonez;
+package com.dragonfruitstudios.brokenbonez.Input;
 
 import java.util.List;
 
-import android.view.View;
 import android.view.View.OnTouchListener;
-import com.dragonfruitstudios.brokenbonez.Input.TouchEvent;
 
 /**
  * Created by rmsfan on 16/11/2015.

@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.os.PowerManager;
 import android.view.WindowManager;
 
-/**Game Activity class used for creating a new game view and game loop instance. Also defines some
- * device related features.**/
+/**
+ * Game Activity class used for creating a new game view and game loop instance. Also defines some
+ * device related features.
+ */
 public class GameActivity extends Activity {
 
     private GameLoop gameLoop;
@@ -17,13 +19,16 @@ public class GameActivity extends Activity {
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         gameView = new GameView(this);
-        /**Power manager gives control over the power state of the android device.**/
+        // Power manager gives control over the power state of the android device.
         PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
-        this.mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Wake Lock"); /**CPU will run regardless
-         of display timeouts or the state of the screen after the user presses the power button.**/
-        this.mWakeLock.acquire(); // Aquires the wake lock forcing the device to stay on.
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); // Enables full screen mode.
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        // CPU will run regardless of display timeouts or the state of the screen after
+        // the user presses the power button.
+        this.mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Wake Lock");
+        this.mWakeLock.acquire(); // Acquires the wake lock forcing the device to stay on.
+        // Enables full screen mode.
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         gameLoop = new GameLoop(60, gameView);
         setContentView(gameView);
         new Thread(gameLoop).start();
@@ -38,6 +43,6 @@ public class GameActivity extends Activity {
     public void onResume(){
         gameLoop.resume(); // Resumes gameLoop
         super.onResume();
-        this.mWakeLock.acquire(); // Aquires the wake lock forcing the device to stay on.
+        this.mWakeLock.acquire(); // Acquires the wake lock forcing the device to stay on.
     }
 }

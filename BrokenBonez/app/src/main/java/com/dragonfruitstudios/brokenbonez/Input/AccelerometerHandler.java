@@ -1,4 +1,4 @@
-package com.dragonfruitstudios.brokenbonez;
+package com.dragonfruitstudios.brokenbonez.Input;
 
 import android.content.Context;
 import android.hardware.Sensor;

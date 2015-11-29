@@ -3,7 +3,9 @@ package com.dragonfruitstudios.brokenbonez;
 import android.graphics.Color;
 import android.util.Log;
 
-/**Core game loop class which handles drawing and updating of the game.**/
+/**
+ * Core game loop class which handles drawing and updating of the game.
+ */
 public class GameLoop implements Runnable {
     long lastTime = System.nanoTime();
     final int targetFPS;
@@ -12,14 +14,15 @@ public class GameLoop implements Runnable {
     GameView gameView;
     GameState gameState;
 
-    /**A method for taking the input fps i.e. fps entered when declaring a new game loop in GameActivity class or
-     * the fps we want our game loop to constantly run at.
+    /**
+     * A method for taking the input fps i.e. fps entered when declaring a new game loop in
+     * GameActivity class or the fps we want our game loop to constantly run at.
      */
     public GameLoop(int inputFPS, GameView gameView) {
         targetFPS = inputFPS;
         targetTime = 1000000000 / targetFPS;
-        this.gameView = gameView;
 
+        this.gameView = gameView;
         // TODO: The following would be so much simpler and nicer if Android Studio would support
         // Java 8 :(
         // Could we use retrolambda? https://github.com/evant/gradle-retrolambda
@@ -36,6 +39,7 @@ public class GameLoop implements Runnable {
                 gameUpdateSize(w, h);
             }
         });
+
         this.gameState = new GameState(gameView);
     }
 
@@ -52,14 +56,16 @@ public class GameLoop implements Runnable {
         while (true) { //
             long presentTime = System.nanoTime(); // Sets the present time to the current system time.
             long sleepTime; // Variable for the amount of time the thread needs to sleep for.
-            long updateTime = presentTime - lastTime; /**Setting the update time to the present time
-                                    subtracted from the last time in which the game loop was run.**/
+            // Setting the update time to the present time subtracted from the last time
+            // in which the game loop was run.
+            long updateTime = presentTime - lastTime;
             lastTime = presentTime; // Setting the last time to the present time.
-            lastTime += updateTime; // Adding the update time to the last time and setting the result to last time.
+            // Adding the update time to the last time and setting the result to last time.
+            lastTime += updateTime;
             counter++;
 
-            /**if statement for checking if the last fps time was over 1 million.
-             * If it was then set the lastFPSTime to 0**/
+            // If statement for checking if the last fps time was over 1 million.
+            // If it was then set the lastFPSTime to 0
             if (lastFPSTime >= 1000000000) {
                 lastFPSTime = 0;
                 counter = 0;
@@ -69,18 +75,21 @@ public class GameLoop implements Runnable {
             gameView.postInvalidate();
             currFrames++;
 
-
-            lastTime = System.nanoTime(); // Sets the last time the loop was run to the present time.
-            sleepTime = (targetTime + (lastTime - presentTime)); /** Sleep time will be equal to the last time subtracted
-                                                                        from the current time added to the target time.
-                                                                    If the sleep time is more than 0 it will try to sleep
-                                                                        for the sleep time divided by 1 million in long type**/
+            // Sets the last time the loop was run to the present time.
+            lastTime = System.nanoTime();
+            // Sleep time will be equal to the last time subtracted from the current time added
+            // to the target time. If the sleep time is more than 0 it will try to sleep
+            // for the sleep time divided by 1 million in long type.
+            sleepTime = (targetTime + (lastTime - presentTime));
             if (sleepTime > 0) {
                 try {
                     Thread.sleep(sleepTime / 1000000L);
                 }
                 catch (InterruptedException exc) {
-                    Log.d("Error", "Interrupted exception was caught."); // Catches errors in relation to Thread.sleep
+                    // TODO: Dom: Look up what to do in this case properly.
+                    // TODO: I recall that there is some method that should be called in the
+                    // TODO: event of this.
+                    Log.d("Error", "Interrupted exception was caught.");
                 }
             }
             // Report the amount of frames that have been rendered.
@@ -111,13 +120,13 @@ public class GameLoop implements Runnable {
         gameView.drawText("FPS: " + currFPS, 20, 30, Color.WHITE);
     }
 
-    // Pause method for handling the game when it is paused i.e. when the user minimizes the game.
-    public void pause(){
+    // Called when the user minimizes the game.
+    public void pause() {
         run = false;
     }
 
-    // Resume method for handling the game when the game is resumed i.e. when the user resumes the game from the android menu.
-    public void resume(){
+    // Called when the user resumes the game from the android menu.
+    public void resume() {
         run = true;
     }
 }
