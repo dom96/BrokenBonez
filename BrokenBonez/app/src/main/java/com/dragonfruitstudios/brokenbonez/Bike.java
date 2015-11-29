@@ -4,17 +4,22 @@ import android.graphics.Color;
 import android.graphics.PointF;
 import android.util.Log;
 
+import com.dragonfruitstudios.brokenbonez.Vector;
+
 public class Bike {
     PointF pos; // The x,y coords of the bottom left of the bike.
     PointF startPos;
 
-    boolean accel;
-    boolean brake;
+    Vector velocity;
+
     public Bike(PointF startPos) {
         // TODO: Can't do `new PointF(startPos)`?
         pos = new PointF(startPos.x, startPos.y);
         Log.d("Bike", "Start pos: " + pos.toString());
         this.startPos = new PointF(startPos.x, startPos.y);
+
+        // TODO: For testing.
+        velocity = new Vector(5, 0, Math.PI / 2);
     }
 
     public void draw(GameView gameView) {
@@ -31,23 +36,16 @@ public class Bike {
     }
 
     public void update() {
-
-    	if (brake) {
-           pos.x -= 2;
-        }
-
-    	if (accel) {
-           pos.x += 4;
-        }
+        PointF resolved = velocity.resolve();
+        pos.x += resolved.x;
+        pos.y += resolved.y;
 
         if (pos.x >= 380) {
-           brake = true;
-           accel = false;
+            velocity = velocity.toReverse();
         }
 
         if (pos.x <= startPos.x) {
-           accel = true;
-           brake = false;
+            velocity = velocity.toReverse();
         }
     }
 }
