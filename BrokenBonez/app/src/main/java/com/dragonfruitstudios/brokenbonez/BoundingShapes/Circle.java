@@ -1,15 +1,13 @@
 package com.dragonfruitstudios.brokenbonez.BoundingShapes;
 
 import android.graphics.Color;
-import android.graphics.Point;
 
 import com.dragonfruitstudios.brokenbonez.GameView;
-import com.dragonfruitstudios.brokenbonez.PointD;
-import com.dragonfruitstudios.brokenbonez.Vector;
+import com.dragonfruitstudios.brokenbonez.VectorF;
 
 public class Circle {
-    Vector center;
-    double radius;
+    VectorF center;
+    float radius;
 
     /**
      * Note: You're better off using the other constructor if you already have a position vector.
@@ -17,17 +15,17 @@ public class Circle {
      * @param cy
      * @param radius
      */
-    public Circle(double cx, double cy, double radius) {
-        this.center = new Vector(cx, cy);
+    public Circle(float cx, float cy, float radius) {
+        this.center = new VectorF(cx, cy);
         this.radius = radius;
     }
 
-    public Circle(Vector center, double radius) {
+    public Circle(VectorF center, float radius) {
         this.center = center;
         this.radius = radius;
     }
 
-    public void set(double cx, double cy) {
+    public void set(float cx, float cy) {
         center.set(cx, cy);
     }
 
@@ -38,10 +36,10 @@ public class Circle {
         if (rect.containsPoint(center.x, center.y)) { return true; }
 
         // Check whether either of the sides intersect with the circle.
-        Vector TopLeft = new Vector(rect.left, rect.top);
-        Vector TopRight = new Vector(rect.right, rect.top);
-        Vector BottomLeft = new Vector(rect.left, rect.bottom);
-        Vector BottomRight = new Vector(rect.right, rect.bottom);
+        VectorF TopLeft = new VectorF(rect.left, rect.top);
+        VectorF TopRight = new VectorF(rect.right, rect.top);
+        VectorF BottomLeft = new VectorF(rect.left, rect.bottom);
+        VectorF BottomRight = new VectorF(rect.right, rect.bottom);
         if (collidesWith(TopLeft, TopRight) || collidesWith(TopRight, BottomRight) ||
                 collidesWith(BottomRight, BottomLeft) || collidesWith(BottomLeft, TopLeft)) {
             return true;
@@ -53,13 +51,13 @@ public class Circle {
     /**
      * Determines whether Line AB intersects with this Circle.
      */
-    public boolean collidesWith(Vector a, Vector b) {
-        Vector BA = new Vector(b.x - a.x, b.y - a.y);
-        Vector CA = new Vector(center.x - a.x, center.y - a.y);
-        double l = BA.magnitude();
+    public boolean collidesWith(VectorF a, VectorF b) {
+        VectorF BA = new VectorF(b.x - a.x, b.y - a.y);
+        VectorF CA = new VectorF(center.x - a.x, center.y - a.y);
+        float l = BA.magnitude();
 
         BA.normalise();
-        double u = CA.dot_product(BA);
+        float u = CA.dot_product(BA);
         if (u <= 0) {
             CA.set(a.x, a.y);
         }
@@ -71,8 +69,8 @@ public class Circle {
             CA.set(BA.x + a.x, BA.y + a.y);
         }
 
-        double x = center.x - CA.x;
-        double y = center.y - CA.y;
+        float x = center.x - CA.x;
+        float y = center.y - CA.y;
 
         return x * x + y * y <= radius*radius;
     }
@@ -82,6 +80,6 @@ public class Circle {
      * @param view
      */
     public void draw(GameView view) {
-        view.drawCircle((float)center.x, (float)center.y, (float)radius, Color.parseColor("#4c4a4d"));
+        view.drawCircle(center.x, center.y, radius, Color.parseColor("#4c4a4d"));
     }
 }

@@ -12,7 +12,7 @@ public class GameState {
         this.gameView = gameView;
     }
 
-    public void update(double lastUpdate) {
+    public void update(float lastUpdate) {
         bike.update(lastUpdate, currentLevel);
     }
 

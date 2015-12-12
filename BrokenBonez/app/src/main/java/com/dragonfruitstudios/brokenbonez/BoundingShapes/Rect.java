@@ -1,18 +1,16 @@
 package com.dragonfruitstudios.brokenbonez.BoundingShapes;
 
-import com.dragonfruitstudios.brokenbonez.PointD;
-
 public class Rect {
-    double left, top, right, bottom;
+    float left, top, right, bottom;
 
-    public Rect(double left, double top, double right, double bottom) {
+    public Rect(float left, float top, float right, float bottom) {
         this.left = left;
         this.top = top;
         this.right = right;
         this.bottom = bottom;
     }
 
-    public boolean containsPoint(double x, double y) {
+    public boolean containsPoint(float x, float y) {
         if (x >= left && x <= right && y <= top && y >= bottom) {
             return true;
         }

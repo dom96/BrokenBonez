@@ -4,33 +4,31 @@ import android.graphics.Color;
 import android.graphics.PointF;
 import android.util.Log;
 
-// TODO: Rename Vector to VectorF, clashes with java.utils class.
 import com.dragonfruitstudios.brokenbonez.BoundingShapes.Circle;
-import com.dragonfruitstudios.brokenbonez.Vector;
 
 public class Bike {
 
     class Wheel {
-        Vector pos;
-        Vector velocity;
-        Vector acceleration;
+        VectorF pos;
+        VectorF velocity;
+        VectorF acceleration;
 
         Circle boundingCircle;
 
         Wheel() {
-            pos = new Vector(0, 0);
-            velocity = new Vector(0, 0);
-            acceleration = new Vector(0, 0);
+            pos = new VectorF(0, 0);
+            velocity = new VectorF(0, 0);
+            acceleration = new VectorF(0, 0);
 
             boundingCircle = new Circle(pos, 15);
         }
 
-        public void update(double lastUpdate, Level currentLevel) {
+        public void update(float lastUpdate, Level currentLevel) {
             // Acceleration due to gravity.
-            acceleration.setY(9.81);
+            acceleration.setY(9.81f);
 
             // Update the wheels' velocity based on acceleration.
-            double updateFactor = lastUpdate / 1000;
+            float updateFactor = lastUpdate / 1000;
             velocity.multAdd(acceleration, updateFactor);
             //System.out.println("Velocity: " + velocity.toString());
 
@@ -44,7 +42,7 @@ public class Bike {
 
         }
 
-        public void setPos(double x, double y) {
+        public void setPos(float x, float y) {
             pos.set(x, y);
 
             boundingCircle.set(x, y);
@@ -58,7 +56,7 @@ public class Bike {
     PointF pos; // The x,y coords of the bottom left of the bike.
     PointF startPos;
 
-    Vector velocity;
+    VectorF velocity;
 
     public Bike(PointF startPos) {
         this.leftWheel = new Wheel();
@@ -68,7 +66,7 @@ public class Bike {
         updateStartPos(startPos);
 
         // TODO: For testing.
-        velocity = new Vector(5, 0);
+        velocity = new VectorF(5, 0);
     }
 
     public void draw(GameView gameView) {
@@ -89,16 +87,16 @@ public class Bike {
         rightWheel.setPos(pos.x + 75, pos.y);
     }
 
-    public void update(double lastUpdate, Level currentLevel) {
+    public void update(float lastUpdate, Level currentLevel) {
         pos.x += velocity.x;
         pos.y += velocity.y;
 
         if (pos.x >= 380) {
-            velocity.rotate(Math.toRadians(180));
+            velocity.rotate((float)Math.toRadians(180));
         }
 
         if (pos.x <= startPos.x) {
-            velocity.rotate(Math.toRadians(180));
+            velocity.rotate((float)Math.toRadians(180));
         }
 
 

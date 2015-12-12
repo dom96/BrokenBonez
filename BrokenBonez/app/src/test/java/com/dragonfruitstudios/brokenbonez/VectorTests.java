@@ -5,16 +5,21 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+/**
+ * Keep this in mind when making tests:
+ * http://stackoverflow.com/questions/34010251/android-pointf-constructor-not-working-in-junit-test
+ */
+
 public class VectorTests {
-    Vector vec1;
-    Vector vec2;
-    Vector vec3;
+    VectorF vec1;
+    VectorF vec2;
+    VectorF vec3;
 
     @Before
     public void initVectors() {
-        vec1 = new Vector(5, 0);
-        vec2 = new Vector(5, 5);
-        vec3 = new Vector(5, 10);
+        vec1 = new VectorF(5, 0);
+        vec2 = new VectorF(5, 5);
+        vec3 = new VectorF(5, 10);
     }
 
 
@@ -28,7 +33,7 @@ public class VectorTests {
 
     @Test
     public void rotate_isCorrect() {
-        vec1.rotate(Math.toRadians(180));
+        vec1.rotate((float)Math.toRadians(180));
         assertEquals(-5, vec1.x, 0.0001f);
 
     }
