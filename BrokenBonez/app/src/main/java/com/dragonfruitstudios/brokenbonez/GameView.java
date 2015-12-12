@@ -98,5 +98,10 @@ public class GameView extends View {
         canvas.drawRect(left, top, right, bottom, paint);
     }
 
+    public void drawCircle(float cx, float cy, float radius, int color) {
+        checkCanvas();
+        paint.setColor(color);
+        canvas.drawCircle(cx, cy, radius, paint);
+    }
 
 }

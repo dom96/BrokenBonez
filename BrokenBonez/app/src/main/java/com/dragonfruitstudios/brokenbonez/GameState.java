@@ -12,8 +12,8 @@ public class GameState {
         this.gameView = gameView;
     }
 
-    public void update() {
-        bike.update();
+    public void update(double lastUpdate) {
+        bike.update(lastUpdate, currentLevel);
     }
 
     public void updateSize(int w, int h) {

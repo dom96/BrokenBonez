@@ -51,6 +51,9 @@ public class GameLoop implements Runnable {
     long currFrames = 0; // The current amount of frames rendered.
     long currFPS = 0; // The current FPS
 
+    // These flags are used for timing the `update` method
+    long lastUpdate = System.currentTimeMillis();
+
     @Override
     public void run(){
         while (true) { //
@@ -105,7 +108,9 @@ public class GameLoop implements Runnable {
     // Update method
     protected void gameUpdate() {
         //Log.d("Loop", "Updating" + counter);
-        gameState.update();
+        gameState.update(System.currentTimeMillis() - lastUpdate);
+
+        lastUpdate = System.currentTimeMillis();
     }
 
     protected void gameUpdateSize(int w, int h) {

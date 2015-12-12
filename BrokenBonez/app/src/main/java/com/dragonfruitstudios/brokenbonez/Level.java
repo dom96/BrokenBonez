@@ -5,14 +5,24 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.util.Log;
 
+import com.dragonfruitstudios.brokenbonez.BoundingShapes.Circle;
+import com.dragonfruitstudios.brokenbonez.BoundingShapes.Rect;
+
+import java.util.ArrayList;
+
 // Currently just a simple class to draw the level.
 // TODO: Load level design from file.
 // TODO: Scroll the level based on camera position
 public class Level {
     GameView gameView;
 
+    ArrayList<Rect> groundRectangles;
+
     public Level(GameView gameView) {
         this.gameView = gameView;
+        groundRectangles = new ArrayList<Rect>();
+        // TODO: Hardcoded for now.
+        groundRectangles.add(new Rect(0, 410, 3000, 420));
     }
 
     public void draw() {
@@ -44,5 +54,15 @@ public class Level {
         // Calculate the surface level.
         float surfaceLevel = h / 2 + 50;
         return new PointF(5, surfaceLevel);
+    }
+
+    public boolean intersectsGround(Circle c) {
+        // TODO: Make this more efficient.
+        for (Rect r : groundRectangles) {
+            if (c.collidesWith(r)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
