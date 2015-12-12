@@ -63,6 +63,8 @@ public class Bike {
     public Bike(PointF startPos) {
         this.leftWheel = new Wheel();
         this.rightWheel = new Wheel();
+        // TODO: Just a small test to see if giving the wheel an initial x-axis velocity works.
+        this.rightWheel.velocity.set(100, 0);
         updateStartPos(startPos);
 
         // TODO: For testing.
