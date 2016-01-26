@@ -1,0 +1,19 @@
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    
+
+    tools:context=".MenuActivity">
+    <item
+        android:id="@+id/startGame"
+        android:icon="@drawable/start_game"
+        android:title="" />
+    <item
+        android:id="@+id/hiScore"
+        android:icon="@drawable/hi_score"
+        android:title="" />
+    <item
+        android:id="@+id/helpGuide"
+        android:icon="@drawable/help_guide"
+        android:title="" />
+</menu>

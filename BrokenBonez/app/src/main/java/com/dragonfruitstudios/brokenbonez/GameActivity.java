@@ -1,9 +1,18 @@
 package com.dragonfruitstudios.brokenbonez;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 /**
  * Game Activity class used for creating a new game view and game loop instance. Also defines some
@@ -13,6 +22,7 @@ public class GameActivity extends Activity {
 
     private GameLoop gameLoop;
     GameView gameView;
+    
     PowerManager.WakeLock mWakeLock;
 
     @Override
@@ -33,6 +43,7 @@ public class GameActivity extends Activity {
         setContentView(gameView);
         new Thread(gameLoop).start();
     }
+
     @Override
     public void onPause(){
         gameLoop.pause(); // Pauses gameLoop.
@@ -44,5 +55,33 @@ public class GameActivity extends Activity {
         gameLoop.resume(); // Resumes gameLoop
         super.onResume();
         this.mWakeLock.acquire(); // Acquires the wake lock forcing the device to stay on.
+    }
+
+    // Touch Handler
+    @Override
+    public boolean onTouchEvent(MotionEvent event){
+        int pointerIndex = event.getActionIndex();
+        int pointerId = event.getPointerId(pointerIndex);
+        int maskedAction = event.getActionMasked();
+
+        switch (maskedAction) {
+            case MotionEvent.ACTION_DOWN:
+            case MotionEvent.ACTION_POINTER_DOWN: {
+                Log.d("FINGER TOUCHED SCREEN", "A finger has touched the screen!");
+                break;
+            }
+            case MotionEvent.ACTION_MOVE: {
+                Log.d("FINGER IS MOVING", "A finger is moving on the screen!");
+                break;
+            }
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_POINTER_UP:
+            case MotionEvent.ACTION_CANCEL: {
+                Log.d("FINGER WENT UP", "A finger has touched the screen and moved up!");
+                Log.d("ACTION EVENT CANCELLED", "Something else took control of the touch event!");
+                break;
+            }
+        }
+        return true;
     }
 }
