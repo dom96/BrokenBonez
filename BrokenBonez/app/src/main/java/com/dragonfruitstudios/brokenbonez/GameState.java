@@ -18,6 +18,7 @@ public class GameState {
 
     public void updateSize(int w, int h) {
         bike.updateStartPos(currentLevel.getStartPoint(w, h));
+        currentLevel.updateSize(w, h);
     }
 
     public void draw() {

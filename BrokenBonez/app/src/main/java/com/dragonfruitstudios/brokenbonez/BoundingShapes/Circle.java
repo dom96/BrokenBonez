@@ -1,6 +1,7 @@
 package com.dragonfruitstudios.brokenbonez.BoundingShapes;
 
 import android.graphics.Color;
+import android.util.Log;
 
 import com.dragonfruitstudios.brokenbonez.GameView;
 import com.dragonfruitstudios.brokenbonez.VectorF;
@@ -72,7 +73,10 @@ public class Circle {
         float x = center.x - CA.x;
         float y = center.y - CA.y;
 
-        return x * x + y * y <= radius*radius;
+        boolean result = x * x + y * y <= radius*radius;
+        //Log.d("Collision", String.format("(%.1f, %.1f) to (%.1f, %.1f) x Circle(%.1f, %.1f, %.1f) = %b",
+        //        a.x, a.y, b.x, b.y, center.x, center.y, radius, result));
+        return result;
     }
 
     /**
@@ -80,6 +84,6 @@ public class Circle {
      * @param view
      */
     public void draw(GameView view) {
-        view.drawCircle(center.x, center.y, radius, Color.parseColor("#4c4a4d"));
+        view.drawCircleWithLine(center.x, center.y, radius, Color.parseColor("#4c4a4d"), Color.parseColor("#14ff1d"));
     }
 }

@@ -2,6 +2,7 @@ package com.dragonfruitstudios.brokenbonez;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
 import android.view.View;
@@ -90,15 +91,44 @@ GVCallbacks callbacks;
         canvas.drawText(text, x, y, paint);
     }
 
+    /**
+     * Draws a rectangle at the specified coordinates and with the specified color.
+     * The rectangle is drawn with its contents filled.
+     * @param left
+     * @param top
+     * @param right
+     * @param bottom
+     * @param color
+     */
+
     public void drawRect(float left, float top, float right, float bottom, int color) {
         checkCanvas();
         paint.setColor(color);
+        paint.setStyle(Paint.Style.FILL);
         canvas.drawRect(left, top, right, bottom, paint);
+        paint.reset();
+    }
+
+    public void drawRectFrame(float left, float top, float right, float bottom, int color) {
+        checkCanvas();
+        paint.setColor(color);
+        paint.setStyle(Paint.Style.STROKE);
+        canvas.drawRect(left, top, right, bottom, paint);
+        paint.reset();
     }
 
     public void drawCircle(float cx, float cy, float radius, int color) {
         checkCanvas();
+
         paint.setColor(color);
         canvas.drawCircle(cx, cy, radius, paint);
+
+    }
+
+    public void drawCircleWithLine(float cx, float cy, float radius, int color, int lineColor) {
+        drawCircle(cx, cy, radius, color);
+
+        paint.setColor(lineColor);
+        canvas.drawLine(cx, cy, cx + radius, cy, paint);
     }
 }
