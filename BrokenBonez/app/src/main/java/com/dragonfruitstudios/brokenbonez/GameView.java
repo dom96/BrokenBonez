@@ -16,18 +16,18 @@ import android.view.View;
  *  you should call the complementary `unlockCanvas` method.
  */
 public class GameView extends View {
-        boolean ready;
-        Canvas canvas;
-        Paint paint;
+    boolean ready;
+    Canvas canvas;
+    Paint paint;
 
     public interface GVCallbacks {
-    void performDraw(GameView gameView);
+        void performDraw(GameView gameView);
 
-    void onSizeChanged(GameView gameView, int w, int h, int oldw, int oldh);
+        void onSizeChanged(GameView gameView, int w, int h, int oldw, int oldh);
 
-}
+    }
 
-GVCallbacks callbacks;
+    GVCallbacks callbacks;
 
     @Override
     protected void onDraw(Canvas canvas) {
