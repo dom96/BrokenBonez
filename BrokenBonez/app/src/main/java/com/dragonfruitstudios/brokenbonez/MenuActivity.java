@@ -1,33 +1,17 @@
 package com.dragonfruitstudios.brokenbonez;
-
         import android.app.Activity;
-        import android.content.Context;
         import android.content.Intent;
         import android.graphics.Bitmap;
-        import android.graphics.drawable.Icon;
-        import android.net.wifi.p2p.WifiP2pManager;
         import android.os.Bundle;
-        import android.os.PowerManager;
         import android.util.Log;
         import android.view.MotionEvent;
-        import android.view.View;
-        import android.view.Window;
         import android.view.WindowManager;
-        import android.widget.Button;
-
-        import android.app.Activity;
-        import android.os.Bundle;
         import android.view.Menu;
         import android.view.MenuInflater;
         import android.view.MenuItem;
-        import android.view.ViewGroup.LayoutParams;
         import android.widget.ImageView;
-        import android.widget.TextView;
         import android.widget.Toast;
-
         import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
-
-        import java.util.Timer;
 
 public class MenuActivity extends Activity {
     @Override
@@ -91,7 +75,6 @@ public class MenuActivity extends Activity {
         }
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
