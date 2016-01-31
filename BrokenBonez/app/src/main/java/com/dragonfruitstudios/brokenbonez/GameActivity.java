@@ -3,20 +3,21 @@ package com.dragonfruitstudios.brokenbonez;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.view.MotionEvent;
 import android.view.WindowManager;
+import com.dragonfruitstudios.brokenbonez.Input.TouchHandler;
 
 /**
  * Game Activity class used for creating a new game view and game loop instance. Also defines some
  * device related features.
  */
 public class GameActivity extends Activity {
-
     private GameLoop gameLoop;
     GameView gameView;
     PowerManager.WakeLock mWakeLock;
 
     @Override
-    public void onCreate(Bundle savedInstanceState){
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         gameView = new GameView(this);
         // Power manager gives control over the power state of the android device.
@@ -33,16 +34,29 @@ public class GameActivity extends Activity {
         setContentView(gameView);
         new Thread(gameLoop).start();
     }
+
     @Override
-    public void onPause(){
+    public void onPause() {
         gameLoop.pause(); // Pauses gameLoop.
         super.onPause();
         this.mWakeLock.release(); // No need to lock anymore. Calling this saves device's battery.
     }
+
     @Override
-    public void onResume(){
+    public void onResume() {
         gameLoop.resume(); // Resumes gameLoop
         super.onResume();
         this.mWakeLock.acquire(); // Acquires the wake lock forcing the device to stay on.
     }
+
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        TouchHandler touchHandler = new TouchHandler(this, 222, 222);
+        touchHandler.onTouchDown(event);
+        touchHandler.onTouchOff(event);
+        return true;
+    }
 }
+
+

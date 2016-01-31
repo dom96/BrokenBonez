@@ -2,15 +2,9 @@ package com.dragonfruitstudios.brokenbonez;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.RelativeLayout;
-
 
 /**
  *  This class implements a View which supports drawing. Currently implemented as a SurfaceView,
@@ -21,16 +15,18 @@ import android.widget.RelativeLayout;
  *  you should call the complementary `unlockCanvas` method.
  */
 public class GameView extends View {
-    boolean ready;
-    Canvas canvas;
-    Paint paint;
+        boolean ready;
+        Canvas canvas;
+        Paint paint;
 
     public interface GVCallbacks {
-        void performDraw(GameView gameView);
-        void onSizeChanged(GameView gameView, int w, int h, int oldw, int oldh);
-    }
+    void performDraw(GameView gameView);
 
-    GVCallbacks callbacks;
+    void onSizeChanged(GameView gameView, int w, int h, int oldw, int oldh);
+
+}
+
+GVCallbacks callbacks;
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -68,6 +64,7 @@ public class GameView extends View {
 
     /**
      * Clear the GameView with the specified color.
+     *
      * @param color
      */
     public void clear(int color) {
@@ -78,6 +75,7 @@ public class GameView extends View {
 
     /**
      * Draw the specified text at the specified x,y coords with the specified color.
+     *
      * @param text
      * @param x
      * @param y
@@ -103,5 +101,4 @@ public class GameView extends View {
         paint.setColor(color);
         canvas.drawCircle(cx, cy, radius, paint);
     }
-
 }
