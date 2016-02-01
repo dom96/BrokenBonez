@@ -23,7 +23,6 @@ public class GameView extends View {
     void performDraw(GameView gameView);
 
     void onSizeChanged(GameView gameView, int w, int h, int oldw, int oldh);
-
 }
 
 GVCallbacks callbacks;

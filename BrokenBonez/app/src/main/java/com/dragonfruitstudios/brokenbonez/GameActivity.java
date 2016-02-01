@@ -50,13 +50,12 @@ public class GameActivity extends Activity {
     }
 
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        TouchHandler touchHandler = new TouchHandler(this, 222, 222);
-        touchHandler.onTouchDown(event);
-        touchHandler.onTouchOff(event);
-        return true;
-    }
+
+
+
+
+
+
+
+
 }
-
-
