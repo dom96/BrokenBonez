@@ -26,8 +26,16 @@ public class Circle {
         this.radius = radius;
     }
 
-    public void set(float cx, float cy) {
+    public void setCenter(float cx, float cy) {
         center.set(cx, cy);
+    }
+
+    public VectorF getCenter() {
+        return center;
+    }
+
+    public float getRadius() {
+        return radius;
     }
 
     public boolean collidesWith(Rect rect) {

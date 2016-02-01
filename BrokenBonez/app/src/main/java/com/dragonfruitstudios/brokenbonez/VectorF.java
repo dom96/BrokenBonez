@@ -14,6 +14,11 @@ public class VectorF {
         this.y = y;
     }
 
+    public VectorF(VectorF vec) {
+        this.x = vec.x;
+        this.y = vec.y;
+    }
+
     public void rotate(float radians) {
         float cos = (float)Math.cos(radians);
         float sin = (float)Math.sin(radians);
@@ -37,6 +42,14 @@ public class VectorF {
         this.x = x;
         this.y = y;
 
+    }
+
+    public float getX() {
+        return x;
+    }
+
+    public float getY() {
+        return y;
     }
 
     public float magnitude() {

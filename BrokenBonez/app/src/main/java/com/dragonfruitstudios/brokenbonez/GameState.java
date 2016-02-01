@@ -25,4 +25,8 @@ public class GameState {
         currentLevel.draw();
         bike.draw(gameView);
     }
+
+    public void setBikeAcceleration(float strength) {
+        bike.setAcceleration(strength);
+    }
 }

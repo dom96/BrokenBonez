@@ -78,6 +78,14 @@ public class Level {
         return new PointF(5, surfaceLevel);
     }
 
+    /**
+     * Returns the nearest solid object that the VectorF could collide with.
+     */
+    public Rect getNearestSolid(VectorF point) {
+        // TODO: Currently only one collision rect is present
+        return groundRectangles.get(0);
+    }
+
     public boolean intersectsGround(Circle c) {
         // TODO: Make this more efficient.
         for (Rect r : groundRectangles) {
