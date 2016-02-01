@@ -3,6 +3,7 @@ package com.dragonfruitstudios.brokenbonez;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.text.method.Touch;
 import android.view.MotionEvent;
 import android.view.WindowManager;
 import com.dragonfruitstudios.brokenbonez.Input.TouchHandler;
@@ -48,14 +49,4 @@ public class GameActivity extends Activity {
         super.onResume();
         this.mWakeLock.acquire(); // Acquires the wake lock forcing the device to stay on.
     }
-
-
-
-
-
-
-
-
-
-
 }

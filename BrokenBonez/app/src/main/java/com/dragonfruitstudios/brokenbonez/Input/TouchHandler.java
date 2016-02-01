@@ -1,20 +1,20 @@
 package com.dragonfruitstudios.brokenbonez.Input;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.graphics.PointF;
 import android.util.SparseArray;
 import android.view.MotionEvent;
 
 /** Touch-Handler**/
-
 public class TouchHandler {
-    enum ControlIsActive {ACTION_BRAKE_DOWN, ACTION_BRAKE_UP, ACTION_GAS_DOWN, ACTION_GAS_UP}
+    public enum ControlIsActive {ACTION_BRAKE_DOWN, ACTION_BRAKE_UP, ACTION_GAS_DOWN, ACTION_GAS_UP, ACTION_NONE}
     static ControlIsActive cIA = null;
     static boolean TouchIsDown;
     static boolean TouchIsUp;
 
-    public TouchHandler() {
 
+    public TouchHandler() {
 
     }
 
@@ -38,6 +38,7 @@ public class TouchHandler {
                 if(TouchIsDown = true & f.x > f.x /2){
                     cIA = ControlIsActive.ACTION_GAS_DOWN;
                 }
+                break;
             }
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_POINTER_UP:
@@ -54,7 +55,11 @@ public class TouchHandler {
                 if(TouchIsUp = false & f.x > f.x /2){
                     cIA = ControlIsActive.ACTION_GAS_UP;
                 }
+                break;
             }
+            default:
+                cIA = ControlIsActive.ACTION_NONE;
+                break;
         }
         return cIA;
     }
