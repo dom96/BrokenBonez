@@ -9,10 +9,9 @@ import android.view.MotionEvent;
 /** Touch-Handler**/
 public class TouchHandler {
     public enum ControlIsActive {ACTION_BRAKE_DOWN, ACTION_BRAKE_UP, ACTION_GAS_DOWN, ACTION_GAS_UP, ACTION_NONE}
-    static ControlIsActive cIA = null;
+    static ControlIsActive cIA = ControlIsActive.ACTION_NONE;
     static boolean TouchIsDown;
     static boolean TouchIsUp;
-
 
     public TouchHandler() {
 
