@@ -50,13 +50,10 @@ public class GameActivity extends Activity {
         this.mWakeLock.acquire(); // Acquires the wake lock forcing the device to stay on.
     }
 
-
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        Log.d("GameActivity/Touch", event.toString());
-        gameLoop.onGameTouch(event);
-        return true;
+        TouchHandler.ControlIsActive cIA = TouchHandler.OnTouch(event, 320);
+        Log.d("RETURNED:", cIA.toString());
+        return super.onTouchEvent(event);
     }
 }
-
-
