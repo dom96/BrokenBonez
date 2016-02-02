@@ -1,58 +1,65 @@
 package com.dragonfruitstudios.brokenbonez.Input;
 
-import android.app.Activity;
-import android.app.ActivityManager;
 import android.graphics.PointF;
-import android.util.SparseArray;
 import android.view.MotionEvent;
 
 /** Touch-Handler**/
 public class TouchHandler {
     public enum ControlIsActive {ACTION_BRAKE_DOWN, ACTION_BRAKE_UP, ACTION_GAS_DOWN, ACTION_GAS_UP, ACTION_NONE}
     static ControlIsActive cIA = ControlIsActive.ACTION_NONE;
-    static boolean TouchIsDown;
-    static boolean TouchIsUp;
+    static boolean gasIsDown;
+    static boolean gasIsUp;
+    static boolean brakeIsDown;
+    static boolean brakeIsUp;
 
     public TouchHandler() {
 
     }
 
-    public static ControlIsActive OnTouchDown(Activity activity, MotionEvent event) {
+    public static ControlIsActive OnTouch(MotionEvent event, float midPoint) {
         int pointerIndex = event.getActionIndex();
-        int pointerId = event.getPointerId(pointerIndex);
         int maskedAction = event.getActionMasked();
-        SparseArray<PointF> mActivePointers;
         switch (maskedAction) {
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_POINTER_DOWN: {
-                mActivePointers = new SparseArray<PointF>();
                 PointF f = new PointF();
                 f.x = event.getX(pointerIndex);
                 f.y = event.getY(pointerIndex);
-                mActivePointers.put(pointerId, f);
-                TouchIsDown = true;
-                if(TouchIsDown = true & f.x < f.x / 2){
-                    cIA = ControlIsActive.ACTION_BRAKE_DOWN;
+                if(f.x < midPoint) {
+                    brakeIsDown = true;
+                    if(brakeIsDown = true) {
+                        gasIsDown = false;
+                        cIA = ControlIsActive.ACTION_BRAKE_DOWN;
+                    }
                 }
-                if(TouchIsDown = true & f.x > f.x /2){
-                    cIA = ControlIsActive.ACTION_GAS_DOWN;
+                if(f.x > midPoint){
+                    gasIsDown = true;
+                    if(gasIsDown = true) {
+                        brakeIsDown = false;
+                        cIA = ControlIsActive.ACTION_GAS_DOWN;
+                    }
                 }
                 break;
             }
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_POINTER_UP:
             case MotionEvent.ACTION_CANCEL: {
-                mActivePointers = new SparseArray<PointF>();
                 PointF f = new PointF();
                 f.x = event.getX(pointerIndex);
                 f.y = event.getY(pointerIndex);
-                mActivePointers.put(pointerId, f);
-                TouchIsUp = false;
-                if(TouchIsUp = false & f.x < f.x / 2){
-                    cIA = ControlIsActive.ACTION_BRAKE_UP;
+                if(f.x < midPoint){
+                    brakeIsUp = true;
+                    if(brakeIsUp = true) {
+                        gasIsUp = false;
+                        cIA = ControlIsActive.ACTION_BRAKE_UP;
+                    }
                 }
-                if(TouchIsUp = false & f.x > f.x /2){
-                    cIA = ControlIsActive.ACTION_GAS_UP;
+                if(f.x > midPoint){
+                    gasIsUp = true;
+                    if(gasIsUp = true) {
+                        brakeIsUp = false;
+                        cIA = ControlIsActive.ACTION_GAS_UP;
+                    }
                 }
                 break;
             }
