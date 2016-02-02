@@ -52,8 +52,7 @@ public class GameActivity extends Activity {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        TouchHandler.ControlIsActive cIA = TouchHandler.OnTouch(event, 320);
-        Log.d("RETURNED:", cIA.toString());
+        gameLoop.onGameTouch(event);
         return super.onTouchEvent(event);
     }
 }

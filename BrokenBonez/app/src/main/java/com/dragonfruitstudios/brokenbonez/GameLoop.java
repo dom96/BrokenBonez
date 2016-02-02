@@ -4,6 +4,9 @@ import android.graphics.Color;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import com.dragonfruitstudios.brokenbonez.Input.TouchHandler;
+import com.dragonfruitstudios.brokenbonez.Input.TouchHandler.*;
+
 /**
  * Core game loop class which handles drawing and updating of the game.
  */
@@ -127,16 +130,23 @@ public class GameLoop implements Runnable {
     }
 
     public void onGameTouch(MotionEvent event) {
-        // TODO: Remove this and replace with Nate's class.
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
+        // Determine
+        ControlIsActive action = TouchHandler.OnTouch(event, 320);
+        Log.d("GameActivity/Touch", action.toString());
+        switch (action) {
+            case ACTION_GAS_DOWN:
                 gameState.setBikeAcceleration(0.5f);
                 break;
-            case MotionEvent.ACTION_UP:
-                gameState.setBikeAcceleration(0.0f);
+            case ACTION_GAS_UP:
+                gameState.setBikeAcceleration(0f);
+                break;
+            case ACTION_BRAKE_DOWN:
+                gameState.setBikeAcceleration(-0.5f);
+                break;
+            case ACTION_BRAKE_UP:
+                gameState.setBikeAcceleration(0f);
                 break;
         }
-
     }
 
     // Called when the user minimizes the game.
