@@ -1,8 +1,10 @@
 package com.dragonfruitstudios.brokenbonez.BoundingShapes;
 
 import android.graphics.Color;
+import android.util.Log;
 
 import com.dragonfruitstudios.brokenbonez.GameView;
+import com.dragonfruitstudios.brokenbonez.VectorF;
 
 public class Rect {
     float left, top, right, bottom;
@@ -30,6 +32,41 @@ public class Rect {
         }
 
         return false;
+    }
+
+    private VectorF getTopLeft() {
+        return new VectorF(left, top);
+    }
+
+    private VectorF getTopRight() {
+        return new VectorF(right, top);
+    }
+
+    private VectorF getBottomLeft() {
+        return new VectorF(left, bottom);
+    }
+
+    private VectorF getBottomRight() {
+        return new VectorF(right, bottom);
+    }
+
+    public float distanceSquared(VectorF point) {
+        float result = Line.distanceSquared(getTopLeft(), getTopRight(), point);
+        /*
+        float temp = Line.distanceSquared(getTopLeft(), getTopRight(), point);;
+        if (result > temp) {
+            result = temp;
+        }
+        temp = getBottomLeft().distSquared(point);
+        if (result > temp) {
+            result = temp;
+        }
+        temp = getBottomRight().distSquared(point);
+        if (result > temp) {
+            result = temp;
+        }*/
+        //Log.d("DistSq", "Dist " + getTop() + " " + point.getX() + " " + point.getY() + " is " + result);
+        return result;
     }
 
     /**

@@ -85,8 +85,21 @@ public class Level {
      * colliding with).
      */
     public Rect getNearestSolid(VectorF point) {
-        // TODO: Currently only one collision rect is present
-        return groundRectangles.get(1);
+        // TODO: Make this more efficient.
+        // Go through each collision rectangle and check if it's the closest rectangle.
+        float closest = -1;
+        Rect result = new Rect(-1, -1, -1, -1);
+        for (Rect r : groundRectangles) {
+            float temp = r.distanceSquared(point);
+            if (closest > temp || closest == -1) {
+                closest = temp;
+                result = r;
+            }
+        }
+        if (closest == -1) {
+            throw new RuntimeException("Could not get nearest solid.");
+        }
+        return result;
     }
 
     public boolean intersectsGround(Circle c) {

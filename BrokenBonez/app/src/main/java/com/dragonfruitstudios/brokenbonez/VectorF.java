@@ -67,6 +67,11 @@ public class VectorF {
         y += v.y;
     }
 
+    public void add(float scalar) {
+        x += scalar;
+        y += scalar;
+    }
+
     /**
      * Returns a new copy of this vector with the vector `v` added to it.
      *
@@ -80,6 +85,23 @@ public class VectorF {
         return result;
     }
 
+    public VectorF added(float scalar) {
+        VectorF result = new VectorF(this);
+        result.add(scalar);
+        return result;
+    }
+
+    public void sub(VectorF v) {
+        x -= v.x;
+        y -= v.y;
+    }
+
+    public VectorF subtracted(VectorF v) {
+        VectorF result = new VectorF(this);
+        result.sub(v);
+        return result;
+    }
+
     public void multAdd(VectorF v, float scalar) {
         x += v.x * scalar;
         y += v.y * scalar;
@@ -88,6 +110,16 @@ public class VectorF {
     public void mult(float scalar) {
         x *= scalar;
         y *= scalar;
+    }
+
+    public void mult(VectorF v) {
+        x *= v.x;
+        y *= v.y;
+    }
+
+    public void div(float scalar) {
+        x /= scalar;
+        y /= scalar;
     }
 
     public void normalise() {
@@ -106,14 +138,26 @@ public class VectorF {
     }
 
     public float dist(float x, float y) {
-        return dist_static(this.x, this.y, x, y);
+        return distStatic(this.x, this.y, x, y);
     }
 
-    static public float dist_static(float x1, float y1, float x2, float y2) {
+    static public float distStatic(float x1, float y1, float x2, float y2) {
         float x_dist = x1 - x2;
         float y_dist = y1 - y2;
 
         return (float)Math.sqrt(x_dist * x_dist + y_dist * y_dist);
+    }
+
+    /**
+     * Useful in some circumstances when you want to avoid sqrt for efficiency.
+     * @param v
+     * @return
+     */
+    public float distSquared(VectorF v) {
+        float x_dist = this.x - v.getX();
+        float y_dist = this.y - v.getY();
+
+        return x_dist * x_dist + y_dist * y_dist;
     }
 
     public float dot_product(VectorF v) {
