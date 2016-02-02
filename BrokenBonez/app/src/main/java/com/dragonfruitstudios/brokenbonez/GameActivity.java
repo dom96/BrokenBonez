@@ -3,6 +3,7 @@ package com.dragonfruitstudios.brokenbonez;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.WindowManager;
 import com.dragonfruitstudios.brokenbonez.Input.TouchHandler;
@@ -49,14 +50,9 @@ public class GameActivity extends Activity {
         this.mWakeLock.acquire(); // Acquires the wake lock forcing the device to stay on.
     }
 
-
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        TouchHandler touchHandler = new TouchHandler(this, 222, 222);
-        touchHandler.onTouchDown(event);
-        touchHandler.onTouchOff(event);
-        return true;
+        gameLoop.onGameTouch(event);
+        return super.onTouchEvent(event);
     }
 }
-
-

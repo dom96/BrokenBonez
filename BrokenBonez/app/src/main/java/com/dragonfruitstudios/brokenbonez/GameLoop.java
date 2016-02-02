@@ -2,6 +2,10 @@ package com.dragonfruitstudios.brokenbonez;
 
 import android.graphics.Color;
 import android.util.Log;
+import android.view.MotionEvent;
+
+import com.dragonfruitstudios.brokenbonez.Input.TouchHandler;
+import com.dragonfruitstudios.brokenbonez.Input.TouchHandler.*;
 
 /**
  * Core game loop class which handles drawing and updating of the game.
@@ -68,7 +72,7 @@ public class GameLoop implements Runnable {
             counter++;
 
             // If statement for checking if the last fps time was over 1 million.
-            // If it was then set the lastFPSTime to 0
+            // If it was then setCenter the lastFPSTime to 0
             if (lastFPSTime >= 1000000000) {
                 lastFPSTime = 0;
                 counter = 0;
@@ -123,6 +127,27 @@ public class GameLoop implements Runnable {
         gameState.draw();
 
         gameView.drawText("FPS: " + currFPS, 20, 30, Color.WHITE);
+    }
+
+    public void onGameTouch(MotionEvent event) {
+        // Determine what action the user performed.
+        ControlIsActive action = TouchHandler.determineAction(event, 320);
+        Log.d("GameActivity/Touch", action.toString());
+        switch (action) {
+            case ACTION_GAS_DOWN:
+                gameState.setBikeAcceleration(0.5f);
+                break;
+            case ACTION_GAS_UP:
+                gameState.setBikeAcceleration(0f);
+                break;
+            case ACTION_BRAKE_DOWN:
+                // TODO: This should brake not move the wheel backward.
+                gameState.setBikeAcceleration(-0.5f);
+                break;
+            case ACTION_BRAKE_UP:
+                gameState.setBikeAcceleration(0f);
+                break;
+        }
     }
 
     // Called when the user minimizes the game.

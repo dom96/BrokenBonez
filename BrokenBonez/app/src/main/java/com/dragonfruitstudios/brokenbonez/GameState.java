@@ -18,10 +18,15 @@ public class GameState {
 
     public void updateSize(int w, int h) {
         bike.updateStartPos(currentLevel.getStartPoint(w, h));
+        currentLevel.updateSize(w, h);
     }
 
     public void draw() {
         currentLevel.draw();
         bike.draw(gameView);
+    }
+
+    public void setBikeAcceleration(float strength) {
+        bike.setAcceleration(strength);
     }
 }

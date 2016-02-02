@@ -3,6 +3,7 @@ package com.dragonfruitstudios.brokenbonez;
         import android.content.Intent;
         import android.graphics.Bitmap;
         import android.os.Bundle;
+        import android.text.method.Touch;
         import android.util.Log;
         import android.view.MotionEvent;
         import android.view.WindowManager;
@@ -75,6 +76,7 @@ public class MenuActivity extends Activity {
         }
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -97,4 +99,9 @@ public class MenuActivity extends Activity {
         }
         return true;
     }
+
+
+
+
+
 }
