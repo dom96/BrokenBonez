@@ -34,7 +34,7 @@ public class Bike {
 
         public void update(float lastUpdate, Level currentLevel) {
             // Acceleration due to gravity.
-            acceleration.setY(9.81f);
+            acceleration.setY(10*9.81f);
             // Deceleration due to air resistance. It acts in the opposite direction to the
             // velocity.
             VectorF airResistance = new VectorF(-(0.1f * velocity.getX()), -(0.1f * velocity.getY()));
@@ -174,7 +174,7 @@ public class Bike {
         // Left wheel is controlled by the engine, so it gets the acceleration.
         // TODO: Maximum speed of bike is currently hardcoded. Make this customisable, perhaps
         // TODO: allow different bikes with differing acceleration characteristics?
-        leftWheel.setAcceleration(50*strength, 0);
+        leftWheel.setAcceleration(500*strength, 0);
 
         Log.d("Bike/Acc", "Acceleration is now " + 50*strength);
     }
