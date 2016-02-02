@@ -75,6 +75,10 @@ public class Bike {
                     // TODO: Need to consider the angle of the tangent of the point that the
                     // TODO: wheel is touching.
                     angularVelocity = velocity.magnitude() / boundingCircle.getRadius();
+                    if (velocity.getX() < 0) {
+                        // TODO: This probably won't work on slopes?
+                        angularVelocity = -angularVelocity;
+                    }
 
                 //}
 

@@ -52,6 +52,7 @@ public class Rect {
 
     public float distanceSquared(VectorF point) {
         float result = Line.distanceSquared(getTopLeft(), getTopRight(), point);
+        // TODO
         /*
         float temp = Line.distanceSquared(getTopLeft(), getTopRight(), point);;
         if (result > temp) {
