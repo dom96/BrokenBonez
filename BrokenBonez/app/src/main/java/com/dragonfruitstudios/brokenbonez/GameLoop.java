@@ -130,8 +130,8 @@ public class GameLoop implements Runnable {
     }
 
     public void onGameTouch(MotionEvent event) {
-        // Determine
-        ControlIsActive action = TouchHandler.OnTouch(event, 320);
+        // Determine what action the user performed.
+        ControlIsActive action = TouchHandler.determineAction(event, 320);
         Log.d("GameActivity/Touch", action.toString());
         switch (action) {
             case ACTION_GAS_DOWN:
@@ -141,6 +141,7 @@ public class GameLoop implements Runnable {
                 gameState.setBikeAcceleration(0f);
                 break;
             case ACTION_BRAKE_DOWN:
+                // TODO: This should brake not move the wheel backward.
                 gameState.setBikeAcceleration(-0.5f);
                 break;
             case ACTION_BRAKE_UP:

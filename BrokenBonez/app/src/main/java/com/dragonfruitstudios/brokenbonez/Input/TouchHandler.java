@@ -16,7 +16,7 @@ public class TouchHandler {
 
     }
 
-    public static ControlIsActive OnTouch(MotionEvent event, float midPoint) {
+    public static ControlIsActive determineAction(MotionEvent event, float midPoint) {
         int pointerIndex = event.getActionIndex();
         int maskedAction = event.getActionMasked();
         switch (maskedAction) {
