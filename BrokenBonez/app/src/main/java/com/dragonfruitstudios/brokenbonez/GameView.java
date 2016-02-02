@@ -110,6 +110,7 @@ public class GameView extends View {
     }
 
     public void drawRectFrame(float left, float top, float right, float bottom, int color) {
+        // TODO: Just merge this with `drawRect`.
         checkCanvas();
         paint.setColor(color);
         paint.setStyle(Paint.Style.STROKE);
@@ -122,7 +123,14 @@ public class GameView extends View {
 
         paint.setColor(color);
         canvas.drawCircle(cx, cy, radius, paint);
+    }
 
+    public void drawCircle(float cx, float cy, float radius, int color, Paint.Style style) {
+        checkCanvas();
+
+        paint.setStyle(style);
+        drawCircle(cx, cy, radius, color);
+        paint.reset();
     }
 
     public void drawCircleWithLine(float cx, float cy, float radius, int color, int lineColor) {
@@ -130,5 +138,11 @@ public class GameView extends View {
 
         paint.setColor(lineColor);
         canvas.drawLine(cx, cy, cx + radius, cy, paint);
+    }
+
+    public void drawLine(VectorF start, VectorF finish, int color) {
+        checkCanvas();
+        paint.setColor(color);
+        canvas.drawLine(start.getX(), start.getY(), finish.getX(), finish.getY(), paint);
     }
 }

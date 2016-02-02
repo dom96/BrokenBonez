@@ -1,6 +1,7 @@
 package com.dragonfruitstudios.brokenbonez.BoundingShapes;
 
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.util.Log;
 
 import com.dragonfruitstudios.brokenbonez.GameView;
@@ -92,6 +93,6 @@ public class Circle {
      * @param view
      */
     public void draw(GameView view) {
-        view.drawCircleWithLine(center.x, center.y, radius, Color.parseColor("#4c4a4d"), Color.parseColor("#14ff1d"));
+        view.drawCircle(center.x, center.y, radius, Color.parseColor("#ff279c"), Paint.Style.STROKE);
     }
 }

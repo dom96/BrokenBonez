@@ -30,6 +30,12 @@ public class VectorF {
         this.y = newY;
     }
 
+    public VectorF rotated(float radians) {
+        VectorF result = new VectorF(this);
+        result.rotate(radians);
+        return result;
+    }
+
     public void setX(float x) {
         this.x = x;
     }
@@ -59,6 +65,19 @@ public class VectorF {
     public void add(VectorF v) {
         x += v.x;
         y += v.y;
+    }
+
+    /**
+     * Returns a new copy of this vector with the vector `v` added to it.
+     *
+     * In comparison, the `add` method does not return a new copy.
+     * @param v
+     * @return
+     */
+    public VectorF added(VectorF v) {
+        VectorF result = new VectorF(this);
+        result.add(v);
+        return result;
     }
 
     public void multAdd(VectorF v, float scalar) {

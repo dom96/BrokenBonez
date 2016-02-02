@@ -25,6 +25,8 @@ public class Level {
         groundRectangles = new ArrayList<Rect>();
         // TODO: Hardcoded for now.
         groundRectangles.add(new Rect(0, 410, 3000, 420));
+
+        groundRectangles.add(new Rect(10, 200, 500, 260));
     }
 
     public void updateSize(int w, int h) {
@@ -79,11 +81,12 @@ public class Level {
     }
 
     /**
-     * Returns the nearest solid object that the VectorF could collide with.
+     * Returns the nearest solid object that the VectorF could collide with (or is currently
+     * colliding with).
      */
     public Rect getNearestSolid(VectorF point) {
         // TODO: Currently only one collision rect is present
-        return groundRectangles.get(0);
+        return groundRectangles.get(1);
     }
 
     public boolean intersectsGround(Circle c) {
