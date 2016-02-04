@@ -13,33 +13,26 @@ import java.util.ArrayList;
 // Currently just a simple class to draw the level.
 // TODO: Load level design from file.
 // TODO: Scroll the level based on camera position
-public class Level {
-    GameView gameView;
-
-    PointF startPoint; // Holds the coordinates which determine where the bike starts.
+public class Level implements Drawable {
+    VectorF startPoint; // Holds the coordinates which determine where the bike starts.
     ArrayList<Rect> groundRectangles;
 
-    public Level(GameView gameView) {
-        this.gameView = gameView;
-        startPoint = getStartPoint();
+    public Level() {
+        startPoint = new VectorF(0, 0); // Just a reasonable default.
         groundRectangles = new ArrayList<Rect>();
         // TODO: Hardcoded for now.
-        groundRectangles.add(new Rect(0, 410, 3000, 420));
+        groundRectangles.add(new Rect(0, calcGroundHeight(), 3000, calcGroundHeight()+50));
 
         groundRectangles.add(new Rect(10, 200, 500, 260));
     }
 
     public void updateSize(int w, int h) {
         Log.d("UpdateSize", "Updating size in Level: " + w + " " + h);
-        startPoint = getStartPoint(w, h);
-
-        // Update collision boxes.
-        // Currently the ground is drawn based on the start point's y coordinate.
-        groundRectangles.get(0).setHorizontal(startPoint.y, startPoint.y + 40);
+        startPoint = calcStartPoint(w, h);
     }
 
-    public void draw() {
-        float currHeight = startPoint.y;
+    public void draw(GameView gameView) {
+        float currHeight = calcGroundHeight();
         // Draw the sky
         gameView.drawRect(0, 0, gameView.getWidth(), currHeight,
                 Color.parseColor("#06A1D3"));
@@ -64,21 +57,33 @@ public class Level {
 
     }
 
-    public PointF getStartPoint() {
-        return getStartPoint(gameView.getWidth(), gameView.getHeight());
+    public void update(float lastUpdate) {
+        // TODO
     }
 
     /**
-     * An overloaded `getStartPoint` which accepts a width and height.
-     * @param w
-     * @param h
-     * @return
+     * Returns the Bike's starting point.
      */
-    public PointF getStartPoint(int w, int h) {
-        // Calculate the surface level.
-        float surfaceLevel = h / 2 + 50;
-        return new PointF(5, surfaceLevel);
+    public VectorF getStartPoint() {
+        Log.d("StartPoint", startPoint.toString());
+        return startPoint;
     }
+
+    /**
+     * Calculates the bike's starting point based on the screen width and height.
+     *
+     * @param w The width of the screen.
+     * @param h The height of the screen.
+     */
+    private VectorF calcStartPoint(int w, int h) {
+        return new VectorF(5, 40);
+    }
+
+    private float calcGroundHeight() {
+        return 410.0f; // TODO
+    }
+
+    // <editor-fold desc="Collision detection">
 
     /**
      * Returns the nearest solid object that the VectorF could collide with (or is currently
@@ -111,4 +116,7 @@ public class Level {
         }
         return false;
     }
+
+    // </editor-fold>
+
 }

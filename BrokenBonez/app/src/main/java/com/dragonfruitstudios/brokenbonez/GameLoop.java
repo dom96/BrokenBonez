@@ -27,11 +27,9 @@ public class GameLoop implements Runnable {
         targetTime = 1000000000 / targetFPS;
 
         this.gameView = gameView;
-        // TODO: The following would be so much simpler and nicer if Android Studio would support
-        // Java 8 :(
-        // Could we use retrolambda? https://github.com/evant/gradle-retrolambda
-        // If so the code would just be something like:
-        // this.gameView.setDrawingFunction(this::gameDraw);
+
+        // Set the methods which should be called when certain events occur in the GameView.
+        // Unfortunately no lambda support in Java 8, so no beautiful callbacks for us.
         this.gameView.setCallbacks(new GameView.GVCallbacks() {
             @Override
             public void performDraw(GameView gameView) {
@@ -44,7 +42,7 @@ public class GameLoop implements Runnable {
             }
         });
 
-        this.gameState = new GameState(gameView);
+        this.gameState = new GameState();
     }
 
     long lastFPSTime;
@@ -109,11 +107,12 @@ public class GameLoop implements Runnable {
         }
     }
 
-    // Update method
     protected void gameUpdate() {
-        //Log.d("Loop", "Updating" + counter);
+        // Calculate the number of milliseconds since the last update, pass it to
+        // GameState's update method.
         gameState.update(System.currentTimeMillis() - lastUpdate);
 
+        // Update the `lastUpdate` variable with the current time.
         lastUpdate = System.currentTimeMillis();
     }
 
@@ -124,7 +123,7 @@ public class GameLoop implements Runnable {
     protected void gameDraw(GameView gameView) {
         gameView.clear(Color.BLACK);
 
-        gameState.draw();
+        gameState.draw(gameView);
 
         gameView.drawText("FPS: " + currFPS, 20, 30, Color.WHITE);
     }

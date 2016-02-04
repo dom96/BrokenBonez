@@ -7,7 +7,7 @@ import android.util.Log;
 import com.dragonfruitstudios.brokenbonez.BoundingShapes.Circle;
 import com.dragonfruitstudios.brokenbonez.BoundingShapes.Rect;
 
-public class Bike {
+public class Bike implements Drawable {
 
     class Wheel {
         VectorF pos;
@@ -85,12 +85,18 @@ public class Bike {
             }
         }
 
+        /**
+         * Sets the position of this wheel to the specified x and y coordinates.
+         */
         public void setPos(float x, float y) {
             pos.set(x, y);
 
             boundingCircle.setCenter(x, y);
         }
 
+        /**
+         * Sets the acceleration of this wheel to the specified vector.
+         */
         public void setAcceleration(float x, float y) {
             acceleration.set(x, y);
         }
@@ -107,29 +113,25 @@ public class Bike {
 
     }
 
+    Level currentLevel;
+
     Wheel leftWheel;
     Wheel rightWheel;
 
-    PointF pos; // The x,y coords of the bottom left of the bike.
-    PointF startPos;
+    VectorF startPos;
 
-    VectorF velocity;
+    public Bike(Level currentLevel) {
+        this.currentLevel = currentLevel;
 
-    public Bike(PointF startPos) {
         this.leftWheel = new Wheel();
         this.rightWheel = new Wheel();
         // TODO: Just a small test to see if giving the wheel an initial x-axis velocity works.
         this.rightWheel.velocity.set(20, 0);
         //this.rightWheel.velocity.set(40, 0);
         this.leftWheel.angularVelocity = 2;
-        updateStartPos(startPos);
-
-        // TODO: For testing.
-        velocity = new VectorF(5, 0);
     }
 
     public void draw(GameView gameView) {
-        //gameView.drawRect(pos.x, pos.y - 30, pos.x + 60, pos.y, Color.parseColor("#87000B"));
         leftWheel.draw(gameView);
         rightWheel.draw(gameView);
 
@@ -140,31 +142,22 @@ public class Bike {
         gameView.drawText(debugInfo, 20, 60, Color.WHITE);
     }
 
-    public void updateStartPos(PointF startPos) {
+    public void updateSize(int width, int height) {
+        updateStartPos(currentLevel.getStartPoint());
+    }
+
+    private void updateStartPos(VectorF startPos) {
         // This is necessary because when the Bike is initialised the GameView may not have
         // initialised properly yet, and so its height has not been calculated yet. This causes
         // the start position to be incorrect.
-        pos = new PointF(startPos.x, startPos.y - 300);
-        this.startPos = new PointF(pos.x, pos.y);
-        Log.d("Bike", "Updated start pos: " + pos.toString());
+        this.startPos = startPos;
+        Log.d("Bike", "Updated start pos: " + startPos.toString());
         // Calculate positions of the left and right wheels.
-        leftWheel.setPos(pos.x + 25, pos.y);
-        rightWheel.setPos(pos.x + 200, pos.y);
+        leftWheel.setPos(startPos.x + 25, startPos.y);
+        rightWheel.setPos(startPos.x + 200, startPos.y);
     }
 
-    public void update(float lastUpdate, Level currentLevel) {
-        pos.x += velocity.x;
-        pos.y += velocity.y;
-
-        if (pos.x >= 380) {
-            velocity.rotate((float)Math.toRadians(180));
-        }
-
-        if (pos.x <= startPos.x) {
-            velocity.rotate((float)Math.toRadians(180));
-        }
-
-
+    public void update(float lastUpdate) {
         leftWheel.update(lastUpdate, currentLevel);
         rightWheel.update(lastUpdate, currentLevel);
     }

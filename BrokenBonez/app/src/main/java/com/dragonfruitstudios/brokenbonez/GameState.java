@@ -4,26 +4,23 @@ public class GameState {
     Level currentLevel;
     Bike bike;
 
-    GameView gameView;
-
-    public GameState(GameView gameView) {
-        currentLevel = new Level(gameView);
-        bike = new Bike(currentLevel.getStartPoint());
-        this.gameView = gameView;
+    public GameState() {
+        currentLevel = new Level();
+        bike = new Bike(currentLevel);
     }
 
     public void update(float lastUpdate) {
-        bike.update(lastUpdate, currentLevel);
+        bike.update(lastUpdate);
     }
 
     public void updateSize(int w, int h) {
-        bike.updateStartPos(currentLevel.getStartPoint(w, h));
         currentLevel.updateSize(w, h);
+        bike.updateSize(w, h);
     }
 
-    public void draw() {
-        currentLevel.draw();
-        bike.draw(gameView);
+    public void draw(GameView view) {
+        currentLevel.draw(view);
+        bike.draw(view);
     }
 
     public void setBikeAcceleration(float strength) {
