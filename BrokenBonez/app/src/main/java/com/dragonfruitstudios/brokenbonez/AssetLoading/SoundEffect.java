@@ -14,11 +14,8 @@ public class SoundEffect extends Sound {
     SoundPool s;
     int id;
     boolean loaded = false;
-
-    @SuppressWarnings("deprecation")
     public SoundEffect(SoundPool soundPool, AssetManager assetM, String filePath){
         super(soundPool, assetM, filePath);
-        //SoundPool.Builder s = new SoundPool.Builder();
         try {
             Log.e("AssetLoader", "Loading sound from " + filePath);
             AssetFileDescriptor df = assetM.openFd(filePath);
@@ -38,29 +35,44 @@ public class SoundEffect extends Sound {
 
     }
 
-    private void tryPlay(){
+    private void tryPlay( final boolean loop){
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
                 if (loaded){
-                    soundPool.play(id, 1, 1, 1, 0, 1);
+                    if (loop){
+                        soundPool.play(id, 1, 1, 1, -1, 1);
+                    }
+                    else{
+                        soundPool.play(id, 1, 1, 1, 0, 1);
+                    }
                 } else{
-                    tryPlay();
+                    tryPlay(loop);
                 }
             }
         }, 30);
     }
     @Override
-    public void play(){
-            tryPlay();
+    /**
+     *
+     *
+     */
+    public void play(boolean loop){
+        tryPlay(loop);
     }
     @Override
     public void pause(){
         soundPool.pause(id);
     }
+
     @Override
     public void resume(){
         soundPool.resume(id);
+    }
+
+    @Override
+    public void stop(){
+        soundPool.stop(id);
     }
 
     @Override

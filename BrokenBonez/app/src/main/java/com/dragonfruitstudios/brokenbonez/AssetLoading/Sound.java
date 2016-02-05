@@ -4,6 +4,9 @@ import android.content.res.AssetManager;
 import android.media.SoundPool;
 
 public abstract class Sound{
+    /**
+     * Abstract class for sound objects to allow seamless use of both SoundPool and MusicPlayer
+     */
 
     SoundPool soundPool;
 
@@ -11,13 +14,14 @@ public abstract class Sound{
         this.soundPool = soundPool;
     }
 
-    public abstract void play();
+    public abstract void play(boolean loop);
 
     public abstract void pause();
 
     public abstract void resume();
 
-    public abstract void destroy();
+    public abstract void stop();
 
+    public abstract void destroy();
 
 }

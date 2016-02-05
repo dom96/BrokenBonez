@@ -21,7 +21,7 @@ public class Music extends Sound {
             m.setDataSource(df.getFileDescriptor(), df.getStartOffset(), df.getLength());
             m.prepare();
             this.m = m;
-            //mp.prepareAsync();
+            //mp.prepareAsync();      //We could be loading sounds in background if need be -AM
         } catch (IOException e) {
             Log.e("AssetLoader", "Error loading sound: " + e.getMessage());
         }
@@ -29,7 +29,8 @@ public class Music extends Sound {
 
 
     @Override
-    public void play(){
+    public void play(boolean loop){
+        this.m.setLooping(loop);
         this.m.start();
     }
 
@@ -40,8 +41,12 @@ public class Music extends Sound {
 
     @Override
     public void resume(){
-        //len = m.getCurrentPosition();
         this.m.start();
+    }
+
+    @Override
+    public void stop(){
+        this.m.stop();
     }
 
     @Override
