@@ -17,7 +17,7 @@ public class SoundEffect extends Sound {
     public SoundEffect(SoundPool soundPool, AssetManager assetM, String filePath){
         super(soundPool, assetM, filePath);
         try {
-            Log.e("AssetLoader", "Loading sound from " + filePath);
+            Log.d("AssetLoader", "Loading sound from " + filePath);
             AssetFileDescriptor df = assetM.openFd(filePath);
             int id = soundPool.load(df, 1);
             this.id = id;
@@ -31,6 +31,7 @@ public class SoundEffect extends Sound {
 
         } catch (IOException e) {
             Log.e("AssetLoader", "Error loading sound effect: " + e.getMessage());
+            throw new RuntimeException("Unable to load requested sound - " + filePath);
         }
 
     }

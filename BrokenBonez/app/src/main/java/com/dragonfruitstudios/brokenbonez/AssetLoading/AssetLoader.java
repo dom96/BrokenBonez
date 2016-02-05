@@ -31,7 +31,7 @@ public class AssetLoader {
      */
     public AssetLoader(Activity activity, String[] assets){
         this.activity = activity;
-        AddAssets(activity, assets);
+        AddAssets(assets);
     }
 
 
@@ -48,8 +48,8 @@ public class AssetLoader {
     a.AddAssets(this, s);
      */
     @SuppressWarnings("deprecation")
-    public AssetLoader AddAssets(Activity activity, String[] assets){
-        AssetManager assetManager = activity.getAssets();
+    public AssetLoader AddAssets(String[] assets){
+        AssetManager assetManager = this.activity.getAssets();
         soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC,0);
         for (int count = 0; count < assets.length; count++) {
             long length = 0;
@@ -111,13 +111,13 @@ public class AssetLoader {
 
     private Sound loadInMusicFile(AssetManager assetM, String asset) {
 
-        Log.e("AssetLoader", "Loading music from " + asset);
+        Log.d("AssetLoader", "Loading music from " + asset);
         Music music = new Music(this.soundPool, assetM, asset);
         return music;
     }
 
     private Sound loadInSoundEffect(AssetManager assetM, String asset) {
-        Log.e("AssetLoader", "Loading sound effect from " + asset);
+        Log.d("AssetLoader", "Loading sound effect from " + asset);
         SoundEffect sound = new SoundEffect(this.soundPool, assetM, asset);
         return sound;
     }
@@ -125,7 +125,7 @@ public class AssetLoader {
     private Bitmap loadInBitmap(AssetManager assetM, String asset) {
         Bitmap image = null;
         InputStream inputStream = null;
-        Log.e("AssetLoader", "Loading bitmap " + asset);
+        Log.d("AssetLoader", "Loading bitmap " + asset);
         try {
             inputStream = assetM.open(asset);
 
@@ -142,7 +142,7 @@ public class AssetLoader {
                 } catch (IOException e) {
                     throw new RuntimeException("Unable to close inputstream");}
         }
-        Log.e("AssetLoader", "Bitmap loaded " + asset);
+        Log.d("AssetLoader", "Bitmap loaded " + asset);
         return image;
     }
 

@@ -16,7 +16,7 @@ public class Music extends Sound {
         super(soundPool, assetM, filePath);
         try {
             MediaPlayer m = new MediaPlayer();
-            Log.e("AssetLoader", "Loading music from " + filePath);
+            Log.d("AssetLoader", "Loading music from " + filePath);
             AssetFileDescriptor df = assetM.openFd(filePath);
             m.setDataSource(df.getFileDescriptor(), df.getStartOffset(), df.getLength());
             m.prepare();
@@ -24,6 +24,7 @@ public class Music extends Sound {
             //mp.prepareAsync();      //We could be loading sounds in background if need be -AM
         } catch (IOException e) {
             Log.e("AssetLoader", "Error loading sound: " + e.getMessage());
+            throw new RuntimeException("Unable to load requested music - " + filePath);
         }
     }
 
