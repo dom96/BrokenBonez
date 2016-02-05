@@ -20,7 +20,8 @@ public class Bike implements Drawable {
 
         Circle boundingCircle;
 
-        float engineForce;
+        boolean wasInAir;
+        float torque;
 
         Wheel() {
             pos = new VectorF(0, 0);
@@ -32,6 +33,8 @@ public class Bike implements Drawable {
             rotation = 0;
 
             boundingCircle = new Circle(pos, 30);
+
+            wasInAir = true;
         }
 
         public void update(float lastUpdate, Level currentLevel) {
@@ -64,55 +67,30 @@ public class Bike implements Drawable {
                 pos.setY(nearest.getTop() - boundingCircle.getRadius());
                 velocity.setY(0);
 
-                VectorF tractionForce = new VectorF(1, 0);
-                tractionForce.mult(engineForce*100);
-
-                final float cDrag = 0.5f;
-                VectorF dragForce = new VectorF(velocity);
-                dragForce.mult(velocity.magnitude() * -cDrag);
-                //Log.d("Force", "Drag force: " + dragForce);
-                final float cRollingResistance = 50*cDrag;
-                VectorF rollingResistanceForce = new VectorF(velocity);
-                rollingResistanceForce.mult(-cRollingResistance);
-                //Log.d("Force", "RR force: " + rollingResistanceForce);
-
-                VectorF longitudinalForce = new VectorF(tractionForce);
-                longitudinalForce.add(dragForce);
-                longitudinalForce.add(rollingResistanceForce);
-                //Log.d("Force", "l force: " + longitudinalForce);
-
-                final float mass = 10; // TODO
-
-                acceleration = new VectorF(longitudinalForce);
-                acceleration.div(mass);
-                //Log.d("Accel", "Acceleration is: " + acceleration);
-
-                //velocity.multAdd(acceleration, lastUpdate);
-                //Log.d("Vel", "Velocity is: " + velocity);
-
-                //pos.multAdd(velocity, lastUpdate);
-                //Log.d("Pos", "Pos is: " + velocity);
-
-                if (angularVelocity > 0) {
-                    // The wheel already has an angular velocity, so it affects the velocity
-                    // of the wheel.
-                    // v = ω * radius
-
-                }
-                //else {
-                    // Wheel does not have any angular velocity. Need to work out the angular
-                    // velocity based on the velocity.
+                if (wasInAir) {
+                    wasInAir = false;
                     // Velocity = ω * radius
+                    VectorF newVelocity = new VectorF(angularVelocity * boundingCircle.getRadius(), 0);
+                    velocity.add(newVelocity);
+                }
+                else {
                     // TODO: Need to consider the angle of the tangent of the point that the
                     // TODO: wheel is touching.
-                    angularVelocity = velocity.magnitude() / boundingCircle.getRadius();
+                    float newAngularVelocity = velocity.magnitude() / boundingCircle.getRadius();
                     if (velocity.getX() < 0) {
                         // TODO: This probably won't work on slopes?
-                        angularVelocity = -angularVelocity;
+                        newAngularVelocity = -newAngularVelocity;
                     }
+                    angularVelocity = newAngularVelocity;
+                }
 
-                //}
+                // Set acceleration based on torque.
+                // TODO: This may need to be adjusted, especially when slopes come into play.
+                acceleration.setX(torque);
 
+            }
+            else {
+                wasInAir = true;
             }
         }
 
@@ -128,8 +106,8 @@ public class Bike implements Drawable {
         /**
          * Sets the acceleration of this wheel to the specified vector.
          */
-        public void setAcceleration(float x, float y) {
-            engineForce = x;
+        public void setAcceleration(float amount) {
+            torque = amount;
         }
 
         public void draw(GameView view) {
@@ -202,8 +180,8 @@ public class Bike implements Drawable {
         // Left wheel is controlled by the engine, so it gets the acceleration.
         // TODO: Maximum speed of bike is currently hardcoded. Make this customisable, perhaps
         // TODO: allow different bikes with differing acceleration characteristics?
-        leftWheel.setAcceleration(500*strength, 0);
+        leftWheel.setAcceleration(500*strength);
 
-        Log.d("Bike/Acc", "Acceleration is now " + 50*strength);
+        Log.d("Bike/Acc", "Torque is now " + 500*strength);
     }
 }
