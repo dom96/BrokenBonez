@@ -1,11 +1,12 @@
 package com.dragonfruitstudios.brokenbonez;
 
 import android.graphics.Color;
-import android.graphics.Point;
-import android.graphics.PointF;
 import android.util.Log;
 
 import com.dragonfruitstudios.brokenbonez.BoundingShapes.Circle;
+import com.dragonfruitstudios.brokenbonez.BoundingShapes.Intersector;
+import com.dragonfruitstudios.brokenbonez.BoundingShapes.Line;
+import com.dragonfruitstudios.brokenbonez.BoundingShapes.Polygon;
 import com.dragonfruitstudios.brokenbonez.BoundingShapes.Rect;
 
 import java.util.ArrayList;
@@ -13,17 +14,26 @@ import java.util.ArrayList;
 // Currently just a simple class to draw the level.
 // TODO: Load level design from file.
 // TODO: Scroll the level based on camera position
-public class Level implements Drawable {
+public class Level implements GameObject {
     VectorF startPoint; // Holds the coordinates which determine where the bike starts.
-    ArrayList<Rect> groundRectangles;
+    ArrayList<Intersector> intersectors;
 
     public Level() {
         startPoint = new VectorF(0, 0); // Just a reasonable default.
-        groundRectangles = new ArrayList<Rect>();
+        intersectors = new ArrayList<Intersector>();
         // TODO: Hardcoded for now.
-        groundRectangles.add(new Rect(0, calcGroundHeight(), 3000, calcGroundHeight()+50));
+        intersectors.add(new Rect(0, calcGroundHeight(), 3000, calcGroundHeight() + 50));
 
-        groundRectangles.add(new Rect(10, 200, 500, 260));
+        intersectors.add(new Rect(10, 200, 500, 260));
+
+        // Add a triangle
+
+        Line triangleLeft = new Line(200, 300, 200, 150);
+        Line triangleBottom = new Line(200, 300, 300, 300);
+        Line triangleMiddle = new Line(200, 150, 300, 300);
+
+        Polygon triangle = new Polygon(new Line[] {triangleLeft, triangleBottom, triangleMiddle});
+        intersectors.add(triangle);
     }
 
     public void updateSize(int w, int h) {
@@ -39,7 +49,7 @@ public class Level implements Drawable {
 
         // Draw debug info.
         String debugInfo = String.format("Level[grndY: %.1f, colY: %.1f, totalY: %d]",
-                currHeight, groundRectangles.get(0).getTop(), gameView.getHeight());
+                currHeight, ((Rect)intersectors.get(0)).getTop(), gameView.getHeight());
         gameView.drawText(debugInfo, 100, 30, Color.WHITE);
 
         // Draw the grass.
@@ -51,7 +61,7 @@ public class Level implements Drawable {
                 gameView.getHeight(), Color.parseColor("#976600"));
 
         // More debug info drawing.
-        for (Rect r : groundRectangles) {
+        for (Drawable r : intersectors) {
             r.draw(gameView);
         }
 
@@ -86,30 +96,28 @@ public class Level implements Drawable {
     // <editor-fold desc="Collision detection">
 
     /**
-     * Returns the nearest solid object that the VectorF could collide with (or is currently
-     * colliding with).
+     * Returns the distance to the nearest solid object that the VectorF could
+     * collide with (or is currently colliding with).
      */
-    public Rect getNearestSolid(VectorF point) {
+    public float getNearestSolid(VectorF point) {
         // TODO: Make this more efficient.
         // Go through each collision rectangle and check if it's the closest rectangle.
         float closest = -1;
-        Rect result = new Rect(-1, -1, -1, -1);
-        for (Rect r : groundRectangles) {
+        for (Intersector r : intersectors) {
             float temp = r.distanceSquared(point);
             if (closest > temp || closest == -1) {
                 closest = temp;
-                result = r;
             }
         }
         if (closest == -1) {
             throw new RuntimeException("Could not get nearest solid.");
         }
-        return result;
+        return (float)Math.sqrt(closest);
     }
 
     public boolean intersectsGround(Circle c) {
         // TODO: Make this more efficient.
-        for (Rect r : groundRectangles) {
+        for (Intersector r : intersectors) {
             if (c.collidesWith(r)) {
                 return true;
             }

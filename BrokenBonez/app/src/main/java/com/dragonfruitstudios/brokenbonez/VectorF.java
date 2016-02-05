@@ -261,8 +261,19 @@ public class VectorF {
     /**
      * Calculates the dot product between this vector instance and `v`.
      */
-    public float dot_product(VectorF v) {
+    public float dotProduct(VectorF v) {
         return x * v.x + y * v.y;
+    }
+
+    public float crossProduct(VectorF v) {
+        return this.x * v.y - this.y * x;
+    }
+
+    /**
+     * Returns true if this vector instance, b, and c all lie on the same line.
+     */
+    public boolean isCollinear(VectorF b, VectorF c) {
+        return (b.x - this.x) * (c.y - this.y) == (c.x - this.x) * (b.y - this.y);
     }
 
     @Override

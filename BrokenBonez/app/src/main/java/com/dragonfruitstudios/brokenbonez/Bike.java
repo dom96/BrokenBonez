@@ -1,13 +1,13 @@
 package com.dragonfruitstudios.brokenbonez;
 
 import android.graphics.Color;
-import android.graphics.PointF;
 import android.util.Log;
 
 import com.dragonfruitstudios.brokenbonez.BoundingShapes.Circle;
+import com.dragonfruitstudios.brokenbonez.BoundingShapes.Intersector;
 import com.dragonfruitstudios.brokenbonez.BoundingShapes.Rect;
 
-public class Bike implements Drawable {
+public class Bike implements GameObject {
 
     class Wheel {
         VectorF pos;
@@ -52,6 +52,7 @@ public class Bike implements Drawable {
             float updateFactor = lastUpdate / 1000;
             velocity.multAdd(resultantAccel, updateFactor);
 
+            VectorF oldPos = new VectorF(pos);
             // Change position based on velocity.
             pos.multAdd(velocity, updateFactor);
 
@@ -63,8 +64,10 @@ public class Bike implements Drawable {
             // Check if the wheel intersects with the current level's ground.
             if (currentLevel.intersectsGround(boundingCircle)) {
                 // We need to move the wheel, so that it just touches what it collided with.
-                Rect nearest = currentLevel.getNearestSolid(boundingCircle.getCenter());
-                pos.setY(nearest.getTop() - boundingCircle.getRadius());
+                float nearest = currentLevel.getNearestSolid(boundingCircle.getCenter());
+                //Log.d("Nearest", nearest + "");
+                pos.setY(pos.getY() - (boundingCircle.getRadius() - nearest));
+
                 velocity.setY(0);
 
                 if (wasInAir) {

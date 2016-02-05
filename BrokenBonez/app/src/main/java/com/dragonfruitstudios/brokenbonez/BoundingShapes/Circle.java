@@ -2,7 +2,6 @@ package com.dragonfruitstudios.brokenbonez.BoundingShapes;
 
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.util.Log;
 
 import com.dragonfruitstudios.brokenbonez.GameView;
 import com.dragonfruitstudios.brokenbonez.VectorF;
@@ -31,6 +30,10 @@ public class Circle {
         center.set(cx, cy);
     }
 
+    public void setCenter(VectorF center) {
+        this.center = center;
+    }
+
     public VectorF getCenter() {
         return center;
     }
@@ -39,20 +42,17 @@ public class Circle {
         return radius;
     }
 
-    public boolean collidesWith(Rect rect) {
+    public boolean collidesWith(Intersector shape) {
         // Based on answer here: http://stackoverflow.com/a/402019/492186
 
         // Check whether Circle's centre lies within the rectangle.
-        if (rect.containsPoint(center.x, center.y)) { return true; }
+        if (shape.collidesWith(center)) { return true; }
 
         // Check whether either of the sides intersect with the circle.
-        VectorF TopLeft = new VectorF(rect.left, rect.top);
-        VectorF TopRight = new VectorF(rect.right, rect.top);
-        VectorF BottomLeft = new VectorF(rect.left, rect.bottom);
-        VectorF BottomRight = new VectorF(rect.right, rect.bottom);
-        if (collidesWith(TopLeft, TopRight) || collidesWith(TopRight, BottomRight) ||
-                collidesWith(BottomRight, BottomLeft) || collidesWith(BottomLeft, TopLeft)) {
-            return true;
+        for (Line line : shape.getLines()) {
+            if (collidesWith(line.getStart(), line.getFinish())) {
+                return true;
+            }
         }
         return false;
 
@@ -67,7 +67,7 @@ public class Circle {
         float l = BA.magnitude();
 
         BA.normalise();
-        float u = CA.dot_product(BA);
+        float u = CA.dotProduct(BA);
         if (u <= 0) {
             CA.set(a.x, a.y);
         }

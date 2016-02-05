@@ -1,8 +1,50 @@
 package com.dragonfruitstudios.brokenbonez.BoundingShapes;
 
+import android.graphics.Color;
+
+import com.dragonfruitstudios.brokenbonez.Drawable;
+import com.dragonfruitstudios.brokenbonez.GameView;
 import com.dragonfruitstudios.brokenbonez.VectorF;
 
-public class Line {
+public class Line implements Drawable {
+    private VectorF start;
+    private VectorF end;
+
+    public Line(VectorF start, VectorF end) {
+        this.start = start;
+        this.end = end;
+    }
+
+    public Line(float x1, float y1, float x2, float y2) {
+        this.start = new VectorF(x1, y1);
+        this.end = new VectorF(x2, y2);
+    }
+
+    public float distanceSquared(VectorF point) {
+        return distanceSquared(start, end, point);
+    }
+
+    private boolean between(float start, float end, float p) {
+        return (start <= p && p <= end) || (end <= p && p <= start);
+    }
+
+    public boolean collidesWith(VectorF point) {
+        // Based on http://stackoverflow.com/a/328110/492186
+
+        if (start.isCollinear(end, point)) {
+            // The slope from `start` to `end` is the same as the slope from `point` to `end`.
+            // Now need to make sure that `point` is between `start` and `end`.
+            if (start.x != end.x) {
+                return between(start.x, end.x, point.x);
+            }
+            else {
+                return between(start.y, end.y, point.y);
+            }
+
+        }
+        return false;
+    }
+
     public static float distanceSquared(VectorF lineStart, VectorF lineEnd, VectorF point) {
         // Based on http://stackoverflow.com/a/1501725/492186
         final float len = lineStart.distSquared(lineEnd);
@@ -11,7 +53,7 @@ public class Line {
         }
 
         // var t = ((p.x - v.x) * (w.x - v.x) + (p.y - v.y) * (w.y - v.y)) / l2;
-        final float t = (point.subtracted(lineStart)).dot_product(lineEnd.subtracted(lineStart)) / len;
+        final float t = (point.subtracted(lineStart)).dotProduct(lineEnd.subtracted(lineStart)) / len;
         if (t < 0.0f) {
             return point.distSquared(lineStart);
         }
@@ -31,4 +73,19 @@ public class Line {
                 ));
     }
 
+    public VectorF getStart() {
+        return start;
+    }
+
+    public VectorF getFinish() {
+        return end;
+    }
+
+    /**
+     This method is just for debugging purposes!
+     */
+    public void draw(GameView view) {
+        view.drawLine(start, end, Color.parseColor("#ff1122"));
+
+    }
 }
