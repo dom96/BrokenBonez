@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.WindowManager;
 import com.dragonfruitstudios.brokenbonez.Input.TouchHandler;
@@ -37,16 +38,23 @@ public class GameActivity extends Activity {
     }
 
     @Override
+    public void onBackPressed() {
+        /**Makes the back button act like the home button**/
+        moveTaskToBack(true);
+    }
+
+
+    @Override
     public void onPause() {
-        gameLoop.pause(); // Pauses gameLoop.
         super.onPause();
+        gameLoop.pause(); // Pauses gameLoop.
         this.mWakeLock.release(); // No need to lock anymore. Calling this saves device's battery.
     }
 
     @Override
     public void onResume() {
-        gameLoop.resume(); // Resumes gameLoop
         super.onResume();
+        gameLoop.resume(); // Resumes gameLoop
         this.mWakeLock.acquire(); // Acquires the wake lock forcing the device to stay on.
     }
 
