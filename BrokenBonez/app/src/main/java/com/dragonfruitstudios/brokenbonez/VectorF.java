@@ -204,6 +204,15 @@ public class VectorF {
     }
 
     /**
+     * Returns a new normalised Unit vector based on this vector.
+     */
+    public VectorF normalised() {
+        VectorF result = new VectorF(this);
+        result.normalise();
+        return result;
+    }
+
+    /**
      * Calculate the angle that this vector makes with the horizontal.
      */
     public float angle() {

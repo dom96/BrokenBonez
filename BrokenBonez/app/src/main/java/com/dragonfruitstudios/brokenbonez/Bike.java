@@ -20,6 +20,8 @@ public class Bike implements Drawable {
 
         Circle boundingCircle;
 
+        float engineForce;
+
         Wheel() {
             pos = new VectorF(0, 0);
             velocity = new VectorF(0, 0);
@@ -62,6 +64,35 @@ public class Bike implements Drawable {
                 pos.setY(nearest.getTop() - boundingCircle.getRadius());
                 velocity.setY(0);
 
+                VectorF tractionForce = new VectorF(1, 0);
+                tractionForce.mult(engineForce*100);
+
+                final float cDrag = 0.5f;
+                VectorF dragForce = new VectorF(velocity);
+                dragForce.mult(velocity.magnitude() * -cDrag);
+                //Log.d("Force", "Drag force: " + dragForce);
+                final float cRollingResistance = 50*cDrag;
+                VectorF rollingResistanceForce = new VectorF(velocity);
+                rollingResistanceForce.mult(-cRollingResistance);
+                //Log.d("Force", "RR force: " + rollingResistanceForce);
+
+                VectorF longitudinalForce = new VectorF(tractionForce);
+                longitudinalForce.add(dragForce);
+                longitudinalForce.add(rollingResistanceForce);
+                //Log.d("Force", "l force: " + longitudinalForce);
+
+                final float mass = 10; // TODO
+
+                acceleration = new VectorF(longitudinalForce);
+                acceleration.div(mass);
+                //Log.d("Accel", "Acceleration is: " + acceleration);
+
+                //velocity.multAdd(acceleration, lastUpdate);
+                //Log.d("Vel", "Velocity is: " + velocity);
+
+                //pos.multAdd(velocity, lastUpdate);
+                //Log.d("Pos", "Pos is: " + velocity);
+
                 if (angularVelocity > 0) {
                     // The wheel already has an angular velocity, so it affects the velocity
                     // of the wheel.
@@ -98,7 +129,7 @@ public class Bike implements Drawable {
          * Sets the acceleration of this wheel to the specified vector.
          */
         public void setAcceleration(float x, float y) {
-            acceleration.set(x, y);
+            engineForce = x;
         }
 
         public void draw(GameView view) {
