@@ -3,12 +3,13 @@ package com.dragonfruitstudios.brokenbonez;
 public class GameState {
     Level currentLevel;
     Bike bike;
-
     GameView gameView;
+    Button button;
 
     public GameState(GameView gameView) {
         currentLevel = new Level(gameView);
         bike = new Bike(currentLevel.getStartPoint());
+        button = new Button();
         this.gameView = gameView;
     }
 
@@ -24,6 +25,7 @@ public class GameState {
     public void draw() {
         currentLevel.draw();
         bike.draw(gameView);
+        button.draw(gameView);
     }
 
     public void setBikeAcceleration(float strength) {
