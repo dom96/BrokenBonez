@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.dragonfruitstudios.brokenbonez.BoundingShapes.Circle;
 import com.dragonfruitstudios.brokenbonez.BoundingShapes.Intersector;
+import com.dragonfruitstudios.brokenbonez.BoundingShapes.Manifold;
 import com.dragonfruitstudios.brokenbonez.BoundingShapes.Rect;
 
 public class Bike implements GameObject {
@@ -23,6 +24,8 @@ public class Bike implements GameObject {
         boolean wasInAir;
         float torque;
 
+        Manifold lastManifold = null; // TODO: Just for testing for now.
+
         Wheel() {
             pos = new VectorF(0, 0);
             velocity = new VectorF(0, 0);
@@ -38,19 +41,11 @@ public class Bike implements GameObject {
         }
 
         public void update(float lastUpdate, Level currentLevel) {
-            // Acceleration due to gravity.
-            acceleration.setY(10*9.81f);
-            // Deceleration due to air resistance. It acts in the opposite direction to the
-            // velocity.
-            VectorF airResistance = new VectorF(-(0.1f * velocity.getX()), -(0.1f * velocity.getY()));
-            // TODO: Friction
-            // Calculate the resultant acceleration.
-            VectorF resultantAccel = new VectorF(acceleration);
-            resultantAccel.add(airResistance);
+            final float mass = 200;
+            final float g = 9.81f;
+            final float gScaled = 10*g;
 
-            // Update the wheels' velocity based on acceleration.
             float updateFactor = lastUpdate / 1000;
-            velocity.multAdd(resultantAccel, updateFactor);
 
             VectorF oldPos = new VectorF(pos);
             // Change position based on velocity.
@@ -62,19 +57,54 @@ public class Bike implements GameObject {
             rotation += angularVelocity * updateFactor;
 
             // Check if the wheel intersects with the current level's ground.
-            if (currentLevel.intersectsGround(boundingCircle)) {
+            Manifold test = currentLevel.collisionTest(boundingCircle);
+            lastManifold = test;
+            if (test.isCollided()) {
+                //Log.d("Air", "Colliding!");
+                //Log.d("Manifold", "Is null? " + (test.getNormal() == null));
                 // We need to move the wheel, so that it just touches what it collided with.
                 float nearest = currentLevel.getNearestSolid(boundingCircle.getCenter());
                 //Log.d("Nearest", nearest + "");
-                pos.setY(pos.getY() - (boundingCircle.getRadius() - nearest));
+                //pos.setY(pos.getY() - (boundingCircle.getRadius() - nearest));
 
-                velocity.setY(0);
+                // Resolving forces
+                // Grab old acceleration and use it to calculate old resultant force
+                // Then use old resultant force to calculate new resultant force.
+                // F = ma
+                VectorF oldResultantForce = new VectorF(acceleration);
+                oldResultantForce.mult(mass);
 
+
+
+
+                // We need the angle between the normal and the x-plane.
+                float angle = test.getNormal().angle();
+                float generalNatural = -mass * gScaled * (float)Math.cos(angle);
+                float forceY = generalNatural*(float)Math.cos(angle) - mass*gScaled;
+                float friction = 0.45f * generalNatural; // TODO: Define coefficient
+                float forceX = -friction*(float)Math.cos(angle) + generalNatural*(float)Math.sin(angle);
+
+                Log.d("Manifold", "Angle: " + angle);
+
+                float accelY = forceY / mass;
+                float accelX = (2.0f/3.0f)*gScaled*-(float)Math.cos(angle);
+                Log.d("Manifold", "AccelX " + accelX + " AccelY " + accelY);
+
+                // Correct position
+                pos.multAdd(test.getNormal(), -(test.getPenetration()));
+
+                acceleration.setY(accelY);
+                acceleration.setX(accelX);
                 if (wasInAir) {
                     wasInAir = false;
+
+                    //velocity.setY(0);
+
+
+
                     // Velocity = ω * radius
                     VectorF newVelocity = new VectorF(angularVelocity * boundingCircle.getRadius(), 0);
-                    velocity.add(newVelocity);
+                    //velocity.add(newVelocity);
                 }
                 else {
                     // TODO: Need to consider the angle of the tangent of the point that the
@@ -89,11 +119,28 @@ public class Bike implements GameObject {
 
                 // Set acceleration based on torque.
                 // TODO: This may need to be adjusted, especially when slopes come into play.
-                acceleration.setX(torque);
+                //acceleration.setX(torque);
 
+                // Update the wheels' velocity based on acceleration.
+                velocity.multAdd(acceleration, updateFactor);
             }
             else {
                 wasInAir = true;
+                //Log.d("Air", "In Air!");
+                // Resolve forces when wheel is in air.
+
+                // Acceleration due to gravity.
+                acceleration.setY(gScaled);
+                // Deceleration due to air resistance. It acts in the opposite direction to the
+                // velocity.
+                VectorF airResistance = new VectorF(-(0.1f * velocity.getX()), -(0.1f * velocity.getY()));
+                // TODO: Friction
+                // Calculate the resultant acceleration.
+                VectorF resultantAccel = new VectorF(acceleration);
+                resultantAccel.add(airResistance);
+
+                // Update the wheels' velocity based on acceleration.
+                velocity.multAdd(resultantAccel, updateFactor);
             }
         }
 
@@ -121,6 +168,20 @@ public class Bike implements GameObject {
             view.drawLine(pos, pos.added(rotatedFinish), Color.parseColor("#ffe961"));
 
             boundingCircle.draw(view);
+
+            // Just for testing.
+            if (lastManifold != null && lastManifold.getNormal() != null) {
+                try {
+                    //Log.d("Manifold", "Drawing " + lastManifold.getNormal());
+                    VectorF x = new VectorF(boundingCircle.getCenter());
+                    x.multAdd(lastManifold.getNormal(), 30f);
+                    view.drawLine(boundingCircle.getCenter(), x,
+                            Color.parseColor("#00c80a"));
+                }
+                catch (NullPointerException exc) {
+                    Log.e("Manifold", "Null");
+                }
+            }
         }
 
     }
@@ -149,8 +210,8 @@ public class Bike implements GameObject {
 
         // Draw text on screen with some debug info
         String debugInfo = String.format("Bike[LWV: (%.1f, %.1f), LWA: (%.1f, %.1f), LWP: (%.1f, %.1f)]",
-                leftWheel.velocity.getX(), leftWheel.velocity.getY(), leftWheel.acceleration.getX(),
-                leftWheel.acceleration.getY(), leftWheel.pos.getX(), leftWheel.pos.getY());
+                rightWheel.velocity.getX(), rightWheel.velocity.getY(), rightWheel.acceleration.getX(),
+                rightWheel.acceleration.getY(), rightWheel.pos.getX(), rightWheel.pos.getY());
         gameView.drawText(debugInfo, 20, 60, Color.WHITE);
     }
 
@@ -166,11 +227,12 @@ public class Bike implements GameObject {
         Log.d("Bike", "Updated start pos: " + startPos.toString());
         // Calculate positions of the left and right wheels.
         leftWheel.setPos(startPos.x + 25, startPos.y);
-        rightWheel.setPos(startPos.x + 200, startPos.y);
+        //rightWheel.setPos(startPos.x + 200, startPos.y);
+        rightWheel.setPos(230, 100);
     }
 
     public void update(float lastUpdate) {
-        leftWheel.update(lastUpdate, currentLevel);
+        //leftWheel.update(lastUpdate, currentLevel);
         rightWheel.update(lastUpdate, currentLevel);
     }
 

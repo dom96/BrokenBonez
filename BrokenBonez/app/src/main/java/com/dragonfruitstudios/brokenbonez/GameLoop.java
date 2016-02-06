@@ -2,6 +2,7 @@ package com.dragonfruitstudios.brokenbonez;
 
 import android.graphics.Color;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 import com.dragonfruitstudios.brokenbonez.Input.TouchHandler;
@@ -147,6 +148,35 @@ public class GameLoop implements Runnable {
                 gameState.setBikeAcceleration(0f);
                 break;
         }
+    }
+
+    /**
+     * Just for debugging purposes, the game does not use keyboard.
+     */
+    public void onGameKeyUp(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_P:
+                if (gameState.isPaused()) {
+                    gameState.resume();
+                }
+                else {
+                    gameState.pause();
+                }
+                break;
+            case KeyEvent.KEYCODE_SPACE:
+                if (gameState.getDebugStep() > 0) {
+                    gameState.setDebugStep(0);
+                }
+                else {
+                    gameState.setDebugStep(1);
+
+                }
+                break;
+            case KeyEvent.KEYCODE_S:
+                gameState.step(1);
+                break;
+        }
+
     }
 
     // Called when the user minimizes the game.

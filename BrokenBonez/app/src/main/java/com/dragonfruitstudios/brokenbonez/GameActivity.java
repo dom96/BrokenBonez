@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.WindowManager;
 import com.dragonfruitstudios.brokenbonez.Input.TouchHandler;
@@ -54,5 +55,11 @@ public class GameActivity extends Activity {
     public boolean onTouchEvent(MotionEvent event) {
         gameLoop.onGameTouch(event);
         return super.onTouchEvent(event);
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        gameLoop.onGameKeyUp(keyCode, event);
+        return super.onKeyUp(keyCode, event);
     }
 }

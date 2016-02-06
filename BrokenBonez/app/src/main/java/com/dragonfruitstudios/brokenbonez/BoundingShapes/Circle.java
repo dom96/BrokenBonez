@@ -2,6 +2,7 @@ package com.dragonfruitstudios.brokenbonez.BoundingShapes;
 
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 
 import com.dragonfruitstudios.brokenbonez.GameView;
 import com.dragonfruitstudios.brokenbonez.VectorF;
@@ -56,6 +57,55 @@ public class Circle {
         }
         return false;
 
+    }
+
+    public Manifold collisionTest(Intersector shape) {
+        //Manifold pointResult = shape.collisionTest(center);
+        //if (pointResult.isCollided()) {
+        //    pointResult.setPenetration(pointResult.getPenetration() + radius);
+        //    return pointResult;
+        //}
+
+
+        for (Line line : shape.getLines()) {
+            Manifold res = collisionTest(line.getStart(), line.getFinish());
+            if (res.isCollided()) {
+                return res;
+            }
+        }
+        return new Manifold(null, -1, false);
+    }
+
+    public Manifold collisionTest(VectorF a, VectorF b) {
+        VectorF BA = new VectorF(b.x - a.x, b.y - a.y);
+        VectorF CA = new VectorF(center.x - a.x, center.y - a.y);
+        float l = BA.magnitude();
+
+        BA.normalise();
+        float u = CA.dotProduct(BA);
+        if (u <= 0) {
+            CA.set(a.x, a.y);
+        }
+        else if (u >= l) {
+            CA.set(b.x, b.y);
+        }
+        else {
+            BA.mult(u);
+            CA.set(BA.x + a.x, BA.y + a.y);
+        }
+
+        float x = center.x - CA.x;
+        float y = center.y - CA.y;
+
+        boolean collided = x * x + y * y <= radius*radius;
+
+        float depth = radius - (float)Math.sqrt(x * x + y * y);
+
+        VectorF startToFinish = b.subtracted(a);
+        VectorF normal = new VectorF(-startToFinish.getY(), startToFinish.getX());
+        normal.normalise();
+
+        return new Manifold(normal, depth, collided);
     }
 
     /**

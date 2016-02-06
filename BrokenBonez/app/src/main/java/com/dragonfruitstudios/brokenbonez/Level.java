@@ -6,6 +6,7 @@ import android.util.Log;
 import com.dragonfruitstudios.brokenbonez.BoundingShapes.Circle;
 import com.dragonfruitstudios.brokenbonez.BoundingShapes.Intersector;
 import com.dragonfruitstudios.brokenbonez.BoundingShapes.Line;
+import com.dragonfruitstudios.brokenbonez.BoundingShapes.Manifold;
 import com.dragonfruitstudios.brokenbonez.BoundingShapes.Polygon;
 import com.dragonfruitstudios.brokenbonez.BoundingShapes.Rect;
 
@@ -24,16 +25,16 @@ public class Level implements GameObject {
         // TODO: Hardcoded for now.
         intersectors.add(new Rect(0, calcGroundHeight(), 3000, calcGroundHeight() + 50));
 
-        intersectors.add(new Rect(10, 200, 500, 260));
+        intersectors.add(new Rect(10, 200, 200, 260));
 
         // Add a triangle
 
-        Line triangleLeft = new Line(200, 300, 200, 150);
-        Line triangleBottom = new Line(200, 300, 300, 300);
-        Line triangleMiddle = new Line(200, 150, 300, 300);
+        Polygon triangle = Polygon.createTriangle(new VectorF(200, 300), new VectorF(200, 150), new VectorF(500, 300));
+        Polygon triangle2 = Polygon.createTriangle(new VectorF(900, 300), new VectorF(900, 150), new VectorF(550, 300));
+        intersectors.add(new Rect(500, 300, 700, 400));
 
-        Polygon triangle = new Polygon(new Line[] {triangleLeft, triangleBottom, triangleMiddle});
         intersectors.add(triangle);
+        //intersectors.add(triangle2);
     }
 
     public void updateSize(int w, int h) {
@@ -123,6 +124,16 @@ public class Level implements GameObject {
             }
         }
         return false;
+    }
+
+    public Manifold collisionTest(Circle c) {
+        for (Intersector r : intersectors) {
+            Manifold test = c.collisionTest(r);
+            if (test.isCollided()) {
+                return test;
+            }
+        }
+        return new Manifold(null, -1, false);
     }
 
     // </editor-fold>
