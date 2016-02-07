@@ -16,6 +16,8 @@ public class Bike implements GameObject {
     final float g = 9.81f;
     final float gScaled = 10*g;
 
+    final float wheelSeparation = 100f;
+
     class Wheel {
         VectorF pos; // The current wheel's position.
         VectorF velocity; // Measured in px/s
@@ -131,6 +133,7 @@ public class Bike implements GameObject {
                 // Update the wheels' velocity based on acceleration.
                 velocity.multAdd(resultantAccel, updateFactor);
             }
+
         }
 
         /**
@@ -234,6 +237,33 @@ public class Bike implements GameObject {
     public void update(float lastUpdate) {
         leftWheel.update(lastUpdate, currentLevel);
         rightWheel.update(lastUpdate, currentLevel);
+
+        // Resolve constraint between left wheel and right wheel.
+        // Find a vector from the left wheel to the right wheel.
+        VectorF leftToRight = rightWheel.pos.subtracted(leftWheel.pos);
+        // Calculate the distance between the two wheels.
+        float distance = leftToRight.magnitude();
+        //Log.d("Constraint", "Distance: " + distance);
+        leftToRight.normalise();
+
+        // Calculate the velocity relative to the vector between the wheels.
+        VectorF leftToRightVel = rightWheel.velocity.subtracted(leftWheel.velocity);
+        float relativeVelocity = leftToRightVel.dotProduct(leftToRight);
+        float relativeDistance = distance - wheelSeparation;
+
+        // Calculate the impulse to remove.
+        float distRemove = relativeVelocity+relativeDistance;
+        float impulseRemove = distRemove / (1/mass + 1/mass);
+
+        // Generate impulse vector.
+        VectorF impulse = leftToRight.clone();
+        impulse.mult(impulseRemove);
+
+        // Apply the impulse to the velocity of each wheel appropriately.
+        impulse.mult(1/mass);
+        leftWheel.velocity.add(impulse);
+        rightWheel.velocity.sub(impulse);
+
     }
 
     /**
