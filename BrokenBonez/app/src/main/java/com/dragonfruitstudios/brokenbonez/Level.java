@@ -3,6 +3,7 @@ package com.dragonfruitstudios.brokenbonez;
 import android.graphics.Color;
 import android.util.Log;
 
+import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.BoundingShapes.Circle;
 import com.dragonfruitstudios.brokenbonez.BoundingShapes.Intersector;
 import com.dragonfruitstudios.brokenbonez.BoundingShapes.Line;
@@ -16,10 +17,14 @@ import java.util.ArrayList;
 // TODO: Load level design from file.
 // TODO: Scroll the level based on camera position
 public class Level implements GameObject {
+    GameState gameState; // Used to grab assets.
+
     VectorF startPoint; // Holds the coordinates which determine where the bike starts.
     ArrayList<Intersector> intersectors;
 
-    public Level() {
+    public Level(GameState state) {
+        gameState = state;
+
         startPoint = new VectorF(0, 0); // Just a reasonable default.
         intersectors = new ArrayList<Intersector>();
         // TODO: Hardcoded for now.
@@ -71,6 +76,10 @@ public class Level implements GameObject {
 
     public void update(float lastUpdate) {
         // TODO
+    }
+
+    public AssetLoader getAssetLoader() {
+        return gameState.getAssetLoader();
     }
 
     /**

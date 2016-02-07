@@ -1,18 +1,26 @@
 package com.dragonfruitstudios.brokenbonez;
 
+import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
+
 public class GameState {
     Level currentLevel;
     Bike bike;
 
+    AssetLoader assetLoader;
+
     boolean paused;
     float debugStep;
 
-    public GameState() {
-        currentLevel = new Level();
+    public GameState(AssetLoader assetLoader) {
+        currentLevel = new Level(this);
         bike = new Bike(currentLevel);
 
         debugStep = -1;
         paused = true;
+
+        // Load assets
+        this.assetLoader = assetLoader;
+        this.assetLoader.AddAssets(new String[] {"bike/wheel_basic.png", "bike/body_one.png"});
     }
 
     /**
@@ -45,6 +53,10 @@ public class GameState {
 
     public void setBikeAcceleration(float strength) {
         bike.setTorque(strength);
+    }
+
+    public AssetLoader getAssetLoader() {
+        return assetLoader;
     }
 
     // The following are used when debugging.

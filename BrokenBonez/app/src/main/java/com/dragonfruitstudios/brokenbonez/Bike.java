@@ -1,5 +1,6 @@
 package com.dragonfruitstudios.brokenbonez;
 
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.util.Log;
 
@@ -16,7 +17,8 @@ public class Bike implements GameObject {
     final float g = 9.81f;
     final float gScaled = 10*g;
 
-    final float wheelSeparation = 100f;
+    final float wheelSeparation = 74f;
+    final float wheelRadius = 20f;
 
     class Wheel {
         VectorF pos; // The current wheel's position.
@@ -42,7 +44,7 @@ public class Bike implements GameObject {
 
             rotation = 0;
 
-            boundingCircle = new Circle(pos, 30);
+            boundingCircle = new Circle(pos, wheelRadius);
 
             wasInAir = true;
         }
@@ -153,7 +155,9 @@ public class Bike implements GameObject {
         }
 
         public void draw(GameView view) {
-            view.drawCircle(pos.x, pos.y, boundingCircle.getRadius(), Color.parseColor("#6d6d6d"));
+            //view.drawCircle(pos.x, pos.y, boundingCircle.getRadius(), Color.parseColor("#6d6d6d"));
+            Bitmap wheel = currentLevel.getAssetLoader().getBitmapByName("bike/wheel_basic.png");
+            view.drawImage(wheel, pos, rotation, GameView.ImageOrigin.Middle);
             // Draw a yellow line to show the wheel's rotation.
             // A rotation of `0` will show the line horizontally to the right.
             VectorF rotatedFinish = new VectorF(boundingCircle.getRadius(), 0);
@@ -166,7 +170,7 @@ public class Bike implements GameObject {
             // Draw a green line to show the normal of each manifold.
             for (Manifold manifold : lastManifolds) {
                 VectorF x = new VectorF(boundingCircle.getCenter());
-                x.multAdd(manifold.getNormal(), 30f);
+                x.multAdd(manifold.getNormal(), wheelRadius);
                 view.drawLine(boundingCircle.getCenter(), x,
                         Color.parseColor("#00c80a"));
             }
@@ -190,7 +194,6 @@ public class Bike implements GameObject {
         this.leftWheel = new Wheel();
         this.rightWheel = new Wheel();
 
-
         // TODO: Just some small hardcoded tests.
         this.rightWheel.velocity.set(20, 0);
         //this.rightWheel.acceleration.set(40, 0);
@@ -200,6 +203,17 @@ public class Bike implements GameObject {
     public void draw(GameView gameView) {
         leftWheel.draw(gameView);
         rightWheel.draw(gameView);
+
+        // Draw the bike body.
+        Bitmap wheel = currentLevel.getAssetLoader().getBitmapByName("bike/body_one.png");
+        // Calculate the vector between the two wheels.
+        VectorF leftToRight = rightWheel.pos.subtracted(leftWheel.pos);
+        float angle = leftToRight.angle();
+        leftToRight.normalise();
+        VectorF bodyPos = leftWheel.pos.clone();
+        bodyPos.multAdd(leftToRight, wheelSeparation / 2);
+        bodyPos.sub(new VectorF(0, wheelRadius+4));
+        gameView.drawImage(wheel, bodyPos, angle, GameView.ImageOrigin.Middle);
 
         // Draw text on screen with some debug info
         Wheel debugWheel = leftWheel; // The wheel to show debug info for.

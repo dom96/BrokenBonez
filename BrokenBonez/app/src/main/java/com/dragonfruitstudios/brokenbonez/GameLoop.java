@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
+import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Input.TouchHandler;
 import com.dragonfruitstudios.brokenbonez.Input.TouchHandler.*;
 
@@ -23,7 +24,7 @@ public class GameLoop implements Runnable {
      * A method for taking the input fps i.e. fps entered when declaring a new game loop in
      * GameActivity class or the fps we want our game loop to constantly run at.
      */
-    public GameLoop(int inputFPS, GameView gameView) {
+    public GameLoop(int inputFPS, GameView gameView, AssetLoader assetLoader) {
         targetFPS = inputFPS;
         targetTime = 1000000000 / targetFPS;
 
@@ -43,7 +44,7 @@ public class GameLoop implements Runnable {
             }
         });
 
-        this.gameState = new GameState();
+        this.gameState = new GameState(assetLoader);
     }
 
     long lastFPSTime;

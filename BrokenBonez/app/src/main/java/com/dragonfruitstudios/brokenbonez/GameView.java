@@ -159,6 +159,7 @@ public class GameView extends View {
         checkCanvas();
         canvas.save();
         VectorF transformedPos = pos.clone();
+        //Log.d("Image", image.getWidth() + "");
         switch (origin) {
             case Middle:
                 transformedPos.sub(new VectorF(image.getWidth() / 2, image.getHeight() / 2));
@@ -168,6 +169,9 @@ public class GameView extends View {
         canvas.rotate((float) Math.toDegrees(rotation), transformedPos.x + (image.getWidth() / 2),
                 transformedPos.y + (image.getHeight() / 2));
         canvas.drawBitmap(image, transformedPos.getX(), transformedPos.getY(), paint);
+        //paint.setColor(Color.parseColor("#7d0aa9"));
+        //canvas.drawLine(transformedPos.getX(), transformedPos.getY(), transformedPos.getX(), transformedPos.getY() + 30, paint);
+        //canvas.drawLine(pos.getX(), pos.getY(), pos.getX(), pos.getY() + 30, paint);
         canvas.restore();
     }
 }
