@@ -3,11 +3,12 @@ package com.dragonfruitstudios.brokenbonez.BoundingShapes;
 import android.graphics.Color;
 import android.util.Log;
 
+import com.dragonfruitstudios.brokenbonez.Drawable;
 import com.dragonfruitstudios.brokenbonez.GameView;
 import com.dragonfruitstudios.brokenbonez.VectorF;
 
-public class Rect {
-    float left, top, right, bottom;
+public class Rect implements Drawable, Intersector {
+    private float left, top, right, bottom;
 
     public Rect(float left, float top, float right, float bottom) {
         this.left = left;
@@ -24,6 +25,15 @@ public class Rect {
         }
     }
 
+    /**
+     * Determines whether `point` collides with any of this rectangle's edges.
+     */
+    public boolean collidesWith(VectorF point) {
+        validateRect();
+
+        return containsPoint(point.x, point.y);
+    }
+
     public boolean containsPoint(float x, float y) {
         validateRect();
 
@@ -32,6 +42,23 @@ public class Rect {
         }
 
         return false;
+    }
+
+    public Manifold collisionTest(VectorF point) {
+        if (collidesWith(point)) {
+            Log.e("RectCol", "TODO MANIFOLD");
+            return new Manifold(null, -1, true);
+        }
+        return new Manifold(null, -1, true);
+    }
+
+    public Line[] getLines() {
+        return new Line[] {
+                new Line(getTopLeft(), getTopRight()),
+                new Line(getTopLeft(), getBottomLeft()),
+                new Line(getBottomLeft(), getBottomRight()),
+                new Line(getTopRight(), getBottomRight())
+            };
     }
 
     private VectorF getTopLeft() {

@@ -4,29 +4,69 @@ public class GameState {
     Level currentLevel;
     Bike bike;
 
-    GameView gameView;
+    boolean paused;
+    float debugStep;
 
-    public GameState(GameView gameView) {
-        currentLevel = new Level(gameView);
-        bike = new Bike(currentLevel.getStartPoint());
-        this.gameView = gameView;
+    public GameState() {
+        currentLevel = new Level();
+        bike = new Bike(currentLevel);
+
+        debugStep = -1;
+        paused = true;
+    }
+
+    /**
+     * Separate method so that it can be used when debugging.
+     * @param ms
+     */
+    public void step(float ms) {
+        bike.update(ms);
     }
 
     public void update(float lastUpdate) {
-        bike.update(lastUpdate, currentLevel);
+        if (!paused) {
+            step(lastUpdate);
+        }
+
+        if (debugStep > 0) {
+            step(debugStep);
+        }
     }
 
     public void updateSize(int w, int h) {
-        bike.updateStartPos(currentLevel.getStartPoint(w, h));
         currentLevel.updateSize(w, h);
+        bike.updateSize(w, h);
     }
 
-    public void draw() {
-        currentLevel.draw();
-        bike.draw(gameView);
+    public void draw(GameView view) {
+        currentLevel.draw(view);
+        bike.draw(view);
     }
 
     public void setBikeAcceleration(float strength) {
-        bike.setAcceleration(strength);
+        bike.setTorque(strength);
+    }
+
+    // The following are used when debugging.
+
+    public void pause() {
+        paused = true;
+    }
+
+    public boolean isPaused() {
+        return paused;
+    }
+
+    public void resume() {
+        paused = false;
+    }
+
+    public void setDebugStep(float debugStep) {
+        this.debugStep = debugStep;
+    }
+
+    public float getDebugStep() {
+        return debugStep;
     }
 }
+
