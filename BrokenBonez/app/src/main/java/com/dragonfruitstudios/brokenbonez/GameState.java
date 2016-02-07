@@ -6,23 +6,27 @@ public class GameState {
     Level currentLevel;
     Bike bike;
 
-    Button button;
-
     AssetLoader assetLoader;
 
     boolean paused;
     float debugStep;
 
+    // Nate's menu test
+    // TODO: Please move this into your own class.
+    Button button;
+
     public GameState(AssetLoader assetLoader) {
         currentLevel = new Level(this);
         bike = new Bike(currentLevel);
-        button = new Button();
         debugStep = -1;
         //paused = true; // TODO: Uncomment when want the game to start paused.
 
         // Load assets
         this.assetLoader = assetLoader;
         this.assetLoader.AddAssets(new String[] {"bike/wheel_basic.png", "bike/body_one.png"});
+
+        // TODO: Nate's button testing
+        button = new Button();
     }
 
     /**
@@ -51,7 +55,7 @@ public class GameState {
     public void draw(GameView view) {
         currentLevel.draw(view);
         bike.draw(view);
-        button.draw(view);
+        //button.draw(view);
     }
 
     public void setBikeAcceleration(float strength) {
