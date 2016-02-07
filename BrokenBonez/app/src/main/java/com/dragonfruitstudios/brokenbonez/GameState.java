@@ -16,7 +16,7 @@ public class GameState {
         bike = new Bike(currentLevel);
 
         debugStep = -1;
-        paused = true;
+        //paused = true; // TODO: Uncomment when want the game to start paused.
 
         // Load assets
         this.assetLoader = assetLoader;
