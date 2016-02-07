@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.WindowManager;
+
+import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Input.TouchHandler;
 
 /**
@@ -32,7 +34,7 @@ public class GameActivity extends Activity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        gameLoop = new GameLoop(60, gameView);
+        gameLoop = new GameLoop(60, gameView, new AssetLoader(this, new String[] {}));
         setContentView(gameView);
         new Thread(gameLoop).start();
     }
@@ -62,5 +64,11 @@ public class GameActivity extends Activity {
     public boolean onTouchEvent(MotionEvent event) {
         gameLoop.onGameTouch(event);
         return super.onTouchEvent(event);
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        gameLoop.onGameKeyUp(keyCode, event);
+        return super.onKeyUp(keyCode, event);
     }
 }

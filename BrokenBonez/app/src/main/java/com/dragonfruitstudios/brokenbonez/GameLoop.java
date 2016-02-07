@@ -2,8 +2,10 @@ package com.dragonfruitstudios.brokenbonez;
 
 import android.graphics.Color;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 
+import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Input.TouchHandler;
 import com.dragonfruitstudios.brokenbonez.Input.TouchHandler.*;
 
@@ -22,16 +24,14 @@ public class GameLoop implements Runnable {
      * A method for taking the input fps i.e. fps entered when declaring a new game loop in
      * GameActivity class or the fps we want our game loop to constantly run at.
      */
-    public GameLoop(int inputFPS, GameView gameView) {
+    public GameLoop(int inputFPS, GameView gameView, AssetLoader assetLoader) {
         targetFPS = inputFPS;
         targetTime = 1000000000 / targetFPS;
 
         this.gameView = gameView;
-        // TODO: The following would be so much simpler and nicer if Android Studio would support
-        // Java 8 :(
-        // Could we use retrolambda? https://github.com/evant/gradle-retrolambda
-        // If so the code would just be something like:
-        // this.gameView.setDrawingFunction(this::gameDraw);
+
+        // Set the methods which should be called when certain events occur in the GameView.
+        // Unfortunately no lambda support in Java 8, so no beautiful callbacks for us.
         this.gameView.setCallbacks(new GameView.GVCallbacks() {
             @Override
             public void performDraw(GameView gameView) {
@@ -44,7 +44,7 @@ public class GameLoop implements Runnable {
             }
         });
 
-        this.gameState = new GameState(gameView);
+        this.gameState = new GameState(assetLoader);
     }
 
     long lastFPSTime;
@@ -109,11 +109,12 @@ public class GameLoop implements Runnable {
         }
     }
 
-    // Update method
     protected void gameUpdate() {
-        //Log.d("Loop", "Updating" + counter);
+        // Calculate the number of milliseconds since the last update, pass it to
+        // GameState's update method.
         gameState.update(System.currentTimeMillis() - lastUpdate);
 
+        // Update the `lastUpdate` variable with the current time.
         lastUpdate = System.currentTimeMillis();
     }
 
@@ -124,7 +125,7 @@ public class GameLoop implements Runnable {
     protected void gameDraw(GameView gameView) {
         gameView.clear(Color.BLACK);
 
-        gameState.draw();
+        gameState.draw(gameView);
 
         gameView.drawText("FPS: " + currFPS, 20, 30, Color.WHITE);
     }
@@ -148,6 +149,35 @@ public class GameLoop implements Runnable {
                 gameState.setBikeAcceleration(0f);
                 break;
         }
+    }
+
+    /**
+     * Just for debugging purposes, the game does not use keyboard.
+     */
+    public void onGameKeyUp(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_P:
+                if (gameState.isPaused()) {
+                    gameState.resume();
+                }
+                else {
+                    gameState.pause();
+                }
+                break;
+            case KeyEvent.KEYCODE_SPACE:
+                if (gameState.getDebugStep() > 0) {
+                    gameState.setDebugStep(0);
+                }
+                else {
+                    gameState.setDebugStep(1);
+
+                }
+                break;
+            case KeyEvent.KEYCODE_S:
+                gameState.step(1);
+                break;
+        }
+
     }
 
     // Called when the user minimizes the game.
