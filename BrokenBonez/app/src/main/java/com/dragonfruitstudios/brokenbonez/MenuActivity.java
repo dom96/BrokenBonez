@@ -24,7 +24,7 @@ public class MenuActivity extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         String[] s = {"tvwithinfo.png"};
         AssetLoader a = new AssetLoader(this, s);
-        a.AddAssets(this, s);
+        //a.AddAssets(this, s);
         Bitmap bm = a.getBitmapByName("tvwithinfo.png");
         image.setImageBitmap(bm);
         setContentView(image);
@@ -38,7 +38,7 @@ public class MenuActivity extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         String[] s = {"tv.png"};
         AssetLoader a = new AssetLoader(this, s);
-        a.AddAssets(this, s);
+        //a.AddAssets(this, s);
         Bitmap bm = a.getBitmapByName("tv.png");
         image.setImageBitmap(bm);
         setContentView(image);
