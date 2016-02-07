@@ -3,6 +3,7 @@ package com.dragonfruitstudios.brokenbonez.BoundingShapes;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.util.Log;
 
 import com.dragonfruitstudios.brokenbonez.GameView;
 import com.dragonfruitstudios.brokenbonez.VectorF;
@@ -98,14 +99,27 @@ public class Circle {
         float y = center.y - CA.y;
 
         boolean collided = x * x + y * y <= radius*radius;
+        if (collided) {
+            float depth = radius - (float)Math.sqrt(x * x + y * y);
 
-        float depth = radius - (float)Math.sqrt(x * x + y * y);
+            VectorF startToFinish = b.subtracted(a);
+            //Log.d("Normal", "Angle is: " + startToFinish.angle() + " " + center.angle());
+            VectorF normal = new VectorF(-startToFinish.getY(), startToFinish.getX());
+            //Log.d("Normal", "The normal is: " + normal);
+            // -150, 300
+            // -250, 0
+            if (startToFinish.angle() > center.angle()) {
+                normal = new VectorF(startToFinish.getY(), -startToFinish.getX());
+                //Log.d("Normal", "The new normal is: " + normal);
+            }
 
-        VectorF startToFinish = b.subtracted(a);
-        VectorF normal = new VectorF(-startToFinish.getY(), startToFinish.getX());
-        normal.normalise();
+            normal.normalise();
 
-        return new Manifold(normal, depth, collided);
+            return new Manifold(normal, depth, collided);
+        }
+        else {
+            return new Manifold(null, -1, false);
+        }
     }
 
     /**

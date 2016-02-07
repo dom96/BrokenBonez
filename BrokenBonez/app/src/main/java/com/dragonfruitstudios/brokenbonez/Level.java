@@ -29,12 +29,13 @@ public class Level implements GameObject {
 
         // Add a triangle
 
-        Polygon triangle = Polygon.createTriangle(new VectorF(200, 300), new VectorF(200, 150), new VectorF(500, 300));
+        Polygon triangle = Polygon.createTriangle(new VectorF(200, 300), new VectorF(200, 180), new VectorF(500, 300));
         Polygon triangle2 = Polygon.createTriangle(new VectorF(900, 300), new VectorF(900, 150), new VectorF(550, 300));
         intersectors.add(new Rect(500, 300, 700, 400));
+        //intersectors.add(new Rect(500, 150, 700, 400));
 
         intersectors.add(triangle);
-        //intersectors.add(triangle2);
+        intersectors.add(triangle2);
     }
 
     public void updateSize(int w, int h) {
@@ -126,14 +127,15 @@ public class Level implements GameObject {
         return false;
     }
 
-    public Manifold collisionTest(Circle c) {
+    public ArrayList<Manifold> collisionTest(Circle c) {
+        ArrayList<Manifold> result = new ArrayList<Manifold>();
         for (Intersector r : intersectors) {
             Manifold test = c.collisionTest(r);
             if (test.isCollided()) {
-                return test;
+                result.add(test);
             }
         }
-        return new Manifold(null, -1, false);
+        return result;
     }
 
     // </editor-fold>

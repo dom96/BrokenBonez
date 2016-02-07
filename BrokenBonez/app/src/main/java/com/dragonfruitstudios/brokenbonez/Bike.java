@@ -8,6 +8,8 @@ import com.dragonfruitstudios.brokenbonez.BoundingShapes.Intersector;
 import com.dragonfruitstudios.brokenbonez.BoundingShapes.Manifold;
 import com.dragonfruitstudios.brokenbonez.BoundingShapes.Rect;
 
+import java.util.ArrayList;
+
 public class Bike implements GameObject {
 
     class Wheel {
@@ -24,7 +26,7 @@ public class Bike implements GameObject {
         boolean wasInAir;
         float torque;
 
-        Manifold lastManifold = null; // TODO: Just for testing for now.
+        ArrayList<Manifold> lastManifolds = new ArrayList<Manifold>(); // TODO: Just for testing for now.
 
         Wheel() {
             pos = new VectorF(0, 0);
@@ -57,72 +59,93 @@ public class Bike implements GameObject {
             rotation += angularVelocity * updateFactor;
 
             // Check if the wheel intersects with the current level's ground.
-            Manifold test = currentLevel.collisionTest(boundingCircle);
-            lastManifold = test;
-            if (test.isCollided()) {
-                //Log.d("Air", "Colliding!");
-                //Log.d("Manifold", "Is null? " + (test.getNormal() == null));
-                // We need to move the wheel, so that it just touches what it collided with.
-                float nearest = currentLevel.getNearestSolid(boundingCircle.getCenter());
-                //Log.d("Nearest", nearest + "");
-                //pos.setY(pos.getY() - (boundingCircle.getRadius() - nearest));
+            ArrayList<Manifold> manifolds = currentLevel.collisionTest(boundingCircle);
+            lastManifolds = manifolds;
 
-                // Resolving forces
-                // Grab old acceleration and use it to calculate old resultant force
-                // Then use old resultant force to calculate new resultant force.
-                // F = ma
-                VectorF oldResultantForce = new VectorF(acceleration);
-                oldResultantForce.mult(mass);
+            if (manifolds.size() > 0) {
+                //Manifold manifold = manifolds.get(0);
+                int count = 0;
+                for (Manifold manifold : manifolds) {
+                    count++;
+                    //Log.d("Air", "Colliding!");
+                    //Log.d("Manifold", "Is null? " + (test.getNormal() == null));
+                    // We need to move the wheel, so that it just touches what it collided with.
+                    float nearest = currentLevel.getNearestSolid(boundingCircle.getCenter());
+                    //Log.d("Nearest", nearest + "");
+                    //pos.setY(pos.getY() - (boundingCircle.getRadius() - nearest));
 
-
-
-
-                // We need the angle between the normal and the x-plane.
-                float angle = test.getNormal().angle();
-                float generalNatural = -mass * gScaled * (float)Math.cos(angle);
-                float forceY = generalNatural*(float)Math.cos(angle) - mass*gScaled;
-                float friction = 0.45f * generalNatural; // TODO: Define coefficient
-                float forceX = -friction*(float)Math.cos(angle) + generalNatural*(float)Math.sin(angle);
-
-                Log.d("Manifold", "Angle: " + angle);
-
-                float accelY = forceY / mass;
-                float accelX = (2.0f/3.0f)*gScaled*-(float)Math.cos(angle);
-                Log.d("Manifold", "AccelX " + accelX + " AccelY " + accelY);
-
-                // Correct position
-                pos.multAdd(test.getNormal(), -(test.getPenetration()));
-
-                acceleration.setY(accelY);
-                acceleration.setX(accelX);
-                if (wasInAir) {
-                    wasInAir = false;
-
-                    //velocity.setY(0);
+                    // Resolving forces
+                    // Grab old acceleration and use it to calculate old resultant force
+                    // Then use old resultant force to calculate new resultant force.
+                    // F = ma
+                    VectorF oldResultantForce = new VectorF(acceleration);
+                    oldResultantForce.mult(mass);
 
 
+                    // We need the angle between the normal and the x-plane.
+                    float angle = manifold.getNormal().angle();
+                    float generalNatural = -mass * gScaled * (float) Math.cos(angle);
+                    float forceY = generalNatural * (float) Math.cos(angle) - mass * gScaled;
+                    float friction = 0.45f * generalNatural; // TODO: Define coefficient
+                    float forceX = -friction * (float) Math.cos(angle) + generalNatural * (float) Math.sin(angle);
 
-                    // Velocity = ω * radius
-                    VectorF newVelocity = new VectorF(angularVelocity * boundingCircle.getRadius(), 0);
-                    //velocity.add(newVelocity);
-                }
-                else {
-                    // TODO: Need to consider the angle of the tangent of the point that the
-                    // TODO: wheel is touching.
-                    float newAngularVelocity = velocity.magnitude() / boundingCircle.getRadius();
-                    if (velocity.getX() < 0) {
-                        // TODO: This probably won't work on slopes?
-                        newAngularVelocity = -newAngularVelocity;
+                    //Log.d("Manifold" + count, "Angle: " + angle);
+
+                    float accelY = forceY / mass;
+                    float accelX = forceX / mass;//(2.0f/3.0f)*gScaled*-(float)Math.cos(angle);
+                    //Log.d("Manifold" + count, "AccelX " + accelX + " AccelY " + accelY);
+
+                    // Correct position
+                    pos.multAdd(manifold.getNormal(), -(manifold.getPenetration()));
+
+                    //acceleration.setY(accelY);
+                    //acceleration.setX(accelX);
+
+                    // Let's try the impulse engine way.
+
+                    float velAlongNormal = velocity.dotProduct(manifold.getNormal());
+                    //if (velAlongNormal > 0) {
+                    //    return;
+                    //}
+
+                    float e = 0.0f;
+                    float j = -(1 + e) * velAlongNormal;
+                    j /= 1 / mass;
+
+                    VectorF impulse = new VectorF(manifold.getNormal());
+                    impulse.mult(j);
+
+                    //Log.d("Vel", "MultAdd " + impulse + " " + 1/mass);
+                    velocity.multAdd(impulse, 1/mass);
+
+                    if (wasInAir) {
+                        wasInAir = false;
+
+                        //velocity.setY(0);
+
+
+                        // Velocity = ω * radius
+                        VectorF newVelocity = new VectorF(angularVelocity * boundingCircle.getRadius(), 0);
+                        //velocity.add(newVelocity);
+                    } else {
+                        // TODO: Need to consider the angle of the tangent of the point that the
+                        // TODO: wheel is touching.
+                        float newAngularVelocity = velocity.magnitude() / boundingCircle.getRadius();
+                        if (velocity.getX() < 0) {
+                            // TODO: This probably won't work on slopes?
+                            newAngularVelocity = -newAngularVelocity;
+                        }
+                        angularVelocity = newAngularVelocity;
                     }
-                    angularVelocity = newAngularVelocity;
+
+                    // Set acceleration based on torque.
+                    // TODO: This may need to be adjusted, especially when slopes come into play.
+                    //acceleration.setX(torque);
+                    velocity.add(new VectorF(torque, 0));
+
+                    // Update the wheels' velocity based on acceleration.
+                    velocity.multAdd(acceleration, updateFactor);
                 }
-
-                // Set acceleration based on torque.
-                // TODO: This may need to be adjusted, especially when slopes come into play.
-                //acceleration.setX(torque);
-
-                // Update the wheels' velocity based on acceleration.
-                velocity.multAdd(acceleration, updateFactor);
             }
             else {
                 wasInAir = true;
@@ -170,17 +193,11 @@ public class Bike implements GameObject {
             boundingCircle.draw(view);
 
             // Just for testing.
-            if (lastManifold != null && lastManifold.getNormal() != null) {
-                try {
-                    //Log.d("Manifold", "Drawing " + lastManifold.getNormal());
-                    VectorF x = new VectorF(boundingCircle.getCenter());
-                    x.multAdd(lastManifold.getNormal(), 30f);
-                    view.drawLine(boundingCircle.getCenter(), x,
-                            Color.parseColor("#00c80a"));
-                }
-                catch (NullPointerException exc) {
-                    Log.e("Manifold", "Null");
-                }
+            for (Manifold manifold : lastManifolds) {
+                VectorF x = new VectorF(boundingCircle.getCenter());
+                x.multAdd(manifold.getNormal(), 30f);
+                view.drawLine(boundingCircle.getCenter(), x,
+                        Color.parseColor("#00c80a"));
             }
         }
 
@@ -200,7 +217,7 @@ public class Bike implements GameObject {
         this.rightWheel = new Wheel();
         // TODO: Just a small test to see if giving the wheel an initial x-axis velocity works.
         this.rightWheel.velocity.set(20, 0);
-        //this.rightWheel.velocity.set(40, 0);
+        //this.rightWheel.acceleration.set(40, 0);
         this.leftWheel.angularVelocity = 2;
     }
 
@@ -232,7 +249,7 @@ public class Bike implements GameObject {
     }
 
     public void update(float lastUpdate) {
-        //leftWheel.update(lastUpdate, currentLevel);
+        leftWheel.update(lastUpdate, currentLevel);
         rightWheel.update(lastUpdate, currentLevel);
     }
 
@@ -245,8 +262,8 @@ public class Bike implements GameObject {
         // Left wheel is controlled by the engine, so it gets the acceleration.
         // TODO: Maximum speed of bike is currently hardcoded. Make this customisable, perhaps
         // TODO: allow different bikes with differing acceleration characteristics?
-        leftWheel.setAcceleration(500*strength);
+        leftWheel.setAcceleration(5*strength);
 
-        Log.d("Bike/Acc", "Torque is now " + 500*strength);
+        Log.d("Bike/Acc", "Torque is now " + 5*strength);
     }
 }
