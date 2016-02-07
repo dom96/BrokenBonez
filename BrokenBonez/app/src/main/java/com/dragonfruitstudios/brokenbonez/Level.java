@@ -29,10 +29,10 @@ public class Level implements GameObject {
 
         // Add a triangle
 
-        Polygon triangle = Polygon.createTriangle(new VectorF(200, 300), new VectorF(200, 180), new VectorF(500, 300));
-        Polygon triangle2 = Polygon.createTriangle(new VectorF(900, 300), new VectorF(900, 150), new VectorF(550, 300));
-        intersectors.add(new Rect(500, 300, 700, 400));
-        //intersectors.add(new Rect(500, 150, 700, 400));
+        Polygon triangle = Polygon.createTriangle(new VectorF(200, 300), new VectorF(200, 190), new VectorF(500, 300));
+        Polygon triangle2 = Polygon.createTriangle(new VectorF(900, 300), new VectorF(900, 150), new VectorF(500, 300));
+        //intersectors.add(new Rect(500, 300, 700, 400));
+        intersectors.add(new Rect(900, 140, 1100, 400));
 
         intersectors.add(triangle);
         intersectors.add(triangle2);

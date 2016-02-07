@@ -226,9 +226,10 @@ public class Bike implements GameObject {
         rightWheel.draw(gameView);
 
         // Draw text on screen with some debug info
+        Wheel debugWheel = leftWheel;
         String debugInfo = String.format("Bike[LWV: (%.1f, %.1f), LWA: (%.1f, %.1f), LWP: (%.1f, %.1f)]",
-                rightWheel.velocity.getX(), rightWheel.velocity.getY(), rightWheel.acceleration.getX(),
-                rightWheel.acceleration.getY(), rightWheel.pos.getX(), rightWheel.pos.getY());
+                debugWheel.velocity.getX(), debugWheel.velocity.getY(), debugWheel.acceleration.getX(),
+                debugWheel.acceleration.getY(), debugWheel.pos.getX(), debugWheel.pos.getY());
         gameView.drawText(debugInfo, 20, 60, Color.WHITE);
     }
 

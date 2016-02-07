@@ -4,6 +4,7 @@ import android.graphics.Color;
 
 import com.dragonfruitstudios.brokenbonez.Drawable;
 import com.dragonfruitstudios.brokenbonez.GameView;
+import com.dragonfruitstudios.brokenbonez.MathUtils;
 import com.dragonfruitstudios.brokenbonez.VectorF;
 
 public class Line implements Drawable {
@@ -24,25 +25,29 @@ public class Line implements Drawable {
         return distanceSquared(start, end, point);
     }
 
-    private boolean between(float start, float end, float p) {
-        return (start <= p && p <= end) || (end <= p && p <= start);
+    private boolean between(float start, float end, float p, float epsilon) {
+        return MathUtils.between(start, p, end, epsilon) || MathUtils.between(end, p, start, epsilon);
     }
 
-    public boolean collidesWith(VectorF point) {
+    public boolean collidesWith(VectorF point, float epsilon) {
         // Based on http://stackoverflow.com/a/328110/492186
 
-        if (start.isCollinear(end, point)) {
+        if (start.isCollinear(end, point, epsilon)) {
             // The slope from `start` to `end` is the same as the slope from `point` to `end`.
             // Now need to make sure that `point` is between `start` and `end`.
-            if (start.x != end.x) {
-                return between(start.x, end.x, point.x);
+            if (MathUtils.equal(start.x, end.x)) {
+                return between(start.x, end.x, point.x, epsilon);
             }
             else {
-                return between(start.y, end.y, point.y);
+                return between(start.y, end.y, point.y, epsilon);
             }
 
         }
         return false;
+    }
+
+    public boolean collidesWith(VectorF point) {
+        return collidesWith(point, MathUtils.defEpsilon);
     }
 
     public static float distanceSquared(VectorF lineStart, VectorF lineEnd, VectorF point) {
@@ -73,6 +78,11 @@ public class Line implements Drawable {
                 ));
     }
 
+    public boolean isNear(VectorF point) {
+        float distanceSq = distanceSquared(point);
+        return distanceSq < 10*10;
+    }
+
     public VectorF getStart() {
         return start;
     }
@@ -87,5 +97,10 @@ public class Line implements Drawable {
     public void draw(GameView view) {
         view.drawLine(start, end, Color.parseColor("#ff1122"));
 
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Line(Start: %s, Finish: %s)", start, end);
     }
 }

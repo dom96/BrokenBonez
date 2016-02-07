@@ -27,6 +27,16 @@ public class VectorF {
     }
 
     /**
+     * Creates a new copy of this VectorF.
+     *
+     * Handy shortcut to an otherwise verbose expression:
+     *   VectorF vec = new VectorF(oldVec);
+     */
+    public VectorF clone() {
+        return new VectorF(this);
+    }
+
+    /**
      * Rotate this instance of VectorF by `radians` amount of radians.
      * @param radians The amount of radians to rotate by.
      */
@@ -272,8 +282,8 @@ public class VectorF {
     /**
      * Returns true if this vector instance, b, and c all lie on the same line.
      */
-    public boolean isCollinear(VectorF b, VectorF c) {
-        return (b.x - this.x) * (c.y - this.y) == (c.x - this.x) * (b.y - this.y);
+    public boolean isCollinear(VectorF b, VectorF c, float epsilon) {
+        return MathUtils.equal((b.x - this.x) * (c.y - this.y), (c.x - this.x) * (b.y - this.y), epsilon);
     }
 
     @Override

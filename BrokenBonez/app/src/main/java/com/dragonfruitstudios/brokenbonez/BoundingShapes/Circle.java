@@ -6,6 +6,7 @@ import android.graphics.Point;
 import android.util.Log;
 
 import com.dragonfruitstudios.brokenbonez.GameView;
+import com.dragonfruitstudios.brokenbonez.MathUtils;
 import com.dragonfruitstudios.brokenbonez.VectorF;
 
 public class Circle {
@@ -61,6 +62,8 @@ public class Circle {
     }
 
     public Manifold collisionTest(Intersector shape) {
+
+        // TODO: For now there is no chance of the circle's center being on a Shape's edge.
         //Manifold pointResult = shape.collisionTest(center);
         //if (pointResult.isCollided()) {
         //    pointResult.setPenetration(pointResult.getPenetration() + radius);
@@ -69,7 +72,7 @@ public class Circle {
 
 
         for (Line line : shape.getLines()) {
-            Manifold res = collisionTest(line.getStart(), line.getFinish());
+            Manifold res = collisionTest(line);
             if (res.isCollided()) {
                 return res;
             }
@@ -77,7 +80,10 @@ public class Circle {
         return new Manifold(null, -1, false);
     }
 
-    public Manifold collisionTest(VectorF a, VectorF b) {
+    public Manifold collisionTest(Line line) {
+        VectorF a = line.getStart();
+        VectorF b = line.getFinish();
+
         VectorF BA = new VectorF(b.x - a.x, b.y - a.y);
         VectorF CA = new VectorF(center.x - a.x, center.y - a.y);
         float l = BA.magnitude();
@@ -102,18 +108,33 @@ public class Circle {
         if (collided) {
             float depth = radius - (float)Math.sqrt(x * x + y * y);
 
+            // Calculate the normal.
             VectorF startToFinish = b.subtracted(a);
-            //Log.d("Normal", "Angle is: " + startToFinish.angle() + " " + center.angle());
             VectorF normal = new VectorF(-startToFinish.getY(), startToFinish.getX());
-            //Log.d("Normal", "The normal is: " + normal);
-            // -150, 300
-            // -250, 0
+
             if (startToFinish.angle() > center.angle()) {
                 normal = new VectorF(startToFinish.getY(), -startToFinish.getX());
-                //Log.d("Normal", "The new normal is: " + normal);
             }
-
             normal.normalise();
+            // Make sure that the normal meets the line.
+            VectorF projectionToLine = normal.clone();
+            projectionToLine.mult(radius);
+            projectionToLine.add(center);
+
+            if (!line.isNear(projectionToLine)) {
+                float distanceToA = a.distSquared(center);
+                float distanceToB = b.distSquared(center);
+                // Choose the normal depending on which edge of the line is nearest the
+                // circle's center.
+                if (distanceToA > distanceToB) {
+                    normal = b.clone();
+                    normal.normalise();
+                }
+                else {
+                    normal = a.clone();
+                    normal.normalise();
+                }
+            }
 
             return new Manifold(normal, depth, collided);
         }

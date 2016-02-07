@@ -3,7 +3,7 @@ package com.dragonfruitstudios.brokenbonez.BoundingShapes;
 import com.dragonfruitstudios.brokenbonez.VectorF;
 
 /**
- * Inspired by Ryan Gaul's impulse engine. The manifold contains information about a collision.
+ * Inspired by Randy Gaul's impulse engine. The manifold contains information about a collision.
  * Including penetration depth, the shapes involved and the collision normal.
  */
 
