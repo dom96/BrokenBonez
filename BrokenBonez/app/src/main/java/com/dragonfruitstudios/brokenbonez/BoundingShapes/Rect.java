@@ -44,6 +44,14 @@ public class Rect implements Drawable, Intersector {
         return false;
     }
 
+    public Manifold collisionTest(VectorF point) {
+        if (collidesWith(point)) {
+            Log.e("RectCol", "TODO MANIFOLD");
+            return new Manifold(null, -1, true);
+        }
+        return new Manifold(null, -1, true);
+    }
+
     public Line[] getLines() {
         return new Line[] {
                 new Line(getTopLeft(), getTopRight()),
@@ -52,7 +60,6 @@ public class Rect implements Drawable, Intersector {
                 new Line(getTopRight(), getBottomRight())
             };
     }
-
 
     private VectorF getTopLeft() {
         return new VectorF(left, top);

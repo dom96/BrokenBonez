@@ -10,6 +10,8 @@ public interface Intersector extends Drawable {
 
     boolean collidesWith(VectorF point);
 
+    Manifold collisionTest(VectorF point);
+
     float distanceSquared(VectorF point);
 
     Line[] getLines();

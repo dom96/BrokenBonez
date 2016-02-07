@@ -78,6 +78,9 @@ public class Line implements Drawable {
                 ));
     }
 
+    /**
+     * Determines whether `point` is near this line (less than 10px away).
+     */
     public boolean isNear(VectorF point) {
         float distanceSq = distanceSquared(point);
         return distanceSq < 10*10;

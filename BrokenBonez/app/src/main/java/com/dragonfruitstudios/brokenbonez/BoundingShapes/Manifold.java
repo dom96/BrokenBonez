@@ -19,6 +19,12 @@ public class Manifold {
         this.collided = collided;
     }
 
+    // <editor-fold desc="Getters/Setters">
+
+    /**
+     * @return A unit vector which specifies the normal to the collision line. It points towards
+     * the line with which a collision took place.
+     */
     public VectorF getNormal() {
         return normal;
     }
@@ -27,6 +33,9 @@ public class Manifold {
         this.normal = normal;
     }
 
+    /**
+     * @return How far inside the object was in the other object when the collision took place.
+     */
     public float getPenetration() {
         return penetration;
     }
@@ -35,6 +44,9 @@ public class Manifold {
         this.penetration = penetration;
     }
 
+    /**
+     * @return Whether a collision took place.
+     */
     public boolean isCollided() {
         return collided;
     }
@@ -42,4 +54,6 @@ public class Manifold {
     public void setCollided(boolean collided) {
         this.collided = collided;
     }
+
+    // </editor-fold>
 }

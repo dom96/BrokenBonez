@@ -13,8 +13,7 @@ import com.dragonfruitstudios.brokenbonez.VectorF;
  * TODO: Polygon may not be the appropriate name here.
  */
 public class Polygon implements Drawable, Intersector {
-    Line[] lines;
-
+    Line[] lines; // TODO: Change to store vertices, not lines.
 
     public Polygon(Line[] lines) {
         this.lines = lines;

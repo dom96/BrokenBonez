@@ -29,22 +29,6 @@ public class Circle {
         this.radius = radius;
     }
 
-    public void setCenter(float cx, float cy) {
-        center.set(cx, cy);
-    }
-
-    public void setCenter(VectorF center) {
-        this.center = center;
-    }
-
-    public VectorF getCenter() {
-        return center;
-    }
-
-    public float getRadius() {
-        return radius;
-    }
-
     public boolean collidesWith(Intersector shape) {
         // Based on answer here: http://stackoverflow.com/a/402019/492186
 
@@ -61,15 +45,17 @@ public class Circle {
 
     }
 
+    /**
+     * Checks if the specified shape collides with this circle.
+     * @return A Manifold containing information about the collision.
+     */
     public Manifold collisionTest(Intersector shape) {
-
         // TODO: For now there is no chance of the circle's center being on a Shape's edge.
         //Manifold pointResult = shape.collisionTest(center);
         //if (pointResult.isCollided()) {
         //    pointResult.setPenetration(pointResult.getPenetration() + radius);
         //    return pointResult;
         //}
-
 
         for (Line line : shape.getLines()) {
             Manifold res = collisionTest(line);
@@ -80,6 +66,10 @@ public class Circle {
         return new Manifold(null, -1, false);
     }
 
+    /**
+     * Checks if the specified line collides with this circle.
+     * @return A Manifold instance containing information about the collision.
+     */
     public Manifold collisionTest(Line line) {
         VectorF a = line.getStart();
         VectorF b = line.getFinish();
@@ -106,6 +96,7 @@ public class Circle {
 
         boolean collided = x * x + y * y <= radius*radius;
         if (collided) {
+            // Calculate how far the circle penetrated the line.
             float depth = radius - (float)Math.sqrt(x * x + y * y);
 
             // Calculate the normal.
@@ -116,11 +107,14 @@ public class Circle {
                 normal = new VectorF(startToFinish.getY(), -startToFinish.getX());
             }
             normal.normalise();
+
             // Make sure that the normal meets the line.
             VectorF projectionToLine = normal.clone();
             projectionToLine.mult(radius);
             projectionToLine.add(center);
 
+            // Can't check whether `projectToLine` collides with `line` because collision detection
+            // is too strict.
             if (!line.isNear(projectionToLine)) {
                 float distanceToA = a.distSquared(center);
                 float distanceToB = b.distSquared(center);
@@ -147,31 +141,28 @@ public class Circle {
      * Determines whether Line AB intersects with this Circle.
      */
     public boolean collidesWith(VectorF a, VectorF b) {
-        VectorF BA = new VectorF(b.x - a.x, b.y - a.y);
-        VectorF CA = new VectorF(center.x - a.x, center.y - a.y);
-        float l = BA.magnitude();
-
-        BA.normalise();
-        float u = CA.dotProduct(BA);
-        if (u <= 0) {
-            CA.set(a.x, a.y);
-        }
-        else if (u >= l) {
-            CA.set(b.x, b.y);
-        }
-        else {
-            BA.mult(u);
-            CA.set(BA.x + a.x, BA.y + a.y);
-        }
-
-        float x = center.x - CA.x;
-        float y = center.y - CA.y;
-
-        boolean result = x * x + y * y <= radius*radius;
-        //Log.d("Collision", String.format("(%.1f, %.1f) to (%.1f, %.1f) x Circle(%.1f, %.1f, %.1f) = %b",
-        //        a.x, a.y, b.x, b.y, center.x, center.y, radius, result));
-        return result;
+        return collisionTest(new Line(a, b)).isCollided();
     }
+
+    // <editor-fold desc="Getters/Setters">
+
+    public void setCenter(float cx, float cy) {
+        center.set(cx, cy);
+    }
+
+    public void setCenter(VectorF center) {
+        this.center = center;
+    }
+
+    public VectorF getCenter() {
+        return center;
+    }
+
+    public float getRadius() {
+        return radius;
+    }
+
+    // </editor-fold>
 
     /**
      * This is just for debugging purposes to show where the bounding circle is.

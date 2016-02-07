@@ -44,7 +44,7 @@ public class GameState {
     }
 
     public void setBikeAcceleration(float strength) {
-        bike.setAcceleration(strength);
+        bike.setTorque(strength);
     }
 
     // The following are used when debugging.
