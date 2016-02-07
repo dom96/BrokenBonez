@@ -1,6 +1,7 @@
 package com.dragonfruitstudios.brokenbonez;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -143,5 +144,30 @@ public class GameView extends View {
         checkCanvas();
         paint.setColor(color);
         canvas.drawLine(start.getX(), start.getY(), finish.getX(), finish.getY(), paint);
+    }
+
+    public enum ImageOrigin {
+        TopLeft, Middle
+    }
+
+
+    /**
+     * Draws an image at the specified position. The origin determines how the `pos` is
+     * interpreted.
+     */
+    public void drawImage(Bitmap image, VectorF pos, float rotation, ImageOrigin origin) {
+        checkCanvas();
+        canvas.save();
+        VectorF transformedPos = pos.clone();
+        switch (origin) {
+            case Middle:
+                transformedPos.sub(new VectorF(image.getWidth() / 2, image.getHeight() / 2));
+                break;
+        }
+
+        canvas.rotate((float) Math.toDegrees(rotation), transformedPos.x + (image.getWidth() / 2),
+                transformedPos.y + (image.getHeight() / 2));
+        canvas.drawBitmap(image, transformedPos.getX(), transformedPos.getY(), paint);
+        canvas.restore();
     }
 }
