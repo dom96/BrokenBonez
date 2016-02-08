@@ -23,6 +23,7 @@ public class AssetLoader {
     E.g.
     String[] s = {"bob.png", "jim.mp3", "sam.png"};
     AssetLoader a = new AssetLoader(this, s);
+    If you want to add a new asset later, use
 
     To later get an image, you can use a.getBitmapByName("bob.png")
     To play a sound, you can use a.getSoundByName("jim.mp3").play()
@@ -41,11 +42,11 @@ public class AssetLoader {
     SoundPool soundPool;
 
     /*
-    Add assets to the asset manager. Make sure to pass in an array of strings which are the name of the asset (ignoring the /img/ or /sound/ prefix).
+    To add an asset later  to the asset manager. Make sure to pass in an array of strings which are the name of the asset (ignoring the /img/ or /sound/ prefix).
     Returns the new asset loader.
     E.g.
     String[] s = {"bob.png", "jim.mp3", "sam.png"};
-    a.AddAssets(this, s);
+    a.AddAssets(s);
      */
     @SuppressWarnings("deprecation")
     public AssetLoader AddAssets(String[] assets){
