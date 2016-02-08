@@ -205,15 +205,20 @@ public class Bike implements GameObject {
         rightWheel.draw(gameView);
 
         // Draw the bike body.
-        Bitmap wheel = currentLevel.getAssetLoader().getBitmapByName("bike/body_one.png");
+        Bitmap body = currentLevel.getAssetLoader().getBitmapByName("bike/body_one.png");
         // Calculate the vector between the two wheels.
         VectorF leftToRight = rightWheel.pos.subtracted(leftWheel.pos);
         float angle = leftToRight.angle();
         leftToRight.normalise();
         VectorF bodyPos = leftWheel.pos.clone();
+        // Move the body so that its positioned between the two wheels.
         bodyPos.multAdd(leftToRight, wheelSeparation / 2);
-        bodyPos.sub(new VectorF(0, wheelRadius+4));
-        gameView.drawImage(wheel, bodyPos, angle, GameView.ImageOrigin.Middle);
+        // Calculate normal to `leftToRight` vector.
+        VectorF ltrNormal = new VectorF(-leftToRight.getY(), leftToRight.getX());
+        // Move the body so that its positioned above the wheels.
+        bodyPos.multAdd(ltrNormal, -wheelRadius);
+        // Draw the body at the specified position and with the specified rotation.
+        gameView.drawImage(body, bodyPos, angle, GameView.ImageOrigin.Middle);
 
         // Draw text on screen with some debug info
         Wheel debugWheel = leftWheel; // The wheel to show debug info for.
