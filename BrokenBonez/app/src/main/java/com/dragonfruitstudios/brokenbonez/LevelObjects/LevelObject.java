@@ -4,10 +4,11 @@ package com.dragonfruitstudios.brokenbonez.LevelObjects;
 import android.app.Activity;
 
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
+import com.dragonfruitstudios.brokenbonez.GameObject;
 import com.dragonfruitstudios.brokenbonez.GameView;
 import com.dragonfruitstudios.brokenbonez.VectorF;
 
-public abstract class LevelObject {
+public abstract class LevelObject implements GameObject {
 
     AssetLoader assets;
     boolean visible = true;
@@ -17,7 +18,6 @@ public abstract class LevelObject {
     protected VectorF v = new VectorF(this.getX(), this.getY());
     float rotation;
 
-    public abstract void draw();
 
     public abstract void onHit();
 

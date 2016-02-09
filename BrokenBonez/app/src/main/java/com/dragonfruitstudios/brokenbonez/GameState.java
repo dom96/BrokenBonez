@@ -2,7 +2,7 @@ package com.dragonfruitstudios.brokenbonez;
 
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 
-public class GameState {
+public class GameState implements GameObject {
     Level currentLevel;
     Bike bike;
 
@@ -16,14 +16,17 @@ public class GameState {
     Button button;
 
     public GameState(AssetLoader assetLoader) {
+
+        // Load assets
+        this.assetLoader = assetLoader;
+        this.assetLoader.AddAssets(new String[] {"bike/wheel_basic.png", "bike/body_one.png"});
+
         currentLevel = new Level(this);
         bike = new Bike(currentLevel);
         debugStep = -1;
         //paused = true; // TODO: Uncomment when want the game to start paused.
 
-        // Load assets
-        this.assetLoader = assetLoader;
-        this.assetLoader.AddAssets(new String[] {"bike/wheel_basic.png", "bike/body_one.png"});
+
 
         // TODO: Nate's button testing
         button = new Button();
