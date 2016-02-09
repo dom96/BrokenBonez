@@ -8,6 +8,7 @@ import android.view.MotionEvent;
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Input.TouchHandler;
 import com.dragonfruitstudios.brokenbonez.Input.TouchHandler.*;
+import com.dragonfruitstudios.brokenbonez.Scenes.Game.GameScene;
 
 /**
  * Core game loop class which handles drawing and updating of the game.
@@ -18,7 +19,6 @@ public class GameLoop implements Runnable {
     final long targetTime;
     volatile boolean run = false;
     GameView gameView;
-    GameState gameState;
     GameSceneManager gameSceneManager;
 
     /**
@@ -30,8 +30,8 @@ public class GameLoop implements Runnable {
         targetTime = 1000000000 / targetFPS;
 
         this.gameView = gameView;
-        this.gameState = new GameState(assetLoader);
-        this.gameSceneManager = new GameSceneManager(gameView, "GameState", this.gameState);
+        GameScene gameScene = new GameScene(assetLoader);
+        this.gameSceneManager = new GameSceneManager(gameView, "GameScene", gameScene);
 
         // Set the methods which should be called when certain events occur in the GameView.
         // Unfortunately no lambda support in Java 8, so no beautiful callbacks for us.
@@ -52,13 +52,18 @@ public class GameLoop implements Runnable {
     long lastFPSTime;
     int counter;
 
+    // These flags are used for timing the `update` method
+    long lastUpdate = System.currentTimeMillis();
+
+    // Fields used to store debugging information.
     // These flags are used to report the current FPS.
     long lastFPSReport = System.currentTimeMillis(); // The time that FPS was reported last.
     long currFrames = 0; // The current amount of frames rendered.
     long currFPS = 0; // The current FPS
+    // Debugging flag to determine whether to run the game loop slowly.
+    boolean slowMotion = false;
+    boolean step = false;
 
-    // These flags are used for timing the `update` method
-    long lastUpdate = System.currentTimeMillis();
 
     @Override
     public void run(){
@@ -112,48 +117,42 @@ public class GameLoop implements Runnable {
     }
 
     protected void gameUpdate() {
-        // Calculate the number of milliseconds since the last update, pass it to
-        // GameState's update method.
-
-        //gameState.update(System.currentTimeMillis() - lastUpdate);
-        gameSceneManager.update(System.currentTimeMillis() - lastUpdate);
+        // Only update when the game is not paused.
+        if (run) {
+            // Calculate the number of milliseconds since the last update
+            float msSinceLastUpdate = System.currentTimeMillis() - lastUpdate;
+            if (slowMotion) {
+                msSinceLastUpdate = 1;
+            }
+            // Pass it to GameState's update method.
+            gameSceneManager.update(msSinceLastUpdate);
+        }
 
         // Update the `lastUpdate` variable with the current time.
         lastUpdate = System.currentTimeMillis();
+
+        // Check to see if a simple 1ms step is wanted.
+        // TODO: Potential for race condition?
+        if (step) {
+            gameSceneManager.update(1);
+            step = !step;
+        }
     }
 
     protected void gameUpdateSize(int w, int h) {
-        gameState.updateSize(w, h);
+        gameSceneManager.getCurrentSceneObject().updateSize(w, h);
     }
 
     protected void gameDraw(GameView gameView) {
         gameView.clear(Color.BLACK);
 
-        //gameState.draw(gameView);
         gameSceneManager.draw();
 
         gameView.drawText("FPS: " + currFPS, 20, 30, Color.WHITE);
     }
 
     public void onGameTouch(MotionEvent event) {
-        // Determine what action the user performed.
-        ControlIsActive action = TouchHandler.determineAction(event, 320);
-        Log.d("GameActivity/Touch", action.toString());
-        switch (action) {
-            case ACTION_GAS_DOWN:
-                gameState.setBikeAcceleration(0.5f);
-                break;
-            case ACTION_GAS_UP:
-                gameState.setBikeAcceleration(0f);
-                break;
-            case ACTION_BRAKE_DOWN:
-                // TODO: This should brake not move the wheel backward.
-                gameState.setBikeAcceleration(-0.5f);
-                break;
-            case ACTION_BRAKE_UP:
-                gameState.setBikeAcceleration(0f);
-                break;
-        }
+        gameSceneManager.getCurrentSceneObject().onTouchEvent(event);
     }
 
     /**
@@ -162,30 +161,25 @@ public class GameLoop implements Runnable {
     public void onGameKeyUp(int keyCode, KeyEvent event) {
         switch (keyCode) {
             case KeyEvent.KEYCODE_P:
-                if (gameState.isPaused()) {
-                    gameState.resume();
+                if (run) {
+                    pause();
                 }
                 else {
-                    gameState.pause();
+                    resume();
                 }
                 break;
             case KeyEvent.KEYCODE_SPACE:
-                if (gameState.getDebugStep() > 0) {
-                    gameState.setDebugStep(0);
-                }
-                else {
-                    gameState.setDebugStep(1);
-
-                }
+                slowMotion = !slowMotion;
                 break;
             case KeyEvent.KEYCODE_S:
-                gameState.step(1);
+                step = true;
                 break;
         }
 
     }
 
     // Called when the user minimizes the game.
+    // or when the 'P' key is pressed (when debugging in an emulator).
     public void pause() {
         run = false;
     }

@@ -1,6 +1,9 @@
 package com.dragonfruitstudios.brokenbonez;
 
 import android.util.Log;
+
+import com.dragonfruitstudios.brokenbonez.Scenes.Scene;
+
 import java.util.HashMap;
 
 /**
@@ -28,22 +31,22 @@ import java.util.HashMap;
 
 public class GameSceneManager {
     protected GameView gameView;
-    private HashMap<String, GameObject> gameScenes=new HashMap<String, GameObject>();
+    private HashMap<String, Scene> gameScenes=new HashMap<String, Scene>();
     private String currentScene;
 
 
-    public GameSceneManager(GameView gameView, String SceneName,  GameObject newGameObject){
+    public GameSceneManager(GameView gameView, String SceneName,  Scene newGameObject){
         this.gameView = gameView;
         gameScenes.put(SceneName, newGameObject);
         this.currentScene = SceneName;
     }
 
-    public void addScene(String SceneName,  GameObject newGameObject){
+    public void addScene(String SceneName,  Scene newGameObject){
         //Adds new scene to the gameScenes hashmap
         gameScenes.put(SceneName, newGameObject);
     }
 
-    public void addScene(String SceneName,  GameObject newGameObject, boolean setScene){
+    public void addScene(String SceneName,  Scene newGameObject, boolean setScene){
         //Adds new scene to the gameScenes hashmap and if setScene = true, will also set currentScene to that scene
         gameScenes.put(SceneName, newGameObject);
         if (setScene){
@@ -56,7 +59,7 @@ public class GameSceneManager {
         this.getGameSceneByName(currentScene).draw(this.gameView);
     }
 
-    public void draw(GameObject GameScene){
+    public void draw(Scene GameScene){
         // Draw the scene. Can be called from anywhere. Can pass in a custom GameScene object
         GameScene.draw(this.gameView);
     }
@@ -71,7 +74,7 @@ public class GameSceneManager {
         this.getGameSceneByName(this.currentScene).update(lastUpdate);
     }
 
-    public void update(GameObject GameScene, float lastUpdate){
+    public void update(Scene GameScene, float lastUpdate){
         // Update the scene. Can be called from anywhere. Can pass in a custom GameScene object
         GameScene.update(lastUpdate);
     }
@@ -86,7 +89,7 @@ public class GameSceneManager {
         this.currentScene = currentScene;
     }
 
-    public GameObject getCurrentSceneObject(){
+    public Scene getCurrentSceneObject(){
         // Get current scene object being drawn/updated
         return this.getGameSceneByName(this.currentScene);
     }
@@ -96,9 +99,9 @@ public class GameSceneManager {
         return this.currentScene;
     }
 
-    public GameObject getGameSceneByName(String SceneName) {
+    public Scene getGameSceneByName(String SceneName) {
         // Get a scene object from passing in the string name of it
-        GameObject gs;
+        Scene gs;
         if (this.gameScenes.containsKey(SceneName)) {
             gs = this.gameScenes.get(SceneName);
         } else {
