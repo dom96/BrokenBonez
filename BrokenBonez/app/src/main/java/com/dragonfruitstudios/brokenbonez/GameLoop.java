@@ -19,6 +19,7 @@ public class GameLoop implements Runnable {
     volatile boolean run = false;
     GameView gameView;
     GameState gameState;
+    GameSceneManager gameSceneManager;
 
     /**
      * A method for taking the input fps i.e. fps entered when declaring a new game loop in
@@ -29,6 +30,8 @@ public class GameLoop implements Runnable {
         targetTime = 1000000000 / targetFPS;
 
         this.gameView = gameView;
+        this.gameState = new GameState(assetLoader);
+        this.gameSceneManager = new GameSceneManager(gameView, "GameState", this.gameState);
 
         // Set the methods which should be called when certain events occur in the GameView.
         // Unfortunately no lambda support in Java 8, so no beautiful callbacks for us.
@@ -44,7 +47,6 @@ public class GameLoop implements Runnable {
             }
         });
 
-        this.gameState = new GameState(assetLoader);
     }
 
     long lastFPSTime;
@@ -112,7 +114,9 @@ public class GameLoop implements Runnable {
     protected void gameUpdate() {
         // Calculate the number of milliseconds since the last update, pass it to
         // GameState's update method.
-        gameState.update(System.currentTimeMillis() - lastUpdate);
+
+        //gameState.update(System.currentTimeMillis() - lastUpdate);
+        gameSceneManager.update(System.currentTimeMillis() - lastUpdate);
 
         // Update the `lastUpdate` variable with the current time.
         lastUpdate = System.currentTimeMillis();
@@ -125,7 +129,8 @@ public class GameLoop implements Runnable {
     protected void gameDraw(GameView gameView) {
         gameView.clear(Color.BLACK);
 
-        gameState.draw(gameView);
+        //gameState.draw(gameView);
+        gameSceneManager.draw();
 
         gameView.drawText("FPS: " + currFPS, 20, 30, Color.WHITE);
     }
