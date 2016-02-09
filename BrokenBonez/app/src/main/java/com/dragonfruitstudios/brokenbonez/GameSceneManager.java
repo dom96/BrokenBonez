@@ -27,6 +27,8 @@ import java.util.HashMap;
  * To draw, use gameSceneManager.draw()     (Should be handled by GameLoop)
  * You can also pass in a string or object to draw that specific object
  *
+ * To update current object size, use updateSize(width, length)
+ * For a different object by name, use updateSize(sceneName, width, length
  */
 
 public class GameSceneManager {
@@ -97,6 +99,16 @@ public class GameSceneManager {
     public String getCurrentSceneString(){
         // Get current scene name being drawn/updated
         return this.currentScene;
+    }
+
+    public void updateSize(int width, int height){
+        // Update size of current scene
+        this.getGameSceneByName(this.currentScene).updateSize(width, height);
+    }
+
+    public void updateSize(String SceneName, int width, int height){
+        // Update size of a specified object by scene name
+        this.getGameSceneByName(SceneName).updateSize(width, height);
     }
 
     public Scene getGameSceneByName(String SceneName) {
