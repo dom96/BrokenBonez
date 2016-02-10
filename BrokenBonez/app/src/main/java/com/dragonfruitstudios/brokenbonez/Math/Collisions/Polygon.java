@@ -29,9 +29,9 @@ public class Polygon implements Drawable, Intersector {
     // TODO: isPointInside https://en.wikipedia.org/wiki/Even%E2%80%93odd_rule
 
     public Manifold collisionTest(VectorF point) {
+        // TODO: This implementation may be too slow when more complex polygons are involved.
         for (Line l : lines) {
             if (l.collidesWith(point)) {
-                // TODO: Yes, I know this is inefficient.
                 // Calculate the penetration depth and collision normal.
 
                 // Get vector for line start to finish.
@@ -49,10 +49,10 @@ public class Polygon implements Drawable, Intersector {
     }
 
     /**
-     * NB. This only checks whether `point` collides with the edges of this polygon, i.e.
+     * Determines whether `point` collides with this polygon's edges.
+     *
+     * Warning: This only checks whether `point` collides with the edges of this polygon, i.e.
      * if it's inside it `false` may be returned.
-     * @param point
-     * @return
      */
     public boolean collidesWith(VectorF point) {
         for (Line l : lines) {
@@ -80,7 +80,7 @@ public class Polygon implements Drawable, Intersector {
     }
 
     /**
-     This method is just for debugging purposes!
+     This method is used to show where the polygon is on the screen, for debugging purposes only.
      */
     public void draw(GameView view) {
         for (Line l : lines) {

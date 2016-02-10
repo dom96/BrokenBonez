@@ -21,6 +21,10 @@ public class Line implements Drawable {
         this.end = new VectorF(x2, y2);
     }
 
+    /**
+     * Find the distance from this line to the specified `point`.
+     * To get real distance square root the value returned by this method.
+     */
     public float distanceSquared(VectorF point) {
         return distanceSquared(start, end, point);
     }
@@ -46,10 +50,18 @@ public class Line implements Drawable {
         return false;
     }
 
+    /**
+     * Determines whether this line collides with the specified `point`.
+     */
     public boolean collidesWith(VectorF point) {
         return collidesWith(point, MathUtils.defEpsilon);
     }
 
+    /**
+     * Find the distance from `point` to the line segment delimited by `lineStart` and `lineEnd`.
+     * To get real distance square root the value returned by this method.
+     * @return The distance squared between `point` and specified line segment.
+     */
     public static float distanceSquared(VectorF lineStart, VectorF lineEnd, VectorF point) {
         // Based on http://stackoverflow.com/a/1501725/492186
         final float len = lineStart.distSquared(lineEnd);
@@ -66,12 +78,6 @@ public class Line implements Drawable {
             return point.distSquared(lineEnd);
         }
 
-        /*
-        VectorF vAddT = lineStart.added(t);
-        VectorF wSubV = lineEnd.subtracted(lineStart);
-        vAddT.mult(wSubV); // vAddT will now contain the projection.
-        */
-        // TODO: try to use vector methods for this?
         return point.distSquared(
                 new VectorF(lineStart.x + t * (lineEnd.x - lineStart.x),
                         lineStart.y + t * (lineEnd.y - lineStart.y)
@@ -86,6 +92,8 @@ public class Line implements Drawable {
         return distanceSq < 10*10;
     }
 
+    // <editor-fold desc="Getters/Setters">
+
     public VectorF getStart() {
         return start;
     }
@@ -94,14 +102,19 @@ public class Line implements Drawable {
         return end;
     }
 
+    // </editor-fold>
+
     /**
-     This method is just for debugging purposes!
+     This method is used to show where the line is on the screen, for debugging purposes only.
      */
     public void draw(GameView view) {
         view.drawLine(start, end, Color.parseColor("#ff1122"));
 
     }
 
+    /**
+     * A method to turn this object into a string.
+     */
     @Override
     public String toString() {
         return String.format("Line(Start: %s, Finish: %s)", start, end);

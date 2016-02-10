@@ -3,29 +3,38 @@ package com.dragonfruitstudios.brokenbonez.Math.Collisions;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+import com.dragonfruitstudios.brokenbonez.Game.Drawable;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
-public class Circle {
+public class Circle implements Drawable {
     VectorF center;
     float radius;
 
     /**
+     * Creates a new Circle bounding shape with the specified center x and y position as well as
+     * radius.
+     *
      * Note: You're better off using the other constructor if you already have a position vector.
-     * @param cx
-     * @param cy
-     * @param radius
      */
     public Circle(float cx, float cy, float radius) {
         this.center = new VectorF(cx, cy);
         this.radius = radius;
     }
 
+    /**
+     * Constructs a new Circle bounding shape with the specified center vector and radius.
+     */
     public Circle(VectorF center, float radius) {
         this.center = center;
         this.radius = radius;
     }
 
+    /**
+     * Determines whether this Circle collides with the specified shape.
+     * @param shape An object which implements the Intersector interface.
+     * @return Whether this Circle collides with the specified shape.
+     */
     public boolean collidesWith(Intersector shape) {
         // Based on answer here: http://stackoverflow.com/a/402019/492186
 
@@ -67,7 +76,7 @@ public class Circle {
      * Checks if the specified line collides with this circle.
      * @return A Manifold instance containing information about the collision.
      */
-    public Manifold collisionTest(Line line) {
+    private Manifold collisionTest(Line line) {
         VectorF a = line.getStart();
         VectorF b = line.getFinish();
 
@@ -137,7 +146,7 @@ public class Circle {
     /**
      * Determines whether Line AB intersects with this Circle.
      */
-    public boolean collidesWith(VectorF a, VectorF b) {
+    private boolean collidesWith(VectorF a, VectorF b) {
         return collisionTest(new Line(a, b)).isCollided();
     }
 
@@ -162,8 +171,7 @@ public class Circle {
     // </editor-fold>
 
     /**
-     * This is just for debugging purposes to show where the bounding circle is.
-     * @param view
+     * This draw method is used for debugging to show where the bounding circle is.
      */
     public void draw(GameView view) {
         view.drawCircle(center.x, center.y, radius, Color.parseColor("#ff279c"), Paint.Style.STROKE);

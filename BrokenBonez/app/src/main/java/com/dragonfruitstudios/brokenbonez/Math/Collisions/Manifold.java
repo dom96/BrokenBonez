@@ -34,7 +34,8 @@ public class Manifold {
     }
 
     /**
-     * @return How far inside the object was in the other object when the collision took place.
+     * @return How far the object was in the other object when the collision took place, i.e.
+     * the penetration depth.
      */
     public float getPenetration() {
         return penetration;
