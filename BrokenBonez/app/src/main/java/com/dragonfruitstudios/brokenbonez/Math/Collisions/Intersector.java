@@ -1,7 +1,7 @@
-package com.dragonfruitstudios.brokenbonez.BoundingShapes;
+package com.dragonfruitstudios.brokenbonez.Math.Collisions;
 
-import com.dragonfruitstudios.brokenbonez.Drawable;
-import com.dragonfruitstudios.brokenbonez.VectorF;
+import com.dragonfruitstudios.brokenbonez.Game.Drawable;
+import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 /**
  * Defines a class which supports intersection.

@@ -1,10 +1,8 @@
-package com.dragonfruitstudios.brokenbonez.BoundingShapes;
+package com.dragonfruitstudios.brokenbonez.Math.Collisions;
 
-import android.graphics.Color;
-
-import com.dragonfruitstudios.brokenbonez.Drawable;
-import com.dragonfruitstudios.brokenbonez.GameView;
-import com.dragonfruitstudios.brokenbonez.VectorF;
+import com.dragonfruitstudios.brokenbonez.Game.Drawable;
+import com.dragonfruitstudios.brokenbonez.Game.GameView;
+import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 /**
  * This class implements an irregular shape composed of multiple line segments. It also implements

@@ -1,16 +1,15 @@
-package com.dragonfruitstudios.brokenbonez;
-
+package com.dragonfruitstudios.brokenbonez.Game;
 
 /**
- * A interface defining a class that is a visible object within the game.
+ * An interface defining a class that receives events from the GameLoop.
+ *
+ * This interface extends the Drawable interface which defines a `draw` method.
+ *
+ * Primarily used for objects within the game. For example: the bike, or a collectible item
+ * (powerup). These objects can be drawn, need to be updated over the course of the game, and
+ * need to be notified when the size of the GameView is changed.
  */
-public interface GameObject {
-    /**
-     * The method which will be called whenever the class should be redrawn.
-     * @param view The view on which the GameObject should be drawn on.
-     */
-    void draw(GameView view);
-
+public interface GameObject extends Drawable {
     /**
      * The method which will be called whenever the class should be updated.
      *

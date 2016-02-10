@@ -1,6 +1,6 @@
-package com.dragonfruitstudios.brokenbonez.BoundingShapes;
+package com.dragonfruitstudios.brokenbonez.Math.Collisions;
 
-import com.dragonfruitstudios.brokenbonez.VectorF;
+import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 /**
  * Inspired by Randy Gaul's impulse engine. The manifold contains information about a collision.

@@ -1,7 +1,10 @@
-package com.dragonfruitstudios.brokenbonez;
+package com.dragonfruitstudios.brokenbonez.Game;
 
 /**
  * Defines a class which can be drawn on a GameView.
+ *
+ * Primarily used for objects which can be drawn for debugging purposes, like bounding boxes for
+ * collision detection.
  */
 public interface Drawable {
     /**

@@ -1,4 +1,4 @@
-package com.dragonfruitstudios.brokenbonez;
+package com.dragonfruitstudios.brokenbonez.Math;
 
 /**
  * This class implements a Euclidean vector. That is a geometric object consisting of a magnitude
