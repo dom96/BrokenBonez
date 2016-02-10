@@ -1,13 +1,12 @@
-package com.dragonfruitstudios.brokenbonez.Scenes.Game;
+package com.dragonfruitstudios.brokenbonez.Game.Scenes;
 
 import android.util.Log;
 import android.view.MotionEvent;
 
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
-import com.dragonfruitstudios.brokenbonez.GameState;
-import com.dragonfruitstudios.brokenbonez.GameView;
+import com.dragonfruitstudios.brokenbonez.Gameplay.GameState;
+import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Input.TouchHandler;
-import com.dragonfruitstudios.brokenbonez.Scenes.Scene;
 
 /**
  * Implements the game scene in which the bulk of the gameplay occurs.

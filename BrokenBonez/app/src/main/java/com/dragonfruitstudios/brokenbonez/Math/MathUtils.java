@@ -1,4 +1,4 @@
-package com.dragonfruitstudios.brokenbonez;
+package com.dragonfruitstudios.brokenbonez.Math;
 
 public class MathUtils {
     public static final float defEpsilon = 0.001f;

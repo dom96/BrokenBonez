@@ -1,11 +1,14 @@
-package com.dragonfruitstudios.brokenbonez;
+package com.dragonfruitstudios.brokenbonez.Gameplay;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.util.Log;
 
-import com.dragonfruitstudios.brokenbonez.BoundingShapes.Circle;
-import com.dragonfruitstudios.brokenbonez.BoundingShapes.Manifold;
+import com.dragonfruitstudios.brokenbonez.Math.Collisions.Circle;
+import com.dragonfruitstudios.brokenbonez.Math.Collisions.Manifold;
+import com.dragonfruitstudios.brokenbonez.Game.GameObject;
+import com.dragonfruitstudios.brokenbonez.Game.GameView;
+import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 import java.util.ArrayList;
 

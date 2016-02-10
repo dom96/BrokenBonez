@@ -6,9 +6,8 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
-import com.dragonfruitstudios.brokenbonez.Input.TouchHandler;
-import com.dragonfruitstudios.brokenbonez.Input.TouchHandler.*;
-import com.dragonfruitstudios.brokenbonez.Scenes.Game.GameScene;
+import com.dragonfruitstudios.brokenbonez.Game.GameView;
+import com.dragonfruitstudios.brokenbonez.Game.Scenes.GameScene;
 
 /**
  * Core game loop class which handles drawing and updating of the game.
@@ -140,7 +139,7 @@ public class GameLoop implements Runnable {
     }
 
     protected void gameUpdateSize(int w, int h) {
-        gameSceneManager.getCurrentSceneObject().updateSize(w, h);
+        gameSceneManager.updateSize(w, h);
     }
 
     protected void gameDraw(GameView gameView) {

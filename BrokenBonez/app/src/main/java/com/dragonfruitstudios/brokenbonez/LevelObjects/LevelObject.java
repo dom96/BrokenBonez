@@ -4,9 +4,9 @@ package com.dragonfruitstudios.brokenbonez.LevelObjects;
 import android.app.Activity;
 
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
-import com.dragonfruitstudios.brokenbonez.GameObject;
-import com.dragonfruitstudios.brokenbonez.GameView;
-import com.dragonfruitstudios.brokenbonez.VectorF;
+import com.dragonfruitstudios.brokenbonez.Game.GameObject;
+import com.dragonfruitstudios.brokenbonez.Game.GameView;
+import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 public abstract class LevelObject implements GameObject {
 

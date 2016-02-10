@@ -1,11 +1,11 @@
-package com.dragonfruitstudios.brokenbonez.BoundingShapes;
+package com.dragonfruitstudios.brokenbonez.Math.Collisions;
 
 import android.graphics.Color;
 
-import com.dragonfruitstudios.brokenbonez.Drawable;
-import com.dragonfruitstudios.brokenbonez.GameView;
-import com.dragonfruitstudios.brokenbonez.MathUtils;
-import com.dragonfruitstudios.brokenbonez.VectorF;
+import com.dragonfruitstudios.brokenbonez.Game.Drawable;
+import com.dragonfruitstudios.brokenbonez.Game.GameView;
+import com.dragonfruitstudios.brokenbonez.Math.MathUtils;
+import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 public class Line implements Drawable {
     private VectorF start;

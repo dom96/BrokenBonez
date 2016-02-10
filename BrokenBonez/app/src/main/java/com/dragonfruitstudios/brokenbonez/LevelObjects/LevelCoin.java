@@ -2,7 +2,7 @@ package com.dragonfruitstudios.brokenbonez.LevelObjects;
 
 import android.app.Activity;
 
-import com.dragonfruitstudios.brokenbonez.GameView;
+import com.dragonfruitstudios.brokenbonez.Game.GameView;
 
 
 public class LevelCoin extends LevelObject {

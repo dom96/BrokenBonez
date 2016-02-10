@@ -1,10 +1,10 @@
 package com.dragonfruitstudios.brokenbonez;
 
-import com.dragonfruitstudios.brokenbonez.BoundingShapes.Line;
-import com.dragonfruitstudios.brokenbonez.BoundingShapes.Polygon;
-import com.dragonfruitstudios.brokenbonez.BoundingShapes.Rect;
+import com.dragonfruitstudios.brokenbonez.Math.Collisions.Line;
+import com.dragonfruitstudios.brokenbonez.Math.Collisions.Polygon;
+import com.dragonfruitstudios.brokenbonez.Math.Collisions.Rect;
+import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

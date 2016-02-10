@@ -1,4 +1,4 @@
-package com.dragonfruitstudios.brokenbonez;
+package com.dragonfruitstudios.brokenbonez.Game;
 
 /**
  * Defines a class which can be drawn on a GameView.

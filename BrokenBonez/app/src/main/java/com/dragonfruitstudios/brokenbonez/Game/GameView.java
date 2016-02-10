@@ -1,4 +1,4 @@
-package com.dragonfruitstudios.brokenbonez;
+package com.dragonfruitstudios.brokenbonez.Game;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -6,6 +6,8 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.Log;
 import android.view.View;
+
+import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 /**
  *  This class implements a View which supports drawing. Currently implemented as a SurfaceView,

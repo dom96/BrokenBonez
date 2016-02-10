@@ -1,6 +1,9 @@
-package com.dragonfruitstudios.brokenbonez;
+package com.dragonfruitstudios.brokenbonez.Gameplay;
 
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
+import com.dragonfruitstudios.brokenbonez.Button;
+import com.dragonfruitstudios.brokenbonez.Game.GameObject;
+import com.dragonfruitstudios.brokenbonez.Game.GameView;
 
 public class GameState implements GameObject {
     Level currentLevel;

@@ -1,5 +1,7 @@
 package com.dragonfruitstudios.brokenbonez;
 
+import com.dragonfruitstudios.brokenbonez.Math.VectorF;
+
 import org.junit.Before;
 import org.junit.Test;
 

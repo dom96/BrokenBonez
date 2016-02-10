@@ -3,9 +3,8 @@ package com.dragonfruitstudios.brokenbonez;
 import android.graphics.Color;
 import android.view.MotionEvent;
 
-import com.dragonfruitstudios.brokenbonez.BoundingShapes.Rect;
-
-import java.util.ArrayList;
+import com.dragonfruitstudios.brokenbonez.Game.GameView;
+import com.dragonfruitstudios.brokenbonez.Math.Collisions.Rect;
 
 public class Button {
     Rect startButton;

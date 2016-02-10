@@ -1,4 +1,4 @@
-package com.dragonfruitstudios.brokenbonez;
+package com.dragonfruitstudios.brokenbonez.Game;
 
 /**
  * An interface defining a class that receives events from the GameLoop.
@@ -7,7 +7,7 @@ package com.dragonfruitstudios.brokenbonez;
  *
  * Primarily used for objects within the game. For example: the bike, or a collectible item
  * (powerup). These objects can be drawn, need to be updated over the course of the game, and
- * need to be notificed when the size of the GameView is changed.
+ * need to be notified when the size of the GameView is changed.
  */
 public interface GameObject extends Drawable {
     /**

@@ -1,13 +1,10 @@
-package com.dragonfruitstudios.brokenbonez.BoundingShapes;
+package com.dragonfruitstudios.brokenbonez.Math.Collisions;
 
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Point;
-import android.util.Log;
 
-import com.dragonfruitstudios.brokenbonez.GameView;
-import com.dragonfruitstudios.brokenbonez.MathUtils;
-import com.dragonfruitstudios.brokenbonez.VectorF;
+import com.dragonfruitstudios.brokenbonez.Game.GameView;
+import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 public class Circle {
     VectorF center;

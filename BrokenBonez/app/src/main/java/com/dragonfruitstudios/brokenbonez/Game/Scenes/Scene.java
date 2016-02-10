@@ -1,8 +1,8 @@
-package com.dragonfruitstudios.brokenbonez.Scenes;
+package com.dragonfruitstudios.brokenbonez.Game.Scenes;
 
 import android.view.MotionEvent;
 
-import com.dragonfruitstudios.brokenbonez.GameObject;
+import com.dragonfruitstudios.brokenbonez.Game.GameObject;
 
 /**
  * An interface defining a class that implements a scene.
