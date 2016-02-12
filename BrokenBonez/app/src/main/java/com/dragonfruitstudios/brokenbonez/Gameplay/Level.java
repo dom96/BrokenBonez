@@ -7,11 +7,11 @@ import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Circle;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Intersector;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Manifold;
-import com.dragonfruitstudios.brokenbonez.Math.Collisions.Polygon;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Rect;
 import com.dragonfruitstudios.brokenbonez.Game.Drawable;
 import com.dragonfruitstudios.brokenbonez.Game.GameObject;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
+import com.dragonfruitstudios.brokenbonez.Math.Collisions.Triangle;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 import java.util.ArrayList;
@@ -31,16 +31,14 @@ public class Level implements GameObject {
         startPoint = new VectorF(0, 0); // Just a reasonable default.
         intersectors = new ArrayList<Intersector>();
         // TODO: Hardcoded for now.
-        intersectors.add(new Rect(0, calcGroundHeight(), 3000, calcGroundHeight() + 50));
+        intersectors.add(new Rect(new VectorF(0, calcGroundHeight()), 3000, 50));
 
-        intersectors.add(new Rect(10, 200, 200, 260));
+        intersectors.add(new Rect(new VectorF(10, 200), 190, 60));
 
         // Add a triangle
-
-        Polygon triangle = Polygon.createTriangle(new VectorF(200, 300), new VectorF(200, 190), new VectorF(500, 300));
-        Polygon triangle2 = Polygon.createTriangle(new VectorF(900, 300), new VectorF(900, 150), new VectorF(500, 300));
-        //intersectors.add(new Rect(500, 300, 700, 400));
-        intersectors.add(new Rect(900, 140, 1100, 400));
+        Triangle triangle = new Triangle(new VectorF(200, 190), 300, 110);
+        Triangle triangle2 = new Triangle(new VectorF(900, 150), -400, 150);
+        intersectors.add(new Rect(new VectorF(900, 140), 200, 260));
 
         intersectors.add(triangle);
         intersectors.add(triangle2);
@@ -59,7 +57,7 @@ public class Level implements GameObject {
 
         // Draw debug info.
         String debugInfo = String.format("Level[grndY: %.1f, colY: %.1f, totalY: %d]",
-                currHeight, ((Rect)intersectors.get(0)).getTop(), gameView.getHeight());
+                currHeight, intersectors.get(0).getLines().get(0).getStart().getY(), gameView.getHeight());
         gameView.drawText(debugInfo, 100, 30, Color.WHITE);
 
         // Draw the grass.
@@ -143,7 +141,7 @@ public class Level implements GameObject {
         ArrayList<Manifold> result = new ArrayList<Manifold>();
         for (Intersector r : intersectors) {
             Manifold test = c.collisionTest(r);
-            if (test.isCollided()) {
+            if (test.hasCollided()) {
                 result.add(test);
             }
         }

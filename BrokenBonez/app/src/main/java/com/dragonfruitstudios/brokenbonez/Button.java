@@ -5,12 +5,13 @@ import android.view.MotionEvent;
 
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Rect;
+import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 public class Button {
     Rect startButton;
 
     public Button() {
-        startButton = new Rect(30, 50, 220, 140);
+        startButton = new Rect(new VectorF(30, 50), 190, 90);
     }
 
     public void draw(GameView gameView) {

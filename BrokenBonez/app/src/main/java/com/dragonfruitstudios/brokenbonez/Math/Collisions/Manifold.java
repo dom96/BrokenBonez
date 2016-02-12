@@ -19,6 +19,13 @@ public class Manifold {
         this.collided = collided;
     }
 
+    /**
+     * Creates a new empty Manifold which specifies that no collision occurred.
+     */
+    public static Manifold noCollision() {
+        return new Manifold(null, -1, false);
+    }
+
     // <editor-fold desc="Getters/Setters">
 
     /**
@@ -48,7 +55,7 @@ public class Manifold {
     /**
      * @return Whether a collision took place.
      */
-    public boolean isCollided() {
+    public boolean hasCollided() {
         return collided;
     }
 

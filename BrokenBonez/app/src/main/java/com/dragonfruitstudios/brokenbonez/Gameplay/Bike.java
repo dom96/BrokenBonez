@@ -157,6 +157,10 @@ public class Bike implements GameObject {
             torque = amount;
         }
 
+        public VectorF getPos() {
+            return pos;
+        }
+
         public void draw(GameView view) {
             //view.drawCircle(pos.x, pos.y, boundingCircle.getRadius(), Color.parseColor("#6d6d6d"));
             Bitmap wheel = currentLevel.getAssetLoader().getBitmapByName("bike/wheel_basic.png");
@@ -253,7 +257,7 @@ public class Bike implements GameObject {
         // TODO: This is currently hardcoded.
         leftWheel.setPos(startPos.x + 25, startPos.y);
         //rightWheel.setPos(startPos.x + 200, startPos.y);
-        rightWheel.setPos(230, 100);
+        rightWheel.setPos(leftWheel.getPos().x + wheelSeparation, 100);
     }
 
     public void update(float lastUpdate) {

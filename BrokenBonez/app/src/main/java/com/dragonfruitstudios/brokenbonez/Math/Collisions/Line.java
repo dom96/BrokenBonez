@@ -1,15 +1,25 @@
 package com.dragonfruitstudios.brokenbonez.Math.Collisions;
 
 import android.graphics.Color;
+import android.util.Log;
 
 import com.dragonfruitstudios.brokenbonez.Game.Drawable;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Math.MathUtils;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
-public class Line implements Drawable {
+import java.util.ArrayList;
+import java.util.Arrays;
+
+/**
+ * This class defines a Line and implements collision detection methods to detect whether shapes
+ * are colliding with the Line.
+ */
+public class Line implements Drawable, Intersector {
     private VectorF start;
     private VectorF end;
+
+    private long timeOfLastCollision;
 
     public Line(VectorF start, VectorF end) {
         this.start = start;
@@ -29,25 +39,34 @@ public class Line implements Drawable {
         return distanceSquared(start, end, point);
     }
 
-    private boolean between(float start, float end, float p, float epsilon) {
+    private static boolean between(float start, float end, float p, float epsilon) {
         return MathUtils.between(start, p, end, epsilon) || MathUtils.between(end, p, start, epsilon);
     }
 
-    public boolean collidesWith(VectorF point, float epsilon) {
+    public static boolean collidesWith(VectorF lineStart, VectorF lineEnd, VectorF point,
+                                       float epsilon) {
         // Based on http://stackoverflow.com/a/328110/492186
 
-        if (start.isCollinear(end, point, epsilon)) {
+        if (lineStart.isCollinear(lineEnd, point, epsilon)) {
             // The slope from `start` to `end` is the same as the slope from `point` to `end`.
             // Now need to make sure that `point` is between `start` and `end`.
-            if (MathUtils.equal(start.x, end.x)) {
-                return between(start.x, end.x, point.x, epsilon);
+            if (!MathUtils.equal(lineStart.x, lineEnd.x)) {
+                return between(lineStart.x, lineEnd.x, point.x, epsilon);
             }
             else {
-                return between(start.y, end.y, point.y, epsilon);
+                return between(lineStart.y, lineEnd.y, point.y, epsilon);
             }
 
         }
         return false;
+    }
+
+    public static boolean collidesWith(VectorF lineStart, VectorF lineEnd, VectorF point) {
+        return collidesWith(lineStart, lineEnd, point, MathUtils.defEpsilon);
+    }
+
+    public boolean collidesWith(VectorF point, float epsilon) {
+        return collidesWith(start, end, point, epsilon);
     }
 
     /**
@@ -55,6 +74,17 @@ public class Line implements Drawable {
      */
     public boolean collidesWith(VectorF point) {
         return collidesWith(point, MathUtils.defEpsilon);
+    }
+
+    public Manifold collisionTest(VectorF point) {
+        if (collidesWith(point)) {
+            float depth = 0f;
+            VectorF startToFinish = end.subtracted(start);
+            VectorF normal = new VectorF(-startToFinish.getY(), startToFinish.getX());
+            normal.normalise();
+            return new Manifold(normal, depth, true);
+        }
+        return Manifold.noCollision();
     }
 
     /**
@@ -94,6 +124,12 @@ public class Line implements Drawable {
 
     // <editor-fold desc="Getters/Setters">
 
+    public ArrayList<Line> getLines() {
+        ArrayList<Line> result = new ArrayList<Line>();
+        result.add(this);
+        return result;
+    }
+
     public VectorF getStart() {
         return start;
     }
@@ -102,14 +138,26 @@ public class Line implements Drawable {
         return end;
     }
 
+    /**
+     * This is used for debugging. Sets the last time that this Line was involved in a collision.
+     */
+    public void setTimeOfLastCollision(long time) {
+        timeOfLastCollision = time;
+    }
+
     // </editor-fold>
 
     /**
      This method is used to show where the line is on the screen, for debugging purposes only.
      */
     public void draw(GameView view) {
-        view.drawLine(start, end, Color.parseColor("#ff1122"));
-
+        // Color the line differently if it was involved in a recent collision.
+        if (System.nanoTime() - timeOfLastCollision <= 1e8) {
+            view.drawLine(start, end, Color.parseColor("#00c80a"));
+        }
+        else {
+            view.drawLine(start, end, Color.parseColor("#ff1122"));
+        }
     }
 
     /**

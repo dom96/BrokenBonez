@@ -58,18 +58,18 @@ public class Circle implements Drawable {
     public Manifold collisionTest(Intersector shape) {
         // TODO: For now there is no chance of the circle's center being on a Shape's edge.
         //Manifold pointResult = shape.collisionTest(center);
-        //if (pointResult.isCollided()) {
+        //if (pointResult.hasCollided()) {
         //    pointResult.setPenetration(pointResult.getPenetration() + radius);
         //    return pointResult;
         //}
 
         for (Line line : shape.getLines()) {
             Manifold res = collisionTest(line);
-            if (res.isCollided()) {
+            if (res.hasCollided()) {
                 return res;
             }
         }
-        return new Manifold(null, -1, false);
+        return Manifold.noCollision();
     }
 
     /**
@@ -77,13 +77,20 @@ public class Circle implements Drawable {
      * @return A Manifold instance containing information about the collision.
      */
     private Manifold collisionTest(Line line) {
+        // Diagram at the following link explains this algorithm:
+        // http://stackoverflow.com/a/1079478/492186
         VectorF a = line.getStart();
         VectorF b = line.getFinish();
 
+        // Get the vector which represents the line segment.
         VectorF BA = new VectorF(b.x - a.x, b.y - a.y);
+        // Get the vector between the line start and the circle center.
         VectorF CA = new VectorF(center.x - a.x, center.y - a.y);
+
+        // Calculate the length of the line segment.
         float l = BA.magnitude();
 
+        // Make sure that CA is on the line segment and that it is the point closest to center.
         BA.normalise();
         float u = CA.dotProduct(BA);
         if (u <= 0) {
@@ -97,49 +104,29 @@ public class Circle implements Drawable {
             CA.set(BA.x + a.x, BA.y + a.y);
         }
 
-        float x = center.x - CA.x;
-        float y = center.y - CA.y;
+        float x = CA.x - center.x;
+        float y = CA.y - center.y;
 
+        // Check if length of vector from point on line to center is less than the radius of
+        // the circle. If so, then we have a collision.
         boolean collided = x * x + y * y <= radius*radius;
+
         if (collided) {
+            // Set a flag for debugging.
+            line.setTimeOfLastCollision(System.nanoTime());
+
             // Calculate how far the circle penetrated the line.
             float depth = radius - (float)Math.sqrt(x * x + y * y);
 
-            // Calculate the normal.
-            VectorF startToFinish = b.subtracted(a);
-            VectorF normal = new VectorF(-startToFinish.getY(), startToFinish.getX());
-
-            if (startToFinish.angle() > center.angle()) {
-                normal = new VectorF(startToFinish.getY(), -startToFinish.getX());
-            }
+            // The normal points in the direction of the point on the line that collides with
+            // the circle.
+            VectorF normal = new VectorF(x, y);
             normal.normalise();
-
-            // Make sure that the normal meets the line.
-            VectorF projectionToLine = normal.clone();
-            projectionToLine.mult(radius);
-            projectionToLine.add(center);
-
-            // Can't check whether `projectToLine` collides with `line` because collision detection
-            // is too strict.
-            if (!line.isNear(projectionToLine)) {
-                float distanceToA = a.distSquared(center);
-                float distanceToB = b.distSquared(center);
-                // Choose the normal depending on which edge of the line is nearest the
-                // circle's center.
-                if (distanceToA > distanceToB) {
-                    normal = b.clone();
-                    normal.normalise();
-                }
-                else {
-                    normal = a.clone();
-                    normal.normalise();
-                }
-            }
 
             return new Manifold(normal, depth, collided);
         }
         else {
-            return new Manifold(null, -1, false);
+            return Manifold.noCollision();
         }
     }
 
@@ -147,7 +134,7 @@ public class Circle implements Drawable {
      * Determines whether Line AB intersects with this Circle.
      */
     private boolean collidesWith(VectorF a, VectorF b) {
-        return collisionTest(new Line(a, b)).isCollided();
+        return collisionTest(new Line(a, b)).hasCollided();
     }
 
     // <editor-fold desc="Getters/Setters">

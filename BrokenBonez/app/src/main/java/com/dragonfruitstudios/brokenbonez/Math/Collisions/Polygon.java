@@ -4,26 +4,35 @@ import com.dragonfruitstudios.brokenbonez.Game.Drawable;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
  * This class implements an irregular shape composed of multiple line segments. It also implements
  * collision detection between this shape and other shapes.
- *
- * TODO: Polygon may not be the appropriate name here.
  */
 public class Polygon implements Drawable, Intersector {
-    Line[] lines; // TODO: Change to store vertices, not lines.
+    protected ArrayList<Line> lines;
 
-    public Polygon(Line[] lines) {
-        this.lines = lines;
+    protected Polygon() {
+        this.lines = new ArrayList<Line>();
     }
 
-    public static Polygon createTriangle(VectorF a, VectorF b, VectorF c) {
-        Line triangleLeft = new Line(a, b);
-        Line triangleBottom = new Line(a, c);
-        Line triangleMiddle = new Line(b, c);
+    public Polygon(Line[] lines) {
+        this.lines = new ArrayList<Line>(Arrays.asList(lines));
+    }
 
-        Polygon triangle = new Polygon(new Line[] {triangleLeft, triangleBottom, triangleMiddle});
-        return triangle;
+    protected void addVertices(VectorF[] vertices) {
+        VectorF prev = vertices[vertices.length-1];
+        for (int i = 0; i < vertices.length-1; i++) {
+            lines.add(new Line(vertices[i], vertices[i+1]));
+        }
+        lines.add(new Line(vertices[vertices.length-1], vertices[0]));
+    }
+
+    public Polygon(VectorF[] vertices) {
+        this.lines = new ArrayList<Line>();
+        addVertices(vertices);
     }
 
     // TODO: isPointInside https://en.wikipedia.org/wiki/Even%E2%80%93odd_rule
@@ -45,7 +54,7 @@ public class Polygon implements Drawable, Intersector {
                 return new Manifold(normal, depth, true);
             }
         }
-        return new Manifold(null, -1, false);
+        return Manifold.noCollision();
     }
 
     /**
@@ -75,7 +84,7 @@ public class Polygon implements Drawable, Intersector {
         return result;
     }
 
-    public Line[] getLines() {
+    public ArrayList<Line> getLines() {
         return lines;
     }
 

@@ -3,6 +3,8 @@ package com.dragonfruitstudios.brokenbonez.Math.Collisions;
 import com.dragonfruitstudios.brokenbonez.Game.Drawable;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
+import java.util.ArrayList;
+
 /**
  * Defines a class which supports intersection.
  */
@@ -26,5 +28,5 @@ public interface Intersector extends Drawable {
      */
     float distanceSquared(VectorF point);
 
-    Line[] getLines();
+    ArrayList<Line> getLines();
 }
