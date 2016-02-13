@@ -159,7 +159,7 @@ public class GameView extends View {
     public void drawImage(Bitmap image, VectorF pos, float rotation, ImageOrigin origin) {
         checkCanvas();
         canvas.save();
-        VectorF transformedPos = pos.clone();
+        VectorF transformedPos = pos.copy();
         //Log.d("Image", image.getWidth() + "");
         switch (origin) {
             case Middle:

@@ -1,5 +1,6 @@
 package com.dragonfruitstudios.brokenbonez.Math.Collisions;
 
+import com.dragonfruitstudios.brokenbonez.Math.Physics.Body;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 /**
@@ -12,6 +13,9 @@ public class Manifold {
     private float penetration;
 
     private boolean collided;
+
+    private Body bodyA;
+    private Body bodyB;
 
     public Manifold(VectorF normal, float penetration, boolean collided) {
         this.normal = normal;
@@ -61,6 +65,35 @@ public class Manifold {
 
     public void setCollided(boolean collided) {
         this.collided = collided;
+    }
+
+
+    public void setFirstBody(Body body) {
+        this.bodyA = body;
+    }
+
+    /**
+     * @return The first body involved in the collision.
+     */
+    public Body getFirstBody() {
+        if (bodyA == null) {
+            throw new RuntimeException("The first body was not set.");
+        }
+        return bodyA;
+    }
+
+    public void setSecondBody(Body body) {
+        this.bodyB = body;
+    }
+
+    /**
+     * @return The second body involved in the collision.
+     */
+    public Body getSecondBody() {
+        if (bodyB == null) {
+            throw new RuntimeException("The second body was not set.");
+        }
+        return bodyB;
     }
 
     // </editor-fold>

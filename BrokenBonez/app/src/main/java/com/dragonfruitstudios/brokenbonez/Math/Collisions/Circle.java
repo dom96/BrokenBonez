@@ -137,6 +137,10 @@ public class Circle implements Drawable {
         return collisionTest(new Line(a, b)).hasCollided();
     }
 
+    public Circle copy() {
+        return new Circle(center.copy(), radius);
+    }
+
     // <editor-fold desc="Getters/Setters">
 
     public void setCenter(float cx, float cy) {

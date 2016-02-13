@@ -4,22 +4,27 @@ import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Button;
 import com.dragonfruitstudios.brokenbonez.Game.GameObject;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
+import com.dragonfruitstudios.brokenbonez.Math.Physics.Simulator;
 
 public class GameState implements GameObject {
     Level currentLevel;
     Bike bike;
 
-    AssetLoader assetLoader;
+    private AssetLoader assetLoader;
+    private Simulator physicsSimulator;
 
     // Nate's menu test
     // TODO: Please move this into your own class.
     Button button;
 
     public GameState(AssetLoader assetLoader) {
+        // Create a new physics simulator.
+        this.physicsSimulator = new Simulator();
+
         currentLevel = new Level(this);
         bike = new Bike(currentLevel);
 
-        // Load assets
+        // Load assets.
         this.assetLoader = assetLoader;
         this.assetLoader.AddAssets(new String[] {"bike/wheel_basic.png", "bike/body_one.png"});
 
@@ -29,6 +34,7 @@ public class GameState implements GameObject {
 
     public void update(float lastUpdate) {
         bike.update(lastUpdate);
+        physicsSimulator.update(lastUpdate);
     }
 
     public void updateSize(int w, int h) {
@@ -39,6 +45,7 @@ public class GameState implements GameObject {
     public void draw(GameView view) {
         currentLevel.draw(view);
         bike.draw(view);
+        physicsSimulator.draw(view);
     }
 
     public void setBikeAcceleration(float strength) {
@@ -47,6 +54,9 @@ public class GameState implements GameObject {
 
     public AssetLoader getAssetLoader() {
         return assetLoader;
+    }
+    public Simulator getPhysicsSimulator() {
+        return physicsSimulator;
     }
 }
 

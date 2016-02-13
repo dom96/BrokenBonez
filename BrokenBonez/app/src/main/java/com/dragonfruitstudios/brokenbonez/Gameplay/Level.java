@@ -12,6 +12,7 @@ import com.dragonfruitstudios.brokenbonez.Game.Drawable;
 import com.dragonfruitstudios.brokenbonez.Game.GameObject;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Triangle;
+import com.dragonfruitstudios.brokenbonez.Math.Physics.Simulator;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 import java.util.ArrayList;
@@ -20,28 +21,28 @@ import java.util.ArrayList;
 // TODO: Load level design from file.
 // TODO: Scroll the level based on camera position
 public class Level implements GameObject {
-    GameState gameState; // Used to grab assets.
+    GameState gameState; // Used to grab assets, and physics simulator.
 
     VectorF startPoint; // Holds the coordinates which determine where the bike starts.
-    ArrayList<Intersector> intersectors;
 
     public Level(GameState state) {
         gameState = state;
 
         startPoint = new VectorF(0, 0); // Just a reasonable default.
-        intersectors = new ArrayList<Intersector>();
-        // TODO: Hardcoded for now.
-        intersectors.add(new Rect(new VectorF(0, calcGroundHeight()), 3000, 50));
 
-        intersectors.add(new Rect(new VectorF(10, 200), 190, 60));
+        Simulator physicsSimulator = gameState.getPhysicsSimulator();
+        // TODO: Hardcoded for now.
+        physicsSimulator.createStaticBody(new Rect(new VectorF(0, calcGroundHeight()), 3000, 50));
+
+        physicsSimulator.createStaticBody(new Rect(new VectorF(10, 200), 190, 60));
 
         // Add a triangle
         Triangle triangle = new Triangle(new VectorF(200, 190), 300, 110);
         Triangle triangle2 = new Triangle(new VectorF(900, 150), -400, 150);
-        intersectors.add(new Rect(new VectorF(900, 140), 200, 260));
+        physicsSimulator.createStaticBody(new Rect(new VectorF(900, 140), 200, 260));
 
-        intersectors.add(triangle);
-        intersectors.add(triangle2);
+        physicsSimulator.createStaticBody(triangle);
+        physicsSimulator.createStaticBody(triangle2);
     }
 
     public void updateSize(int w, int h) {
@@ -56,8 +57,8 @@ public class Level implements GameObject {
                 Color.parseColor("#06A1D3"));
 
         // Draw debug info.
-        String debugInfo = String.format("Level[grndY: %.1f, colY: %.1f, totalY: %d]",
-                currHeight, intersectors.get(0).getLines().get(0).getStart().getY(), gameView.getHeight());
+        String debugInfo = String.format("Level[grndY: %.1f, totalY: %d]",
+                currHeight, gameView.getHeight());
         gameView.drawText(debugInfo, 100, 30, Color.WHITE);
 
         // Draw the grass.
@@ -67,12 +68,6 @@ public class Level implements GameObject {
         // Draw the ground.
         gameView.drawRect(0, currHeight, gameView.getWidth(),
                 gameView.getHeight(), Color.parseColor("#976600"));
-
-        // More debug info drawing.
-        for (Drawable r : intersectors) {
-            r.draw(gameView);
-        }
-
     }
 
     public void update(float lastUpdate) {
@@ -81,6 +76,10 @@ public class Level implements GameObject {
 
     public AssetLoader getAssetLoader() {
         return gameState.getAssetLoader();
+    }
+
+    public Simulator getPhysicsSimulator() {
+        return gameState.getPhysicsSimulator();
     }
 
     /**
@@ -104,50 +103,5 @@ public class Level implements GameObject {
     private float calcGroundHeight() {
         return 410.0f; // TODO
     }
-
-    // <editor-fold desc="Collision detection">
-
-    /**
-     * Returns the distance to the nearest solid object that the VectorF could
-     * collide with (or is currently colliding with).
-     */
-    public float getNearestSolid(VectorF point) {
-        // TODO: Make this more efficient.
-        // Go through each collision rectangle and check if it's the closest rectangle.
-        float closest = -1;
-        for (Intersector r : intersectors) {
-            float temp = r.distanceSquared(point);
-            if (closest > temp || closest == -1) {
-                closest = temp;
-            }
-        }
-        if (closest == -1) {
-            throw new RuntimeException("Could not get nearest solid.");
-        }
-        return (float)Math.sqrt(closest);
-    }
-
-    public boolean intersectsGround(Circle c) {
-        // TODO: Make this more efficient.
-        for (Intersector r : intersectors) {
-            if (c.collidesWith(r)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public ArrayList<Manifold> collisionTest(Circle c) {
-        ArrayList<Manifold> result = new ArrayList<Manifold>();
-        for (Intersector r : intersectors) {
-            Manifold test = c.collisionTest(r);
-            if (test.hasCollided()) {
-                result.add(test);
-            }
-        }
-        return result;
-    }
-
-    // </editor-fold>
 
 }

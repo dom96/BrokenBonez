@@ -18,10 +18,10 @@ public class Triangle extends Polygon implements Intersector {
      */
     public Triangle(VectorF pos, float width, float height) {
         super();
-        VectorF rightAngleCorner = pos.clone();
+        VectorF rightAngleCorner = pos.copy();
         rightAngleCorner.add(0, height);
-        VectorF otherCorner = pos.clone();
+        VectorF otherCorner = pos.copy();
         otherCorner.add(width, height);
-        addVertices(new VectorF[] {pos.clone(), rightAngleCorner, otherCorner});
+        addVertices(new VectorF[] {pos.copy(), rightAngleCorner, otherCorner});
     }
 }

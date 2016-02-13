@@ -22,12 +22,16 @@ public class Polygon implements Drawable, Intersector {
         this.lines = new ArrayList<Line>(Arrays.asList(lines));
     }
 
+    public Polygon(ArrayList<Line> lines) {
+        this.lines = lines;
+    }
+
     protected void addVertices(VectorF[] vertices) {
         VectorF prev = vertices[vertices.length-1];
         for (int i = 0; i < vertices.length-1; i++) {
             lines.add(new Line(vertices[i], vertices[i+1]));
         }
-        lines.add(new Line(vertices[vertices.length-1], vertices[0]));
+        lines.add(new Line(vertices[vertices.length - 1], vertices[0]));
     }
 
     public Polygon(VectorF[] vertices) {
@@ -86,6 +90,10 @@ public class Polygon implements Drawable, Intersector {
 
     public ArrayList<Line> getLines() {
         return lines;
+    }
+
+    public Intersector copy() {
+        return new Polygon(new ArrayList<Line>(lines));
     }
 
     /**

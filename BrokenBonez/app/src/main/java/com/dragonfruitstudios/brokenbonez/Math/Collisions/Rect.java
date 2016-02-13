@@ -1,10 +1,5 @@
 package com.dragonfruitstudios.brokenbonez.Math.Collisions;
 
-import android.graphics.Color;
-import android.util.Log;
-
-import com.dragonfruitstudios.brokenbonez.Game.Drawable;
-import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 /**
@@ -14,7 +9,7 @@ import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 public class Rect extends Polygon implements Intersector {
     public Rect(VectorF pos, float width, float height) {
         super();
-        VectorF topLeft = pos.clone();
+        VectorF topLeft = pos.copy();
         VectorF topRight = topLeft.added(new VectorF(width, 0));
         VectorF bottomRight = topRight.added(new VectorF(0, height));
         VectorF bottomLeft = topLeft.added(new VectorF(0, height));

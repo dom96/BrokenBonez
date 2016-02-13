@@ -34,7 +34,7 @@ public class VectorF {
      * Handy shortcut to an otherwise verbose expression:
      *   VectorF vec = new VectorF(oldVec);
      */
-    public VectorF clone() {
+    public VectorF copy() {
         return new VectorF(this);
     }
 

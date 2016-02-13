@@ -122,6 +122,10 @@ public class Line implements Drawable, Intersector {
         return distanceSq < 10*10;
     }
 
+    public Line copy() {
+        return new Line(start, end);
+    }
+
     // <editor-fold desc="Getters/Setters">
 
     public ArrayList<Line> getLines() {

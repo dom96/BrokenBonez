@@ -8,6 +8,8 @@ import java.util.ArrayList;
 /**
  * Defines a class which supports intersection.
  */
+
+// TODO: Circle really should implement this too.
 public interface Intersector extends Drawable {
 
     /**
@@ -29,4 +31,6 @@ public interface Intersector extends Drawable {
     float distanceSquared(VectorF point);
 
     ArrayList<Line> getLines();
+
+    Intersector copy();
 }
