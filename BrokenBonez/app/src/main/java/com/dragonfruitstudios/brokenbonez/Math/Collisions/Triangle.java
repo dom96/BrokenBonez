@@ -7,7 +7,7 @@ import com.dragonfruitstudios.brokenbonez.Math.VectorF;
  * define the Triangle as a Polygon. You can determine whether a VectorF collides with this
  * shape using `collidesWith` and `collisionTest` methods.
  */
-public class Triangle extends Polygon implements Intersector {
+public class Triangle extends Polygon {
     /**
      * Creates a new right-angled triangle. The triangle first vertex will be positioned at `pos`,
      * the triangle will be created with the specified `width` and `height`.

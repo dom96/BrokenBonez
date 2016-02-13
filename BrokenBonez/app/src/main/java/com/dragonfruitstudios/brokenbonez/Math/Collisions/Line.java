@@ -15,7 +15,7 @@ import java.util.Arrays;
  * This class defines a Line and implements collision detection methods to detect whether shapes
  * are colliding with the Line.
  */
-public class Line implements Drawable, Intersector {
+public class Line extends Intersector implements Drawable {
     private VectorF start;
     private VectorF end;
 
@@ -78,13 +78,25 @@ public class Line implements Drawable, Intersector {
 
     public Manifold collisionTest(VectorF point) {
         if (collidesWith(point)) {
+            // Calculate the penetration depth and collision normal.
+            // The depth will always be 0
             float depth = 0f;
+            // Get vector for line start to finish.
             VectorF startToFinish = end.subtracted(start);
             VectorF normal = new VectorF(-startToFinish.getY(), startToFinish.getX());
             normal.normalise();
             return new Manifold(normal, depth, true);
         }
         return Manifold.noCollision();
+    }
+
+    /**
+     * Checks if the specified shape collides with this Circle.
+     * @return A Manifold containing information about the collision.
+     */
+    @Override
+    public Manifold collisionTest(Intersector shape) {
+        return collisionNotImplemented(shape);
     }
 
     /**

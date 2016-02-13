@@ -7,7 +7,7 @@ import com.dragonfruitstudios.brokenbonez.Game.Drawable;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
-public class Circle implements Drawable {
+public class Circle extends Intersector implements Drawable {
     VectorF center;
     float radius;
 
@@ -35,11 +35,11 @@ public class Circle implements Drawable {
      * @param shape An object which implements the Intersector interface.
      * @return Whether this Circle collides with the specified shape.
      */
-    public boolean collidesWith(Intersector shape) {
+    public boolean collidesWith(Polygon shape) {
         // Based on answer here: http://stackoverflow.com/a/402019/492186
 
         // Check whether Circle's centre lies within the rectangle.
-        if (shape.collidesWith(center)) { return true; }
+        if (shape.collisionTest(center).hasCollided()) { return true; }
 
         // Check whether either of the sides intersect with the circle.
         for (Line line : shape.getLines()) {
@@ -52,10 +52,23 @@ public class Circle implements Drawable {
     }
 
     /**
-     * Checks if the specified shape collides with this circle.
+     * Checks if the specified shape collides with this Circle.
      * @return A Manifold containing information about the collision.
      */
+    @Override
     public Manifold collisionTest(Intersector shape) {
+        if (shape instanceof Polygon) {
+            return collisionTestWithPolygon((Polygon)shape);
+        }
+        else if (shape instanceof Line) {
+            return collisionTestWithLine((Line)shape);
+        }
+
+        return collisionNotImplemented(shape);
+    }
+
+
+    private Manifold collisionTestWithPolygon(Polygon shape) {
         // TODO: For now there is no chance of the circle's center being on a Shape's edge.
         //Manifold pointResult = shape.collisionTest(center);
         //if (pointResult.hasCollided()) {
@@ -76,7 +89,7 @@ public class Circle implements Drawable {
      * Checks if the specified line collides with this circle.
      * @return A Manifold instance containing information about the collision.
      */
-    private Manifold collisionTest(Line line) {
+    private Manifold collisionTestWithLine(Line line) {
         // Diagram at the following link explains this algorithm:
         // http://stackoverflow.com/a/1079478/492186
         VectorF a = line.getStart();

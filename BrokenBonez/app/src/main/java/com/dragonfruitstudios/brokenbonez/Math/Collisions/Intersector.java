@@ -1,5 +1,7 @@
 package com.dragonfruitstudios.brokenbonez.Math.Collisions;
 
+import android.app.Instrumentation;
+
 import com.dragonfruitstudios.brokenbonez.Game.Drawable;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
@@ -9,28 +11,15 @@ import java.util.ArrayList;
  * Defines a class which supports intersection.
  */
 
-// TODO: Circle really should implement this too.
-public interface Intersector extends Drawable {
+// TODO: Clean up the old collidesWith methods in the Line, Polygon etc classes.
+public abstract class Intersector implements Drawable {
 
-    /**
-     * Determines whether the underlying shape collides with the specified point.
-     */
-    boolean collidesWith(VectorF point);
+    protected Manifold collisionNotImplemented(Intersector shape) {
+        throw new RuntimeException("CollisionTest needs to be implemented for " +
+                this.getClass() + " and " + shape.getClass());
+    }
 
-    /**
-     * Checks if the specified shape collides with this circle.
-     * @return A Manifold containing information about the collision.
-     */
-    Manifold collisionTest(VectorF point);
+    public abstract Manifold collisionTest(Intersector shape);
 
-    /**
-     * Find the distance from `point` to the underlying shape.
-     * To get real distance square root the value returned by this method.
-     * @return The distance squared between `point` and specified line segment.
-     */
-    float distanceSquared(VectorF point);
-
-    ArrayList<Line> getLines();
-
-    Intersector copy();
+    public abstract Intersector copy();
 }

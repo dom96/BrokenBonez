@@ -6,7 +6,7 @@ import com.dragonfruitstudios.brokenbonez.Math.VectorF;
  * A simple class which defines a Rectangle shape. Provides methods for checking whether a specified
  * VectorF collides with the rectangle: `collidesWith` and `collisionTest`.
  */
-public class Rect extends Polygon implements Intersector {
+public class Rect extends Polygon {
     public Rect(VectorF pos, float width, float height) {
         super();
         VectorF topLeft = pos.copy();
