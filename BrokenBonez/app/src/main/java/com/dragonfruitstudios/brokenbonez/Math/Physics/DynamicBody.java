@@ -115,7 +115,7 @@ public class DynamicBody extends Body {
                 }
 
                 // Set velocity based on torque.
-                velocity.add(new VectorF(torque, 0));
+                velocity.multAdd(new VectorF(torque, 0), updateFactor);
 
                 // Update the wheels' velocity based on acceleration.
                 velocity.multAdd(acceleration, updateFactor);
