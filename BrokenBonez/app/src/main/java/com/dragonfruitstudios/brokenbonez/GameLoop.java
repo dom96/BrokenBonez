@@ -14,7 +14,7 @@ import com.dragonfruitstudios.brokenbonez.Game.Scenes.GameScene;
  */
 public class GameLoop implements Runnable {
     long lastTime = System.nanoTime();
-    final int targetFPS;
+    public final static int targetFPS = 60;
     final long targetTime;
     volatile boolean run = false;
     GameView gameView;
@@ -24,8 +24,7 @@ public class GameLoop implements Runnable {
      * A method for taking the input fps i.e. fps entered when declaring a new game loop in
      * GameActivity class or the fps we want our game loop to constantly run at.
      */
-    public GameLoop(int inputFPS, GameView gameView, AssetLoader assetLoader) {
-        targetFPS = inputFPS;
+    public GameLoop(GameView gameView, AssetLoader assetLoader) {
         targetTime = 1000000000 / targetFPS;
 
         this.gameView = gameView;

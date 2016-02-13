@@ -33,7 +33,7 @@ public class GameActivity extends Activity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        gameLoop = new GameLoop(60, gameView, new AssetLoader(this, new String[] {}));
+        gameLoop = new GameLoop(gameView, new AssetLoader(this, new String[] {}));
         setContentView(gameView);
         new Thread(gameLoop).start();
     }

@@ -1,6 +1,7 @@
 package com.dragonfruitstudios.brokenbonez.Math.Physics;
 
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
+import com.dragonfruitstudios.brokenbonez.GameLoop;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Circle;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Intersector;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Manifold;
@@ -25,8 +26,8 @@ public class Simulator {
     }
 
     public void update(float lastUpdate) {
-        // Calculate an update factor based on the last time update was called.
-        float updateFactor = lastUpdate / 1000f;
+        // Use a fixed update factor to make the physics simulation deterministic.
+        float updateFactor = 1.0f/GameLoop.targetFPS;
 
         // Go through each dynamic body and determine if it collides with any static bodies.
         // TODO: This is O(n*m) which isn't terribly efficient. Only simulate what is on screen.
