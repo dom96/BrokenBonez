@@ -26,7 +26,7 @@ public class Simulator {
 
     public void update(float lastUpdate) {
         // Calculate an update factor based on the last time update was called.
-        float updateFactor = lastUpdate / 1000;
+        float updateFactor = lastUpdate / 1000f;
 
         // Go through each dynamic body and determine if it collides with any static bodies.
         // TODO: This is O(n*m) which isn't terribly efficient. Only simulate what is on screen.

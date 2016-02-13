@@ -115,7 +115,8 @@ public class DynamicBody extends Body {
                 }
 
                 // Set velocity based on torque.
-                velocity.multAdd(new VectorF(torque, 0), updateFactor);
+                // Divide updateFactor by 2 so that gravity wins and the wheels don't slide.
+                velocity.multAdd(new VectorF(torque, 0), updateFactor/2);
 
                 // Update the wheels' velocity based on acceleration.
                 velocity.multAdd(acceleration, updateFactor);
