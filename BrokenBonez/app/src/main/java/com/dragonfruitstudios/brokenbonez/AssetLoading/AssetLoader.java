@@ -1,7 +1,6 @@
 package com.dragonfruitstudios.brokenbonez.AssetLoading;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;

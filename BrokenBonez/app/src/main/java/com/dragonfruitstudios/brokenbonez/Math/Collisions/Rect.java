@@ -2,7 +2,6 @@ package com.dragonfruitstudios.brokenbonez.Math.Collisions;
 
 import android.graphics.Color;
 import android.util.Log;
-
 import com.dragonfruitstudios.brokenbonez.Game.Drawable;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;

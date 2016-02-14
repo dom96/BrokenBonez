@@ -8,6 +8,7 @@ import android.view.MotionEvent;
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.GameScene;
+import com.dragonfruitstudios.brokenbonez.Menu.MenuScene;
 
 /**
  * Core game loop class which handles drawing and updating of the game.
@@ -27,10 +28,14 @@ public class GameLoop implements Runnable {
     public GameLoop(int inputFPS, GameView gameView, AssetLoader assetLoader) {
         targetFPS = inputFPS;
         targetTime = 1000000000 / targetFPS;
-
         this.gameView = gameView;
-        GameScene gameScene = new GameScene(assetLoader);
-        this.gameSceneManager = new GameSceneManager(gameView, "GameScene", gameScene);
+
+        MenuScene menuScene = new MenuScene(assetLoader);
+        this.gameSceneManager = new GameSceneManager(gameView, "menuScene", menuScene);
+
+        /**GameScene gameScene = new GameScene(assetLoader);
+        gameSceneManager = new GameSceneManager(gameView, "gameScene", gameScene);**/
+
 
         // Set the methods which should be called when certain events occur in the GameView.
         // Unfortunately no lambda support in Java 8, so no beautiful callbacks for us.
@@ -45,7 +50,6 @@ public class GameLoop implements Runnable {
                 gameUpdateSize(w, h);
             }
         });
-
     }
 
     long lastFPSTime;

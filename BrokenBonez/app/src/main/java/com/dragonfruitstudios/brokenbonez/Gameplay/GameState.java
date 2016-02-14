@@ -1,7 +1,6 @@
 package com.dragonfruitstudios.brokenbonez.Gameplay;
 
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
-import com.dragonfruitstudios.brokenbonez.Button;
 import com.dragonfruitstudios.brokenbonez.Game.GameObject;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 
@@ -11,10 +10,6 @@ public class GameState implements GameObject {
 
     AssetLoader assetLoader;
 
-    // Nate's menu test
-    // TODO: Please move this into your own class.
-    Button button;
-
     public GameState(AssetLoader assetLoader) {
         currentLevel = new Level(this);
         bike = new Bike(currentLevel);
@@ -23,8 +18,6 @@ public class GameState implements GameObject {
         this.assetLoader = assetLoader;
         this.assetLoader.AddAssets(new String[] {"bike/wheel_basic.png", "bike/body_one.png"});
 
-        // TODO: Nate's button testing
-        button = new Button();
     }
 
     public void update(float lastUpdate) {
