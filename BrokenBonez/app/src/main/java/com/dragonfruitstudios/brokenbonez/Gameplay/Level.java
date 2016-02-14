@@ -32,7 +32,15 @@ public class Level implements GameObject {
 
         Simulator physicsSimulator = gameState.getPhysicsSimulator();
         // TODO: Hardcoded for now.
-        physicsSimulator.createStaticBody(new Rect(new VectorF(0, calcGroundHeight()), 3000, 50));
+        for (int i = 0; i < 20; i++) {
+            Rect rect = new Rect(new VectorF(i*3000, calcGroundHeight()+i*10), 3000, 50);
+            physicsSimulator.createStaticBody(rect);
+        }
+        // TODO: Change 2 to 1000 for a perf test, fix the slowdown.
+        for (int i = 0; i < 2; i++) {
+            Rect rect = new Rect(new VectorF(20*3000, calcGroundHeight()- 200), 200, 700);
+            physicsSimulator.createStaticBody(rect);
+        }
 
         physicsSimulator.createStaticBody(new Rect(new VectorF(10, 200), 190, 60));
 

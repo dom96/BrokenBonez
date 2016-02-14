@@ -117,4 +117,13 @@ public class Bike implements GameObject {
 
         Log.d("Bike/Trq", "Torque is now " + 5*strength);
     }
+
+    public VectorF getPos() {
+        return new VectorF(leftWheel.getPos().x + (wheelSeparation/2), leftWheel.getPos().y);
+    }
+
+    public void setPos(float x, float y) {
+        leftWheel.setPos(x, y);
+        rightWheel.setPos(x+wheelSeparation, y);
+    }
 }

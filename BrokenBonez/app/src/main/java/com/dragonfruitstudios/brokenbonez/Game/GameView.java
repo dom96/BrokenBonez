@@ -10,12 +10,9 @@ import android.view.View;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 /**
- *  This class implements a View which supports drawing. Currently implemented as a SurfaceView,
+ *  This class implements a View which supports drawing. Currently implemented as a custom View,
  *  but the API has been designed to support other backends.
  *  It may for example utilise a GlSurfaceView backend in the future depending on performance.
- *
- *  The `lockCanvas` method must be called before any draw method is called. After the drawing ends
- *  you should call the complementary `unlockCanvas` method.
  */
 public class GameView extends View {
     boolean ready;
@@ -56,6 +53,19 @@ public class GameView extends View {
 
     public void setCallbacks(GVCallbacks drawingFunction) {
         this.callbacks = drawingFunction;
+    }
+
+
+    /**
+     * Sets the translation vector which will be applied to every draw call.
+     *
+     * To reset you can simply call `translate(0, 0)`.
+     * @param x Amount to translate on x-axis.
+     * @param y Amount to translate on y-axis.
+     */
+    public void translate(float x, float y) {
+        checkCanvas();
+        canvas.translate(x, y);
     }
 
     private void checkCanvas() {
