@@ -75,6 +75,12 @@ public class DynamicBody extends Body {
                 // Correct position
                 getPos().multAdd(manifold.getNormal(), -(manifold.getPenetration()));
 
+                // The formula used to calculate the impulse is defined here:
+                // http://gamedevelopment.tutsplus.com/tutorials/how-to-create-a-custom-2d-physics-engine-the-basics-and-impulse-resolution--gamedev-6331
+                // The Impulse Engine (which the article above describes) was a great resource for
+                // understanding the way that Physics Engines are implemented, but please keep in
+                // mind that there was no code taken from it verbatim.
+
                 // Calculate the impulses that the normals enact on the body.
 
                 // Calculate relative velocity in terms of the normal direction.
@@ -95,6 +101,7 @@ public class DynamicBody extends Body {
                 impulse.mult(j);
 
                 velocity.multAdd(impulse, inverseMass);
+                // TODO: Apply the impulse to the Body we are colliding with too?
 
                 if (wasInAir) {
                     wasInAir = false;
@@ -105,6 +112,7 @@ public class DynamicBody extends Body {
                     //velocity.add(newVelocity);
                 } else {
                     // Calculate the body's angular velocity based on its linear velocity.
+                    // i.e. make the wheels spin!
                     // Using the equation: ω = velocity / radius
                     float newAngularVelocity = velocity.magnitude() / boundingShape.getRadius();
                     // Determine the direction of rotation.

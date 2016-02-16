@@ -91,7 +91,7 @@ public class Line extends Intersector implements Drawable {
     }
 
     /**
-     * Checks if the specified shape collides with this Circle.
+     * Checks if the specified shape collides with this Line.
      * @return A Manifold containing information about the collision.
      */
     @Override

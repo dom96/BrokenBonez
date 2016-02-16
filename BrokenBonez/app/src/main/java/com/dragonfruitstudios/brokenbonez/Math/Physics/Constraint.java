@@ -15,6 +15,10 @@ public class Constraint {
     }
 
     void update(float updateFactor) {
+        // The equations used in this code have been taken from the following article:
+        // http://www.wildbunny.co.uk/blog/2011/04/06/physics-engines-for-dummies/
+        // (Under the Constraints section).
+
         // Resolve constraint between left wheel and right wheel.
         // Find a vector from the left wheel to the right wheel.
         VectorF leftToRight = bodyB.getPos().subtracted(bodyA.getPos());
