@@ -30,8 +30,14 @@ public class GameLoop implements Runnable {
         targetTime = 1000000000 / targetFPS;
         this.gameView = gameView;
 
-        MenuScene menuScene = new MenuScene(assetLoader);
-        this.gameSceneManager = new GameSceneManager(gameView, "menuScene", menuScene);
+
+        this.gameSceneManager = new GameSceneManager(gameView); //Setup the GameSceneManager
+
+        MenuScene menuScene = new MenuScene(assetLoader, gameSceneManager);   //Create the new MenuScene
+        GameScene gameScene = new GameScene(assetLoader, gameSceneManager);   //Create the new GameScene
+
+        this.gameSceneManager.addScene("menuScene", menuScene, true);  //Add the MenuScene just created to the GameSceneManager, then sets it as the active scene
+        this.gameSceneManager.addScene("gameScene", gameScene, false); //Add the Gamescene just created to the GameSceneManager, then makes sure it isn't set as active
 
         /**GameScene gameScene = new GameScene(assetLoader);
         gameSceneManager = new GameSceneManager(gameView, "gameScene", gameScene);**/

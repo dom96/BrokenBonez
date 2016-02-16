@@ -7,6 +7,7 @@ import android.view.MotionEvent;
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.GameObject;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
+import com.dragonfruitstudios.brokenbonez.GameSceneManager;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 public class MenuState implements GameObject {
@@ -21,9 +22,11 @@ public class MenuState implements GameObject {
     VectorF pos;
     float rotation;
     final Bitmap scaledBackground;
+    GameSceneManager gameSceneManager;
 
-    public MenuState(AssetLoader assetLoader) {
+    public MenuState(AssetLoader assetLoader, GameSceneManager gameSceneManager) {
         this.assetLoader = assetLoader;
+        this.gameSceneManager = gameSceneManager;
         startGame = new TextButton("Start Game", getScreenWidth() / 3 / 3, getScreenHeight() / 6 * 4, getScreenWidth() / 3, getScreenHeight() / 6 * 5, getScreenWidth() / 11 * 2, getScreenHeight() / 6 * 4 + getScreenHeight() / 10);
         hiScore = new TextButton("Hi-Score", getScreenWidth() / 3 / 3 * 2 + getScreenWidth() / 6 * 1, getScreenHeight() / 6 * 4, (getScreenWidth() / 3 * 2) - getScreenWidth() / 24 * 1, getScreenHeight() / 6 * 5, (getScreenWidth() / 11 * 5) + (getScreenWidth() / 11 / 4), getScreenHeight() / 6 * 4 + getScreenHeight() / 10);
         helpGuide = new TextButton("Help Guide", getScreenWidth() / 3 / 3 * 2 + (getScreenWidth() / 7 * 3 + (getScreenWidth() / 7 / 5)), getScreenHeight() / 6 * 4, (getScreenWidth() / 3 * 3) - ((getScreenWidth() / 3 * 1) / 4 + getScreenWidth() / 60 * 1), getScreenHeight() / 6 * 5, getScreenWidth() / 3 / 3 * 2 + (getScreenWidth() / 11 * 6) - (getScreenWidth() / 11 / 8), getScreenHeight() / 6 * 4 + getScreenHeight() / 10);
@@ -74,10 +77,12 @@ public class MenuState implements GameObject {
      * I need a quick explanation on that.
      */
     public void onTouchEvent(MotionEvent event) {
+        this.gameSceneManager.setScene("gameScene");  //This is being removed later, just for testing right now! -AM
         startGame.onTouchEvent(event, 60, 270, 400, 360);
         if (startGame.isTouched() == true) {
             Log.d("OPEN GAME SCREEN", "true");
             setNoiseOn();
+            this.gameSceneManager.setScene("gameScene"); //This is the one that should be being used -AM
         }
     }
 

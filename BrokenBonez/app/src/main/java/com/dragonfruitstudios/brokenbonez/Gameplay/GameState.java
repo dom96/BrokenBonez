@@ -3,14 +3,17 @@ package com.dragonfruitstudios.brokenbonez.Gameplay;
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.GameObject;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
+import com.dragonfruitstudios.brokenbonez.GameSceneManager;
 
 public class GameState implements GameObject {
     Level currentLevel;
     Bike bike;
 
     AssetLoader assetLoader;
+    GameSceneManager gameSceneManager;
 
-    public GameState(AssetLoader assetLoader) {
+    public GameState(AssetLoader assetLoader, GameSceneManager gameSceneManager) {
+        this.gameSceneManager = gameSceneManager;
         currentLevel = new Level(this);
         bike = new Bike(currentLevel);
 

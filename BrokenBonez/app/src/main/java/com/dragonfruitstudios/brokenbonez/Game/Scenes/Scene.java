@@ -2,7 +2,9 @@ package com.dragonfruitstudios.brokenbonez.Game.Scenes;
 
 import android.view.MotionEvent;
 
+import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.GameObject;
+import com.dragonfruitstudios.brokenbonez.GameSceneManager;
 
 /**
  * An interface defining a class that implements a scene.
@@ -15,10 +17,13 @@ import com.dragonfruitstudios.brokenbonez.Game.GameObject;
  * MainMenuScene (where the main menu is drawn and the user can touch a "Start Game" button to start
  * the game, etc).
  */
-public interface Scene extends GameObject {
+public abstract class Scene implements GameObject {
+    GameSceneManager gameSceneManager;
+    AssetLoader assetLoader;
+
     /**
      * The method which will be called whenever the screen has been touched.
      * @param event Information about the event.
      */
-    void onTouchEvent(MotionEvent event);
+    public abstract void onTouchEvent(MotionEvent event);
 }
