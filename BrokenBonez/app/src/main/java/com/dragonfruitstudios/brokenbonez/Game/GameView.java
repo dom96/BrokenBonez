@@ -18,6 +18,8 @@ public class GameView extends View {
     boolean ready;
     Canvas canvas;
     Paint paint;
+    Camera camera;
+    boolean cameraEnabled;
 
     public interface GVCallbacks {
         void performDraw(GameView gameView);
@@ -66,6 +68,34 @@ public class GameView extends View {
     public void translate(float x, float y) {
         checkCanvas();
         canvas.translate(x, y);
+    }
+
+    public void setCamera(Camera camera) {
+        if (this.cameraEnabled) {
+            throw new RuntimeException("Disable the current camera before changing it.");
+        }
+        this.camera = camera;
+        this.cameraEnabled = false;
+    }
+
+    public Camera getCamera() {
+        return camera;
+    }
+
+    public void enableCamera() {
+        if (this.cameraEnabled) {
+            throw new RuntimeException("Camera has already been enabled.");
+        }
+        this.camera.enable(this);
+        this.cameraEnabled = true;
+    }
+
+    public void disableCamera() {
+        if (!this.cameraEnabled) {
+            throw new RuntimeException("Camera has not been enabled.");
+        }
+        this.camera.disable(this);
+        this.cameraEnabled = false;
     }
 
     private void checkCanvas() {
@@ -158,7 +188,8 @@ public class GameView extends View {
     }
 
     public enum ImageOrigin {
-        TopLeft, Middle
+        TopLeft, Middle, BottomLeft,
+        MiddleLeft
     }
 
 
@@ -174,6 +205,12 @@ public class GameView extends View {
         switch (origin) {
             case Middle:
                 transformedPos.sub(new VectorF(image.getWidth() / 2, image.getHeight() / 2));
+                break;
+            case MiddleLeft:
+                transformedPos.sub(new VectorF(0, image.getHeight()/2));
+                break;
+            case BottomLeft:
+                transformedPos.sub(new VectorF(0, image.getHeight()));
                 break;
         }
 

@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.util.Log;
 
+import com.dragonfruitstudios.brokenbonez.Game.Camera;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Circle;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Manifold;
 import com.dragonfruitstudios.brokenbonez.Game.GameObject;
@@ -46,6 +47,7 @@ public class Bike implements GameObject {
     }
 
     public void draw(GameView gameView) {
+        gameView.enableCamera();
         // Draw the wheels.
         Bitmap wheel = currentLevel.getAssetLoader().getBitmapByName("bike/wheel_basic.png");
         gameView.drawImage(wheel, leftWheel.getPos(), leftWheel.getRotation(),
@@ -69,6 +71,7 @@ public class Bike implements GameObject {
         // Draw the body at the specified position and with the specified rotation.
         gameView.drawImage(body, bodyPos, angle, GameView.ImageOrigin.Middle);
 
+        gameView.disableCamera();
         // Draw text on screen with some debug info
         DynamicBody debugWheel = leftWheel; // The wheel to show debug info for.
         String debugInfo = String.format("Bike[%s]", debugWheel.toString());

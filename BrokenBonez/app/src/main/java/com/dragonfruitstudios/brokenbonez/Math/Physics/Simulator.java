@@ -1,5 +1,6 @@
 package com.dragonfruitstudios.brokenbonez.Math.Physics;
 
+import com.dragonfruitstudios.brokenbonez.Game.Camera;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.GameLoop;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Circle;
@@ -55,6 +56,7 @@ public class Simulator {
     }
 
     public void draw(GameView view) {
+        view.enableCamera();
         for (StaticBody sBody : staticBodies) {
             sBody.draw(view);
         }
@@ -62,6 +64,7 @@ public class Simulator {
         for (DynamicBody dBody : dynamicBodies) {
             dBody.draw(view);
         }
+        view.disableCamera();
     }
 
     /**

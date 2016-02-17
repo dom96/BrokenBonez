@@ -8,7 +8,7 @@ import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Math.Physics.Simulator;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
-public class GameState implements GameObject {
+public class GameState {
     Level currentLevel;
     Bike bike;
 
@@ -22,17 +22,17 @@ public class GameState implements GameObject {
     Button button;
 
     public GameState(AssetLoader assetLoader) {
-        // Create a new physics simulator.
-        this.physicsSimulator = new Simulator();
-
-        currentLevel = new Level(this);
-        bike = new Bike(currentLevel);
-
-        camera = new Camera(0, 0);
-
         // Load assets.
         this.assetLoader = assetLoader;
         this.assetLoader.AddAssets(new String[] {"bike/wheel_basic.png", "bike/body_one.png"});
+
+        // Create a new physics simulator.
+        this.physicsSimulator = new Simulator();
+
+        camera = new Camera(0, 0);
+
+        currentLevel = new Level(this);
+        bike = new Bike(currentLevel);
 
         // TODO: Nate's button testing
         button = new Button();
@@ -41,6 +41,7 @@ public class GameState implements GameObject {
     public void update(float lastUpdate) {
         bike.update(lastUpdate);
         physicsSimulator.update(lastUpdate);
+        currentLevel.update(lastUpdate, bike.getPos());
         camera.centerHorizontally(bike.getPos().x);
     }
 
@@ -51,11 +52,9 @@ public class GameState implements GameObject {
     }
 
     public void draw(GameView view) {
-        camera.applyCamera(view);
+        view.setCamera(camera);
         currentLevel.draw(view);
-        //view.translate(0, 0);
         bike.draw(view);
-        //view.translate(-cameraPos.x, -cameraPos.y);
         physicsSimulator.draw(view);
     }
 
