@@ -59,17 +59,24 @@ public class Bike implements GameObject {
         Bitmap body = currentLevel.getAssetLoader().getBitmapByName("bike/body_one.png");
         // Calculate the vector between the two wheels.
         VectorF leftToRight = rightWheel.getPos().subtracted(leftWheel.getPos());
-        float angle = leftToRight.angle();
-        leftToRight.normalise();
-        VectorF bodyPos = leftWheel.getPos().copy();
-        // Move the body so that its positioned between the two wheels.
-        bodyPos.multAdd(leftToRight, wheelSeparation / 2);
-        // Calculate normal to `leftToRight` vector.
-        VectorF ltrNormal = new VectorF(-leftToRight.getY(), leftToRight.getX());
-        // Move the body so that its positioned above the wheels.
-        bodyPos.multAdd(ltrNormal, -wheelRadius);
-        // Draw the body at the specified position and with the specified rotation.
-        gameView.drawImage(body, bodyPos, angle, GameView.ImageOrigin.Middle);
+        // Check if the left wheel is in the same position as the right wheel.
+        if (!leftWheel.getPos().equals(rightWheel.getPos())) {
+            float angle = leftToRight.angle();
+            leftToRight.normalise();
+            VectorF bodyPos = leftWheel.getPos().copy();
+            // Move the body so that its positioned between the two wheels.
+            bodyPos.multAdd(leftToRight, wheelSeparation / 2);
+            // Calculate normal to `leftToRight` vector.
+            VectorF ltrNormal = new VectorF(-leftToRight.getY(), leftToRight.getX());
+            // Move the body so that its positioned above the wheels.
+            bodyPos.multAdd(ltrNormal, -wheelRadius);
+            // Draw the body at the specified position and with the specified rotation.
+            gameView.drawImage(body, bodyPos, angle, GameView.ImageOrigin.Middle);
+        }
+        else {
+            // Handle the rare case when the wheels are in the same position.
+            gameView.drawImage(body, leftWheel.getPos(), 0, GameView.ImageOrigin.Middle);
+        }
 
         gameView.disableCamera();
         // Draw text on screen with some debug info
@@ -118,7 +125,7 @@ public class Bike implements GameObject {
         // TODO: allow different bikes with differing acceleration characteristics?
         leftWheel.setTorque(700 * strength);
 
-        Log.d("Bike/Trq", "Torque is now " + 5*strength);
+        Log.d("Bike/Trq", "Torque is now " + 5 * strength);
     }
 
     public VectorF getPos() {
@@ -127,6 +134,6 @@ public class Bike implements GameObject {
 
     public void setPos(float x, float y) {
         leftWheel.setPos(x, y);
-        rightWheel.setPos(x+wheelSeparation, y);
+        rightWheel.setPos(x + wheelSeparation, y);
     }
 }
