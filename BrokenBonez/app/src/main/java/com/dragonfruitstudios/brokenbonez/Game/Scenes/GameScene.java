@@ -4,6 +4,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
+import com.dragonfruitstudios.brokenbonez.GameSceneManager;
 import com.dragonfruitstudios.brokenbonez.Gameplay.GameState;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Input.TouchHandler;
@@ -11,11 +12,13 @@ import com.dragonfruitstudios.brokenbonez.Input.TouchHandler;
 /**
  * Implements the game scene in which the bulk of the gameplay occurs.
  */
-public class GameScene implements Scene {
+public class GameScene extends Scene {
     GameState state;
 
-    public GameScene(AssetLoader assetLoader) {
-        this.state = new GameState(assetLoader);
+    public GameScene(AssetLoader assetLoader, GameSceneManager gameSceneManager) {
+        this.gameSceneManager = gameSceneManager;
+        this.assetLoader = assetLoader;
+        this.state = new GameState(assetLoader, this.gameSceneManager);
     }
 
     public void draw(GameView view) {
@@ -37,6 +40,7 @@ public class GameScene implements Scene {
         switch (action) {
             case ACTION_GAS_DOWN:
                 state.setBikeAcceleration(0.5f);
+                //state.getAssetLoader().getSoundByName("bikeEngineRev.mp3").play(false);   //Nearly ready, still little more testing needed -AM
                 break;
             case ACTION_GAS_UP:
                 state.setBikeAcceleration(0f);

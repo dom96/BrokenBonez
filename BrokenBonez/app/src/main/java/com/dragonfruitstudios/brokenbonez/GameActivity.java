@@ -1,6 +1,7 @@
 package com.dragonfruitstudios.brokenbonez;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.view.KeyEvent;

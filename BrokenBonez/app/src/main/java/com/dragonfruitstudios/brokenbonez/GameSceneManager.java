@@ -44,6 +44,10 @@ public class GameSceneManager {
         this.currentScene = SceneName;
     }
 
+    public GameSceneManager(GameView gameView){
+        this.gameView = gameView;
+    }
+
     public void addScene(String SceneName,  Scene newGameObject){
         //Adds new scene to the gameScenes hashmap
         gameScenes.put(SceneName, newGameObject);

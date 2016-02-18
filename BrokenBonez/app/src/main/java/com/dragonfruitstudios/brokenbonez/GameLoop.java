@@ -8,6 +8,7 @@ import android.view.MotionEvent;
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.GameScene;
+import com.dragonfruitstudios.brokenbonez.Menu.MenuScene;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -34,10 +35,20 @@ public class GameLoop implements Runnable {
      */
     public GameLoop(GameView gameView, AssetLoader assetLoader) {
         targetTime = 1000000000 / targetFPS;
-
         this.gameView = gameView;
-        GameScene gameScene = new GameScene(assetLoader);
-        this.gameSceneManager = new GameSceneManager(gameView, "GameScene", gameScene);
+
+
+        this.gameSceneManager = new GameSceneManager(gameView); //Setup the GameSceneManager
+
+        MenuScene menuScene = new MenuScene(assetLoader, gameSceneManager);   //Create the new MenuScene
+        GameScene gameScene = new GameScene(assetLoader, gameSceneManager);   //Create the new GameScene
+
+        this.gameSceneManager.addScene("menuScene", menuScene, true);  //Add the MenuScene just created to the GameSceneManager, then sets it as the active scene
+        this.gameSceneManager.addScene("gameScene", gameScene, false); //Add the Gamescene just created to the GameSceneManager, then makes sure it isn't set as active
+
+        /**GameScene gameScene = new GameScene(assetLoader);
+        gameSceneManager = new GameSceneManager(gameView, "gameScene", gameScene);**/
+
 
         updateLock = new ReentrantLock();
 
@@ -54,7 +65,6 @@ public class GameLoop implements Runnable {
                 gameUpdateSize(w, h);
             }
         });
-
     }
 
     long lastFPSTime;
