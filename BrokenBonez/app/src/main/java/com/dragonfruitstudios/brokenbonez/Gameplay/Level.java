@@ -55,26 +55,23 @@ public class Level {
         info.loadAssets(state.getAssetLoader());
 
         Simulator physicsSimulator = gameState.getPhysicsSimulator();
+
         // TODO: Hardcoded for now.
+        // Define some test Polygons.
         for (int i = 0; i < 20; i++) {
-            Rect rect = new Rect(new VectorF(i*3000, info.calcGroundHeight(getAssetLoader(), 720)+i*10), 3000, 50);
+            float height = info.calcGroundHeight(getAssetLoader(), 720);
+            Rect rect = new Rect(new VectorF(i*2800, height), 2600, 50);
             physicsSimulator.createStaticBody(rect);
+            Triangle triangle = new Triangle(new VectorF(i*2600, height-100), -200, 100);
+            Triangle triangle2 = new Triangle(new VectorF(i*2800, height-100), 200, 100);
+            physicsSimulator.createStaticBody(triangle);
+            physicsSimulator.createStaticBody(triangle2);
         }
         // TODO: Change 2 to 1000 for a perf test, fix the slowdown.
         for (int i = 0; i < 2; i++) {
             Rect rect = new Rect(new VectorF(20*3000, info.calcGroundHeight(getAssetLoader(), 720)- 200), 200, 700);
             physicsSimulator.createStaticBody(rect);
         }
-
-        physicsSimulator.createStaticBody(new Rect(new VectorF(10, 200), 190, 60));
-
-        // Add a triangle
-        Triangle triangle = new Triangle(new VectorF(200, 190), 300, 110);
-        Triangle triangle2 = new Triangle(new VectorF(900, 150), -400, 150);
-        physicsSimulator.createStaticBody(new Rect(new VectorF(900, 140), 200, 260));
-
-        physicsSimulator.createStaticBody(triangle);
-        physicsSimulator.createStaticBody(triangle2);
     }
 
     public void updateSize(int w, int h) {

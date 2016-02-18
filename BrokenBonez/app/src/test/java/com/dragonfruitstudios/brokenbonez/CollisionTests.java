@@ -83,6 +83,17 @@ public class CollisionTests {
         assertTrue(collisionTest.hasCollided());
         assertEquals(0.35112345, collisionTest.getNormal().getX(), 0.0001);
         assertEquals(0.9363292, collisionTest.getNormal().getY(), 0.0001);
+
+        // Ensure that when the circle is inside the polygon that it can
+        // be detected.
+        Rect rect = new Rect(new VectorF(0, 0), 1000, 1000);
+        wheel.setCenter(500, 500);
+        collisionTest = wheel.collisionTest(rect);
+        assertTrue(collisionTest.hasCollided());
+        wheel.setCenter(1500, 500);
+        collisionTest = wheel.collisionTest(rect);
+        assertFalse(collisionTest.hasCollided());
     }
+
 
 }

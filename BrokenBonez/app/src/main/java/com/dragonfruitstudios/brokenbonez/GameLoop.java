@@ -17,7 +17,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class GameLoop implements Runnable {
     long lastTime = System.nanoTime();
-    public final static int targetFPS = 60;
+    public static int targetFPS = 60; // Mutable so that we can slow down simulation -DP
     final long targetTime;
     volatile boolean run = false;
     GameView gameView;
@@ -183,6 +183,12 @@ public class GameLoop implements Runnable {
                 break;
             case KeyEvent.KEYCODE_SPACE:
                 slowMotion = !slowMotion;
+                if (slowMotion) {
+                    targetFPS = 1000;
+                }
+                else {
+                    targetFPS = 60;
+                }
                 break;
             case KeyEvent.KEYCODE_S:
                 step = true;

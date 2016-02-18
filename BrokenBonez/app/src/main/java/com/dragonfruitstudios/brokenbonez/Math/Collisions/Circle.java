@@ -69,12 +69,11 @@ public class Circle extends Intersector implements Drawable {
 
 
     private Manifold collisionTestWithPolygon(Polygon shape) {
-        // TODO: For now there is no chance of the circle's center being on a Shape's edge.
-        //Manifold pointResult = shape.collisionTest(center);
-        //if (pointResult.hasCollided()) {
-        //    pointResult.setPenetration(pointResult.getPenetration() + radius);
-        //    return pointResult;
-        //}
+        Manifold pointResult = shape.collisionTest(center);
+        if (pointResult.hasCollided()) {
+            pointResult.setPenetration(pointResult.getPenetration() + radius);
+            return pointResult;
+        }
 
         for (Line line : shape.getLines()) {
             Manifold res = collisionTest(line);

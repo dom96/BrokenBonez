@@ -49,15 +49,60 @@ public class Polygon extends Intersector implements Drawable {
 
     // TODO: isPointInside https://en.wikipedia.org/wiki/Even%E2%80%93odd_rule
 
+    /**
+     * Checks whether `point` collides with this Polygon (when `point` is inside the Polygon then
+     * True is also returned).
+     *
+     * Implementation details:
+     *
+     * This implementation uses two methods to check whether `point` collides with this
+     * polygon. The first is a simple check to determine if `point` lies on any of the
+     * Polygon's edges. The second is the use of the Even-odd rule, which allows us to check
+     * whether `point` is inside the Polygon. It does so by drawing a ray from `point` to
+     * infinity in an arbitrary direction and counting the number of times the ray crosses with
+     * the Polygon's edges. If the number is odd then the point is inside.
+     */
     public Manifold collisionTest(VectorF point) {
         // TODO: This implementation may be too slow when more complex polygons are involved.
+
+        boolean odd = false;
         for (Line l : lines) {
+            // Check if `point` is on the line segment `l`.
             Manifold res = l.collisionTest(point);
             if (res.hasCollided()) {
-                // TODO: May want to calculate the depth more accurately, currently it will
-                // always be 0.
                 return res;
             }
+
+            // Code carefully translated from the C code available here:
+            // https://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
+            // I reused the for loop for efficiency and it seems to be working well.
+            // The following code draws a ray from `point` to infinity and checks if it
+            // collides with `l`.
+            if (l.getStart().y > point.y != l.getFinish().y > point.y) {
+                if (point.x < (l.getFinish().x - l.getStart().x) *
+                        (point.y - l.getStart().y) /
+                        (l.getFinish().y - l.getStart().y) + l.getStart().x) {
+                    odd = !odd;
+                }
+            }
+        }
+        // Check if ray from `point` to infinity collided with an odd number of lines.
+        // If so, this suggests that the point is inside the Polygon (See Even-odd rule).
+        if (odd) {
+            // Need to find the normal and penetration depth.
+            // Do this by finding the line closest to `point`.
+            Line closestLine = lines.get(0);
+            float closestDist = lines.get(0).distanceSquared(point);
+            for (int i = 1; i < lines.size(); i++) {
+                float dist = lines.get(i).distanceSquared(point);
+                if (dist < closestDist) {
+                    closestLine = lines.get(i);
+                    closestDist = dist;
+                }
+            }
+            // TODO: Calculate normal correctly. The following approximation works rather
+            // well though.
+            return new Manifold(new VectorF(0, 1), (float)Math.sqrt(closestDist), true);
         }
         return Manifold.noCollision();
     }
