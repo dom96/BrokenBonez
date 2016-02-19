@@ -6,6 +6,8 @@ package com.dragonfruitstudios.brokenbonez.Math;
  * Origin is assumed to be (0, 0).
  */
 public class VectorF {
+
+    // Public because accessing these directly is much cleaner than using the getters/setters,
     public float x;
     public float y;
 
@@ -32,7 +34,7 @@ public class VectorF {
      * Handy shortcut to an otherwise verbose expression:
      *   VectorF vec = new VectorF(oldVec);
      */
-    public VectorF clone() {
+    public VectorF copy() {
         return new VectorF(this);
     }
 
@@ -63,45 +65,6 @@ public class VectorF {
     }
 
     /**
-     * Setter for the `x` field of VectorF.
-     */
-    public void setX(float x) {
-        this.x = x;
-    }
-
-    /**
-     * Setter for the `y` field of VectorF.
-     */
-    public void setY(float y) {
-        this.y = y;
-    }
-
-    /**
-     * Setter for both the `x` and `y` fields of VectorF.
-     */
-    public void set(float x, float y) {
-        this.x = x;
-        this.y = y;
-
-    }
-
-    /**
-     * Getter for the `x` field of this VectorF, which contains the x coordinate of this vector.
-     * @return The x coordinate of this vector.
-     */
-    public float getX() {
-        return x;
-    }
-
-    /**
-     * Getter for the `y` field of this VectorF, which contains the y coordinate of this vector.
-     * @return The y coordinate of this vector.
-     */
-    public float getY() {
-        return y;
-    }
-
-    /**
      * Calculates the magnitude or length of this vector from origin which is (0, 0)
      * @return The length of this vector.
      */
@@ -123,6 +86,14 @@ public class VectorF {
     public void add(float scalar) {
         x += scalar;
         y += scalar;
+    }
+
+    /**
+     * Add the specified x and y coordinates to this VectorF.
+     */
+    public void add(float x, float y) {
+        this.x += x;
+        this.y += y;
     }
 
     /**
@@ -285,6 +256,51 @@ public class VectorF {
     public boolean isCollinear(VectorF b, VectorF c, float epsilon) {
         return MathUtils.equal((b.x - this.x) * (c.y - this.y), (c.x - this.x) * (b.y - this.y), epsilon);
     }
+
+    // <editor-fold desc="Getters/Setters">
+
+    // TODO: Remove these? Since the actual fields are public?
+
+    /**
+     * Setter for the `x` field of VectorF.
+     */
+    public void setX(float x) {
+        this.x = x;
+    }
+
+    /**
+     * Setter for the `y` field of VectorF.
+     */
+    public void setY(float y) {
+        this.y = y;
+    }
+
+    /**
+     * Setter for both the `x` and `y` fields of VectorF.
+     */
+    public void set(float x, float y) {
+        this.x = x;
+        this.y = y;
+
+    }
+
+    /**
+     * Getter for the `x` field of this VectorF, which contains the x coordinate of this vector.
+     * @return The x coordinate of this vector.
+     */
+    public float getX() {
+        return x;
+    }
+
+    /**
+     * Getter for the `y` field of this VectorF, which contains the y coordinate of this vector.
+     * @return The y coordinate of this vector.
+     */
+    public float getY() {
+        return y;
+    }
+
+    // </editor-fold>
 
     @Override
     public String toString() {

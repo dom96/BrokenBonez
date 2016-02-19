@@ -3,34 +3,43 @@ package com.dragonfruitstudios.brokenbonez.Math.Collisions;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+import com.dragonfruitstudios.brokenbonez.Game.Drawable;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
-public class Circle {
+public class Circle extends Intersector implements Drawable {
     VectorF center;
     float radius;
 
     /**
+     * Creates a new Circle bounding shape with the specified center x and y position as well as
+     * radius.
+     *
      * Note: You're better off using the other constructor if you already have a position vector.
-     * @param cx
-     * @param cy
-     * @param radius
      */
     public Circle(float cx, float cy, float radius) {
         this.center = new VectorF(cx, cy);
         this.radius = radius;
     }
 
+    /**
+     * Constructs a new Circle bounding shape with the specified center vector and radius.
+     */
     public Circle(VectorF center, float radius) {
         this.center = center;
         this.radius = radius;
     }
 
-    public boolean collidesWith(Intersector shape) {
+    /**
+     * Determines whether this Circle collides with the specified shape.
+     * @param shape An object which implements the Intersector interface.
+     * @return Whether this Circle collides with the specified shape.
+     */
+    public boolean collidesWith(Polygon shape) {
         // Based on answer here: http://stackoverflow.com/a/402019/492186
 
         // Check whether Circle's centre lies within the rectangle.
-        if (shape.collidesWith(center)) { return true; }
+        if (shape.collisionTest(center).hasCollided()) { return true; }
 
         // Check whether either of the sides intersect with the circle.
         for (Line line : shape.getLines()) {
@@ -43,38 +52,57 @@ public class Circle {
     }
 
     /**
-     * Checks if the specified shape collides with this circle.
+     * Checks if the specified shape collides with this Circle.
      * @return A Manifold containing information about the collision.
      */
+    @Override
     public Manifold collisionTest(Intersector shape) {
-        // TODO: For now there is no chance of the circle's center being on a Shape's edge.
-        //Manifold pointResult = shape.collisionTest(center);
-        //if (pointResult.isCollided()) {
-        //    pointResult.setPenetration(pointResult.getPenetration() + radius);
-        //    return pointResult;
-        //}
+        if (shape instanceof Polygon) {
+            return collisionTestWithPolygon((Polygon)shape);
+        }
+        else if (shape instanceof Line) {
+            return collisionTestWithLine((Line)shape);
+        }
+
+        return collisionNotImplemented(shape);
+    }
+
+
+    private Manifold collisionTestWithPolygon(Polygon shape) {
+        Manifold pointResult = shape.collisionTest(center);
+        if (pointResult.hasCollided()) {
+            pointResult.setPenetration(pointResult.getPenetration() + radius);
+            return pointResult;
+        }
 
         for (Line line : shape.getLines()) {
             Manifold res = collisionTest(line);
-            if (res.isCollided()) {
+            if (res.hasCollided()) {
                 return res;
             }
         }
-        return new Manifold(null, -1, false);
+        return Manifold.noCollision();
     }
 
     /**
      * Checks if the specified line collides with this circle.
      * @return A Manifold instance containing information about the collision.
      */
-    public Manifold collisionTest(Line line) {
+    private Manifold collisionTestWithLine(Line line) {
+        // Diagram at the following link explains this algorithm:
+        // http://stackoverflow.com/a/1079478/492186
         VectorF a = line.getStart();
         VectorF b = line.getFinish();
 
+        // Get the vector which represents the line segment.
         VectorF BA = new VectorF(b.x - a.x, b.y - a.y);
+        // Get the vector between the line start and the circle center.
         VectorF CA = new VectorF(center.x - a.x, center.y - a.y);
+
+        // Calculate the length of the line segment.
         float l = BA.magnitude();
 
+        // Make sure that CA is on the line segment and that it is the point closest to center.
         BA.normalise();
         float u = CA.dotProduct(BA);
         if (u <= 0) {
@@ -88,57 +116,41 @@ public class Circle {
             CA.set(BA.x + a.x, BA.y + a.y);
         }
 
-        float x = center.x - CA.x;
-        float y = center.y - CA.y;
+        float x = CA.x - center.x;
+        float y = CA.y - center.y;
 
+        // Check if length of vector from point on line to center is less than the radius of
+        // the circle. If so, then we have a collision.
         boolean collided = x * x + y * y <= radius*radius;
+
         if (collided) {
+            // Set a flag for debugging.
+            line.setTimeOfLastCollision(System.nanoTime());
+
             // Calculate how far the circle penetrated the line.
             float depth = radius - (float)Math.sqrt(x * x + y * y);
 
-            // Calculate the normal.
-            VectorF startToFinish = b.subtracted(a);
-            VectorF normal = new VectorF(-startToFinish.getY(), startToFinish.getX());
-
-            if (startToFinish.angle() > center.angle()) {
-                normal = new VectorF(startToFinish.getY(), -startToFinish.getX());
-            }
+            // The normal points in the direction of the point on the line that collides with
+            // the circle.
+            VectorF normal = new VectorF(x, y);
             normal.normalise();
-
-            // Make sure that the normal meets the line.
-            VectorF projectionToLine = normal.clone();
-            projectionToLine.mult(radius);
-            projectionToLine.add(center);
-
-            // Can't check whether `projectToLine` collides with `line` because collision detection
-            // is too strict.
-            if (!line.isNear(projectionToLine)) {
-                float distanceToA = a.distSquared(center);
-                float distanceToB = b.distSquared(center);
-                // Choose the normal depending on which edge of the line is nearest the
-                // circle's center.
-                if (distanceToA > distanceToB) {
-                    normal = b.clone();
-                    normal.normalise();
-                }
-                else {
-                    normal = a.clone();
-                    normal.normalise();
-                }
-            }
 
             return new Manifold(normal, depth, collided);
         }
         else {
-            return new Manifold(null, -1, false);
+            return Manifold.noCollision();
         }
     }
 
     /**
      * Determines whether Line AB intersects with this Circle.
      */
-    public boolean collidesWith(VectorF a, VectorF b) {
-        return collisionTest(new Line(a, b)).isCollided();
+    private boolean collidesWith(VectorF a, VectorF b) {
+        return collisionTest(new Line(a, b)).hasCollided();
+    }
+
+    public Circle copy() {
+        return new Circle(center.copy(), radius);
     }
 
     // <editor-fold desc="Getters/Setters">
@@ -162,8 +174,7 @@ public class Circle {
     // </editor-fold>
 
     /**
-     * This is just for debugging purposes to show where the bounding circle is.
-     * @param view
+     * This draw method is used for debugging to show where the bounding circle is.
      */
     public void draw(GameView view) {
         view.drawCircle(center.x, center.y, radius, Color.parseColor("#ff279c"), Paint.Style.STROKE);

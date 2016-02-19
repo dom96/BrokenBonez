@@ -10,17 +10,16 @@ import android.view.View;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 /**
- *  This class implements a View which supports drawing. Currently implemented as a SurfaceView,
+ *  This class implements a View which supports drawing. Currently implemented as a custom View,
  *  but the API has been designed to support other backends.
  *  It may for example utilise a GlSurfaceView backend in the future depending on performance.
- *
- *  The `lockCanvas` method must be called before any draw method is called. After the drawing ends
- *  you should call the complementary `unlockCanvas` method.
  */
 public class GameView extends View {
     boolean ready;
     Canvas canvas;
     Paint paint;
+    Camera camera;
+    boolean cameraEnabled;
 
     public interface GVCallbacks {
         void performDraw(GameView gameView);
@@ -56,6 +55,47 @@ public class GameView extends View {
 
     public void setCallbacks(GVCallbacks drawingFunction) {
         this.callbacks = drawingFunction;
+    }
+
+
+    /**
+     * Sets the translation vector which will be applied to every draw call.
+     *
+     * To reset you can simply call `translate(0, 0)`.
+     * @param x Amount to translate on x-axis.
+     * @param y Amount to translate on y-axis.
+     */
+    public void translate(float x, float y) {
+        checkCanvas();
+        canvas.translate(x, y);
+    }
+
+    public void setCamera(Camera camera) {
+        if (this.cameraEnabled) {
+            throw new RuntimeException("Disable the current camera before changing it.");
+        }
+        this.camera = camera;
+        this.cameraEnabled = false;
+    }
+
+    public Camera getCamera() {
+        return camera;
+    }
+
+    public void enableCamera() {
+        if (this.cameraEnabled) {
+            throw new RuntimeException("Camera has already been enabled.");
+        }
+        this.camera.enable(this);
+        this.cameraEnabled = true;
+    }
+
+    public void disableCamera() {
+        if (!this.cameraEnabled) {
+            throw new RuntimeException("Camera has not been enabled.");
+        }
+        this.camera.disable(this);
+        this.cameraEnabled = false;
     }
 
     private void checkCanvas() {
@@ -148,7 +188,8 @@ public class GameView extends View {
     }
 
     public enum ImageOrigin {
-        TopLeft, Middle
+        TopLeft, Middle, BottomLeft,
+        MiddleLeft
     }
 
 
@@ -159,11 +200,17 @@ public class GameView extends View {
     public void drawImage(Bitmap image, VectorF pos, float rotation, ImageOrigin origin) {
         checkCanvas();
         canvas.save();
-        VectorF transformedPos = pos.clone();
+        VectorF transformedPos = pos.copy();
         //Log.d("Image", image.getWidth() + "");
         switch (origin) {
             case Middle:
                 transformedPos.sub(new VectorF(image.getWidth() / 2, image.getHeight() / 2));
+                break;
+            case MiddleLeft:
+                transformedPos.sub(new VectorF(0, image.getHeight()/2));
+                break;
+            case BottomLeft:
+                transformedPos.sub(new VectorF(0, image.getHeight()));
                 break;
         }
 

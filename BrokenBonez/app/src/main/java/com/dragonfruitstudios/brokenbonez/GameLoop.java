@@ -8,29 +8,49 @@ import android.view.MotionEvent;
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.GameScene;
+import com.dragonfruitstudios.brokenbonez.Menu.MenuScene;
+
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Core game loop class which handles drawing and updating of the game.
  */
 public class GameLoop implements Runnable {
     long lastTime = System.nanoTime();
-    final int targetFPS;
+    public static int targetFPS = 60; // Mutable so that we can slow down simulation -DP
     final long targetTime;
     volatile boolean run = false;
     GameView gameView;
     GameSceneManager gameSceneManager;
 
+    // This lock prevents the drawing of objects while they are being updated.
+    // Without it there were bugs like for example the bike "teleporting" forward for a split
+    // second when it was moving very fast.
+    private Lock updateLock;
+
     /**
      * A method for taking the input fps i.e. fps entered when declaring a new game loop in
      * GameActivity class or the fps we want our game loop to constantly run at.
      */
-    public GameLoop(int inputFPS, GameView gameView, AssetLoader assetLoader) {
-        targetFPS = inputFPS;
+    public GameLoop(GameView gameView, AssetLoader assetLoader) {
         targetTime = 1000000000 / targetFPS;
-
         this.gameView = gameView;
-        GameScene gameScene = new GameScene(assetLoader);
-        this.gameSceneManager = new GameSceneManager(gameView, "GameScene", gameScene);
+
+
+        this.gameSceneManager = new GameSceneManager(gameView); //Setup the GameSceneManager
+
+        MenuScene menuScene = new MenuScene(assetLoader, gameSceneManager);   //Create the new MenuScene
+        GameScene gameScene = new GameScene(assetLoader, gameSceneManager);   //Create the new GameScene
+
+        this.gameSceneManager.addScene("menuScene", menuScene, true);  //Add the MenuScene just created to the GameSceneManager, then sets it as the active scene
+        this.gameSceneManager.addScene("gameScene", gameScene, false); //Add the Gamescene just created to the GameSceneManager, then makes sure it isn't set as active
+
+        /**GameScene gameScene = new GameScene(assetLoader);
+        gameSceneManager = new GameSceneManager(gameView, "gameScene", gameScene);**/
+
+
+        updateLock = new ReentrantLock();
 
         // Set the methods which should be called when certain events occur in the GameView.
         // Unfortunately no lambda support in Java 8, so no beautiful callbacks for us.
@@ -45,7 +65,6 @@ public class GameLoop implements Runnable {
                 gameUpdateSize(w, h);
             }
         });
-
     }
 
     long lastFPSTime;
@@ -62,7 +81,6 @@ public class GameLoop implements Runnable {
     // Debugging flag to determine whether to run the game loop slowly.
     boolean slowMotion = false;
     boolean step = false;
-
 
     @Override
     public void run(){
@@ -116,6 +134,8 @@ public class GameLoop implements Runnable {
     }
 
     protected void gameUpdate() {
+        updateLock.lock();
+
         // Only update when the game is not paused.
         if (run) {
             // Calculate the number of milliseconds since the last update
@@ -131,23 +151,27 @@ public class GameLoop implements Runnable {
         lastUpdate = System.currentTimeMillis();
 
         // Check to see if a simple 1ms step is wanted.
-        // TODO: Potential for race condition?
         if (step) {
             gameSceneManager.update(1);
             step = !step;
         }
+        updateLock.unlock();
     }
 
     protected void gameUpdateSize(int w, int h) {
+        updateLock.lock();
         gameSceneManager.updateSize(w, h);
+        updateLock.unlock();
     }
 
     protected void gameDraw(GameView gameView) {
+        updateLock.lock();
         gameView.clear(Color.BLACK);
 
         gameSceneManager.draw();
 
         gameView.drawText("FPS: " + currFPS, 20, 30, Color.WHITE);
+        updateLock.unlock();
     }
 
     public void onGameTouch(MotionEvent event) {
@@ -169,6 +193,12 @@ public class GameLoop implements Runnable {
                 break;
             case KeyEvent.KEYCODE_SPACE:
                 slowMotion = !slowMotion;
+                if (slowMotion) {
+                    targetFPS = 1000;
+                }
+                else {
+                    targetFPS = 60;
+                }
                 break;
             case KeyEvent.KEYCODE_S:
                 step = true;

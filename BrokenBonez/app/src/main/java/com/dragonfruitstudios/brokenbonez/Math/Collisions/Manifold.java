@@ -1,5 +1,6 @@
 package com.dragonfruitstudios.brokenbonez.Math.Collisions;
 
+import com.dragonfruitstudios.brokenbonez.Math.Physics.Body;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 /**
@@ -13,10 +14,20 @@ public class Manifold {
 
     private boolean collided;
 
+    private Body bodyA;
+    private Body bodyB;
+
     public Manifold(VectorF normal, float penetration, boolean collided) {
         this.normal = normal;
         this.penetration = penetration;
         this.collided = collided;
+    }
+
+    /**
+     * Creates a new empty Manifold which specifies that no collision occurred.
+     */
+    public static Manifold noCollision() {
+        return new Manifold(null, -1, false);
     }
 
     // <editor-fold desc="Getters/Setters">
@@ -34,7 +45,8 @@ public class Manifold {
     }
 
     /**
-     * @return How far inside the object was in the other object when the collision took place.
+     * @return How far the object was in the other object when the collision took place, i.e.
+     * the penetration depth.
      */
     public float getPenetration() {
         return penetration;
@@ -47,12 +59,41 @@ public class Manifold {
     /**
      * @return Whether a collision took place.
      */
-    public boolean isCollided() {
+    public boolean hasCollided() {
         return collided;
     }
 
     public void setCollided(boolean collided) {
         this.collided = collided;
+    }
+
+
+    public void setFirstBody(Body body) {
+        this.bodyA = body;
+    }
+
+    /**
+     * @return The first body involved in the collision.
+     */
+    public Body getFirstBody() {
+        if (bodyA == null) {
+            throw new RuntimeException("The first body was not set.");
+        }
+        return bodyA;
+    }
+
+    public void setSecondBody(Body body) {
+        this.bodyB = body;
+    }
+
+    /**
+     * @return The second body involved in the collision.
+     */
+    public Body getSecondBody() {
+        if (bodyB == null) {
+            throw new RuntimeException("The second body was not set.");
+        }
+        return bodyB;
     }
 
     // </editor-fold>

@@ -44,6 +44,10 @@ public class GameSceneManager {
         this.currentScene = SceneName;
     }
 
+    public GameSceneManager(GameView gameView){
+        this.gameView = gameView;
+    }
+
     public void addScene(String SceneName,  Scene newGameObject){
         //Adds new scene to the gameScenes hashmap
         gameScenes.put(SceneName, newGameObject);
@@ -90,6 +94,9 @@ public class GameSceneManager {
     public void setScene(String currentScene){
         // Set currentScene to the passed in name of another scene
         this.currentScene = currentScene;
+        // After changing the scene call `updateSize` to let the scene know what the size of
+        // the GameView is -DP.
+        updateSize(gameView.getWidth(), gameView.getHeight());
     }
 
     public Scene getCurrentSceneObject(){
