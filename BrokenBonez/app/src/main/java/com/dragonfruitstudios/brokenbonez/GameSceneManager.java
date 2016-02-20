@@ -96,7 +96,13 @@ public class GameSceneManager {
         this.currentScene = currentScene;
         // After changing the scene call `updateSize` to let the scene know what the size of
         // the GameView is -DP.
-        updateSize(gameView.getWidth(), gameView.getHeight());
+        if (gameView.getWidth() != 0 && gameView.getHeight() != 0) {
+            updateSize(gameView.getWidth(), gameView.getHeight());
+        }
+        else {
+            Log.d("GameSceneManager", "Could not update size because GameView doesn't know it.");
+        }
+
     }
 
     public Scene getCurrentSceneObject(){
