@@ -14,7 +14,6 @@ public class TextButton {
     float x;
     float y;
     boolean isTouched;
-    boolean isTouchedCounter;
 
     public TextButton(String buttonName, float left, float top, float right, float bottom, float x, float y) {
         this.buttonName = buttonName;
