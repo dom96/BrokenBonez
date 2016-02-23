@@ -2,6 +2,7 @@ package com.dragonfruitstudios.brokenbonez.Menu;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
@@ -46,7 +47,17 @@ public class MenuState implements GameObject {
 
     @Override
     public void updateSize(int width, int height) {
+        if (width == 0 || height == 0) {
+            return;
+        }
+    }
 
+    public int getScreenWidth() {
+        return Resources.getSystem().getDisplayMetrics().widthPixels;
+    }
+
+    public int getScreenHeight() {
+        return Resources.getSystem().getDisplayMetrics().heightPixels;
     }
 
     @Override
@@ -58,14 +69,6 @@ public class MenuState implements GameObject {
         if(getNoiseOn() == true){
             view.drawImage(scaledNoise, pos, rotation, GameView.ImageOrigin.TopLeft);
         }
-    }
-
-    public static int getScreenWidth() {
-        return Resources.getSystem().getDisplayMetrics().widthPixels;
-    }
-
-    public static int getScreenHeight() {
-        return Resources.getSystem().getDisplayMetrics().heightPixels;
     }
 
     /**TODO:

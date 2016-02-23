@@ -42,6 +42,10 @@ public class GameView extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
+        if (w == 0 || h == 0) {
+            Log.d("GameView", "Size changed to 0, skipping event.");
+            return;
+        }
         Log.d("GameView", String.format("Size changed. W: %s, H: %s, oldW: %s, oldH: %s",
                 w, h, oldw, oldh));
         callbacks.onSizeChanged(this, w, h, oldw, oldh);
