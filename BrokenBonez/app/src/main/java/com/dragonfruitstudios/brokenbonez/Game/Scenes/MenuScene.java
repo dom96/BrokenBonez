@@ -1,10 +1,10 @@
-package com.dragonfruitstudios.brokenbonez.Menu;
+package com.dragonfruitstudios.brokenbonez.Game.Scenes;
 
 import android.view.MotionEvent;
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
-import com.dragonfruitstudios.brokenbonez.Game.Scenes.Scene;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
+import com.dragonfruitstudios.brokenbonez.Menu.MenuState;
 
 public class MenuScene extends Scene {
     MenuState state;
