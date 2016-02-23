@@ -12,12 +12,11 @@ import com.dragonfruitstudios.brokenbonez.GameSceneManager;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 public class MenuState implements GameObject {
-    TextButton startGame;
-    TextButton hiScore;
-    TextButton helpGuide;
+    ImageButton startGame;
     AssetLoader assetLoader;
     Bitmap background;
     boolean noiseOn;
+    boolean noiseWait;
     Bitmap noise;
     final Bitmap scaledNoise;
     VectorF pos;
@@ -28,10 +27,8 @@ public class MenuState implements GameObject {
     public MenuState(AssetLoader assetLoader, GameSceneManager gameSceneManager) {
         this.assetLoader = assetLoader;
         this.gameSceneManager = gameSceneManager;
-        startGame = new TextButton("Start Game", getScreenWidth() / 3 / 3, getScreenHeight() / 6 * 4, getScreenWidth() / 3, getScreenHeight() / 6 * 5, getScreenWidth() / 11 * 2, getScreenHeight() / 6 * 4 + getScreenHeight() / 10);
-        hiScore = new TextButton("Hi-Score", getScreenWidth() / 3 / 3 * 2 + getScreenWidth() / 6 * 1, getScreenHeight() / 6 * 4, (getScreenWidth() / 3 * 2) - getScreenWidth() / 24 * 1, getScreenHeight() / 6 * 5, (getScreenWidth() / 11 * 5) + (getScreenWidth() / 11 / 4), getScreenHeight() / 6 * 4 + getScreenHeight() / 10);
-        helpGuide = new TextButton("Help Guide", getScreenWidth() / 3 / 3 * 2 + (getScreenWidth() / 7 * 3 + (getScreenWidth() / 7 / 5)), getScreenHeight() / 6 * 4, (getScreenWidth() / 3 * 3) - ((getScreenWidth() / 3 * 1) / 4 + getScreenWidth() / 60 * 1), getScreenHeight() / 6 * 5, getScreenWidth() / 3 / 3 * 2 + (getScreenWidth() / 11 * 6) - (getScreenWidth() / 11 / 8), getScreenHeight() / 6 * 4 + getScreenHeight() / 10);
-        this.assetLoader.AddAssets(new String[]{"tv.png", "start_game.png", "tvnoise.png"});
+        startGame = new ImageButton(assetLoader);
+        this.assetLoader.AddAssets(new String[]{"tv.png", "tvnoise.png"});
         noise = assetLoader.getBitmapByName("tvnoise.png");
         background = assetLoader.getBitmapByName("tv.png");
         scaledNoise = noise.createScaledBitmap(noise, getScreenWidth(), getScreenHeight(), false);
@@ -42,7 +39,15 @@ public class MenuState implements GameObject {
 
     @Override
     public void update(float lastUpdate) {
-
+        float waitTime;
+        if(getNoiseWait() == true){
+            waitTime = lastUpdate;
+            while(lastUpdate == waitTime){
+                Log.d("START","Start");
+                startGameScreen();
+                break;
+            }
+        }
     }
 
     @Override
@@ -63,9 +68,7 @@ public class MenuState implements GameObject {
     @Override
     public void draw(GameView view) {
         view.drawImage(scaledBackground, pos, rotation, GameView.ImageOrigin.TopLeft);
-        startGame.draw(view);
-        hiScore.draw(view);
-        helpGuide.draw(view);
+        view.drawImage(startGame.startGame, pos, rotation, GameView.ImageOrigin.TopLeft);
         if(getNoiseOn() == true){
             view.drawImage(scaledNoise, pos, rotation, GameView.ImageOrigin.TopLeft);
         }
@@ -80,20 +83,23 @@ public class MenuState implements GameObject {
      * I need a quick explanation on that.
      */
     public void onTouchEvent(MotionEvent event) {
-        this.gameSceneManager.setScene("gameScene");  //This is being removed later, just for testing right now! -AM
-        startGame.onTouchEvent(event, 60, 270, 400, 360);
-        if (startGame.isTouched() == true) {
-            Log.d("OPEN GAME SCREEN", "true");
-            setNoiseOn();
-            this.gameSceneManager.setScene("gameScene"); //This is the one that should be being used -AM
-        }
+        setNoiseOn();
+        setNoiseWait();
     }
 
+    public void startGameScreen() {
+        this.gameSceneManager.setScene("gameScene");
+    }
+    public boolean getNoiseOn(){
+        return noiseOn;
+    }
+    public boolean getNoiseWait(){
+        return noiseWait;
+    }
     public void setNoiseOn() {
         noiseOn = true;
     }
-
-    public boolean getNoiseOn(){
-        return noiseOn;
+    public void setNoiseWait(){
+        noiseWait = true;
     }
 }
