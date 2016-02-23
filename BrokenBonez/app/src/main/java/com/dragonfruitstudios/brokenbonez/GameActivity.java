@@ -41,8 +41,11 @@ public class GameActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        /**Makes the back button act like the home button**/
-        moveTaskToBack(true);
+        if(gameLoop.gameSceneManager.getCurrentSceneString() == "menuScene"){
+            moveTaskToBack(true);
+        } else {
+            this.gameLoop.gameSceneManager.setScene("menuScene");
+        }
     }
 
 
