@@ -30,4 +30,8 @@ public abstract class Scene implements GameObject {
     public abstract void pause();
 
     public abstract void resume();
+
+    public abstract void activate();
+
+    public abstract void deactivate();
 }

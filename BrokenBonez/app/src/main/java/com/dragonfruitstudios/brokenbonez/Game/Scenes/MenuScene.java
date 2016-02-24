@@ -38,4 +38,14 @@ public class MenuScene extends Scene {
     public void resume() {
 
     }
+
+    @Override
+    public void activate() {
+
+    }
+
+    @Override
+    public void deactivate() {
+
+    }
 }

@@ -40,7 +40,7 @@ public class GameScene extends Scene {
         switch (action) {
             case ACTION_GAS_DOWN:
                 state.setBikeAcceleration(0.5f);
-                //state.getAssetLoader().getSoundByName("bikeEngineRev.mp3").play(false);   //Nearly ready, still little more testing needed -AM
+                state.getAssetLoader().getSoundByName("bikeEngineRev.mp3").play(false);   //Nearly ready, still little more testing needed -AM
                 break;
             case ACTION_GAS_UP:
                 state.setBikeAcceleration(0f);
@@ -62,6 +62,16 @@ public class GameScene extends Scene {
 
     @Override
     public void resume() {
+
+    }
+
+    @Override
+    public void activate() {
+        state.getAssetLoader().getSoundByName("bikeEngine.mp3").play(true);
+    }
+
+    @Override
+    public void deactivate() {
 
     }
 }
