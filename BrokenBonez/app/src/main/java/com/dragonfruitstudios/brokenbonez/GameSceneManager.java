@@ -35,7 +35,7 @@ import java.util.HashMap;
 public class GameSceneManager {
     protected GameView gameView;
     private HashMap<String, Scene> gameScenes=new HashMap<String, Scene>();
-    private String currentScene;
+    private String currentScene = null;
 
 
     public GameSceneManager(GameView gameView, String SceneName,  Scene newGameObject){
@@ -92,6 +92,10 @@ public class GameSceneManager {
     }
 
     public void setScene(String currentScene){
+        // Deactivate previous scene
+        if (this.currentScene != null) {
+            getCurrentSceneObject().deactivate();
+        }
         // Set currentScene to the passed in name of another scene
         this.currentScene = currentScene;
         // After changing the scene call `updateSize` to let the scene know what the size of
@@ -102,6 +106,8 @@ public class GameSceneManager {
         else {
             Log.d("GameSceneManager", "Could not update size because GameView doesn't know it.");
         }
+        // Run the activate method of the new scene
+        this.getCurrentSceneObject().activate();
 
     }
 
@@ -136,6 +142,17 @@ public class GameSceneManager {
             throw new RuntimeException("Unable to select gameScene as gameScene does not exist with that name.");
         }
         return gs;
+    }
+
+    // Called when the user minimizes the game.
+    // or when the 'P' key is pressed (when debugging in an emulator).
+    public void pause() {
+        this.getCurrentSceneObject().pause();
+    }
+
+    // Called when the user resumes the game from the android menu.
+    public void resume() {
+        this.getCurrentSceneObject().resume();
     }
 
 }

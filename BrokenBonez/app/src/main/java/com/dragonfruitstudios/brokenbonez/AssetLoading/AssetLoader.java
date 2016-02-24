@@ -13,6 +13,7 @@ import android.util.Log;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Map;
 
 public class AssetLoader {
     /*
@@ -31,6 +32,8 @@ public class AssetLoader {
      */
     public AssetLoader(Activity activity, String[] assets){
         this.activity = activity;
+        this.soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC,0);
+        this.assetManager = this.activity.getAssets();
         AddAssets(assets);
     }
 
@@ -39,6 +42,7 @@ public class AssetLoader {
     HashMap<String, Sound> sounds=new HashMap<String, Sound>();
     Activity activity;
     SoundPool soundPool;
+    AssetManager assetManager;
 
     /*
     To add an asset later  to the asset manager. Make sure to pass in an array of strings which are the name of the asset (ignoring the /img/ or /sound/ prefix).
@@ -49,13 +53,10 @@ public class AssetLoader {
      */
     @SuppressWarnings("deprecation")
     public AssetLoader AddAssets(String[] assets){
-        AssetManager assetManager = this.activity.getAssets();
-        soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC,0);
         for (int count = 0; count < assets.length; count++) {
             long length = 0;
             try {
                 if (assets[count].substring(assets[count].length() - 3).equals("mp3")) {
-                    MediaPlayer mp = new MediaPlayer();
                     AssetFileDescriptor df = assetManager.openFd("sound/" + assets[count]);
                     length = df.getLength();
                 }
@@ -146,7 +147,19 @@ public class AssetLoader {
         return image;
     }
 
+    public void pause(){
+        this.soundPool.autoPause();
+        for(Map.Entry<String, Sound> entry : sounds.entrySet()) {
+            entry.getValue().pause();
+        }
+    }
 
+    public void resume(){
+        this.soundPool.autoResume();
+        for(Map.Entry<String, Sound> entry : sounds.entrySet()) {
+            entry.getValue().resume();
+        }
+    }
 
 
 }

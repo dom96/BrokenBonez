@@ -22,6 +22,7 @@ public class GameState {
         // Load assets.
         this.assetLoader = assetLoader;
         this.assetLoader.AddAssets(new String[] {"bike/wheel_basic.png", "bike/body_one.png"});
+        this.assetLoader.AddAssets(new String[]{"bikeEngine.mp3", "bikeEngineRev.mp3"});
 
         // Create a new physics simulator.
         this.physicsSimulator = new Simulator();

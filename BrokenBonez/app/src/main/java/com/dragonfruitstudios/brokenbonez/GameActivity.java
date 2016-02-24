@@ -41,6 +41,7 @@ public class GameActivity extends Activity {
 
     @Override
     public void onBackPressed() {
+        gameLoop.assetLoader.pause(); //Stop all sounds when back button pressed
         if(gameLoop.gameSceneManager.getCurrentSceneString() == "menuScene"){
             moveTaskToBack(true);
         } else {
