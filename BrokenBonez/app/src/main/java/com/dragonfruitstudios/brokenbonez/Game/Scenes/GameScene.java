@@ -54,4 +54,14 @@ public class GameScene extends Scene {
                 break;
         }
     }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void resume() {
+
+    }
 }

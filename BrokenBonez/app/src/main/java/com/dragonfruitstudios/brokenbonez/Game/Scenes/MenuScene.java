@@ -28,4 +28,14 @@ public class MenuScene extends Scene {
     public void onTouchEvent(MotionEvent event) {
        state.onTouchEvent(event);
     }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void resume() {
+
+    }
 }

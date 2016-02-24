@@ -138,4 +138,15 @@ public class GameSceneManager {
         return gs;
     }
 
+    // Called when the user minimizes the game.
+    // or when the 'P' key is pressed (when debugging in an emulator).
+    public void pause() {
+        this.getCurrentSceneObject().pause();
+    }
+
+    // Called when the user resumes the game from the android menu.
+    public void resume() {
+        this.getCurrentSceneObject().resume();
+    }
+
 }
