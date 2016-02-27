@@ -2,7 +2,6 @@ package com.dragonfruitstudios.brokenbonez.Menu;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
@@ -13,10 +12,13 @@ import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 public class MenuState implements GameObject {
     ImageButton startGame;
+    ImageButton hiScore;
+    ImageButton credits;
     AssetLoader assetLoader;
     Bitmap background;
     boolean noiseOn;
     boolean noiseWait;
+    float waitTime = 0;
     Bitmap noise;
     final Bitmap scaledNoise;
     VectorF pos;
@@ -27,7 +29,9 @@ public class MenuState implements GameObject {
     public MenuState(AssetLoader assetLoader, GameSceneManager gameSceneManager) {
         this.assetLoader = assetLoader;
         this.gameSceneManager = gameSceneManager;
-        startGame = new ImageButton(assetLoader);
+        startGame = new ImageButton(assetLoader, getScreenWidth() / 4 - 14, getScreenHeight() / 4 + 60, 612, 180);
+        hiScore = new ImageButton(assetLoader, getScreenWidth() / 4 - 14, getScreenHeight() / 4 * 2 + 120, 270, 60);
+        credits = new ImageButton(assetLoader,  getScreenWidth() / 4 * 2 + 29, getScreenHeight() / 4 * 2 + 120, 270, 60);
         this.assetLoader.AddAssets(new String[]{"tv.png", "tvnoise.png"});
         noise = assetLoader.getBitmapByName("tvnoise.png");
         background = assetLoader.getBitmapByName("tv.png");
@@ -39,13 +43,13 @@ public class MenuState implements GameObject {
 
     @Override
     public void update(float lastUpdate) {
-        float waitTime;
         if(getNoiseWait() == true){
-            waitTime = lastUpdate;
-            while(lastUpdate == waitTime){
-                Log.d("START","Start");
-                startGameScreen();
-                break;
+            waitTime += lastUpdate;
+                if(waitTime > 1000) {
+                    noiseOn = false;
+                    noiseWait = false;
+                    waitTime = 0;
+                    startGameScreen();
             }
         }
     }
@@ -68,7 +72,9 @@ public class MenuState implements GameObject {
     @Override
     public void draw(GameView view) {
         view.drawImage(scaledBackground, pos, rotation, GameView.ImageOrigin.TopLeft);
-        view.drawImage(startGame.startGame, pos, rotation, GameView.ImageOrigin.TopLeft);
+        view.drawImage(startGame.scaledStartGame, startGame.pos, startGame.rotation, GameView.ImageOrigin.TopLeft);
+        view.drawImage(hiScore.scaledHiScore, hiScore.pos, hiScore.rotation, GameView.ImageOrigin.TopLeft);
+        view.drawImage(credits.scaledCredits, credits.pos, credits.rotation, GameView.ImageOrigin.TopLeft);
         if(getNoiseOn() == true){
             view.drawImage(scaledNoise, pos, rotation, GameView.ImageOrigin.TopLeft);
         }
@@ -83,8 +89,23 @@ public class MenuState implements GameObject {
      * I need a quick explanation on that.
      */
     public void onTouchEvent(MotionEvent event) {
-        setNoiseOn();
-        setNoiseWait();
+        startGame.onTouchEvent(event, (getScreenWidth() / 4 - 14), (getScreenHeight() / 4 + 60), ((getScreenWidth() / 4 - 14) + 611), ((getScreenHeight() / 4 + 60) + 179));
+        hiScore.onTouchEvent(event, (getScreenWidth() / 4 - 14), (getScreenHeight() / 4 * 2 + 120), ((getScreenWidth() / 4 - 14) + 269), ((getScreenHeight() / 4 * 2 + 120) + 59));
+        credits.onTouchEvent(event, (getScreenWidth() / 4 * 2 + 29), (getScreenHeight() / 4 * 2 + 120), ((getScreenWidth() / 4 * 2 + 29) + 269), ((getScreenHeight() / 4 * 2 + 120) + 59));
+
+        if(startGame.isTouched() == true){
+            startGame.isTouched = false;
+            setNoiseOn();
+            setNoiseWait();
+        }
+        if(hiScore.isTouched == true){
+            hiScore.isTouched = false;
+            Log.d("HISCORE", "isTouched");
+        }
+        if(credits.isTouched == true){
+            credits.isTouched = false;
+            Log.d("CREDITS", "isTouched");
+        }
     }
 
     public void startGameScreen() {
