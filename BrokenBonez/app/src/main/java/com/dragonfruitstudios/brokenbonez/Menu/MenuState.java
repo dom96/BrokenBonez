@@ -109,9 +109,6 @@ public class MenuState implements GameObject {
         }
     }
 
-    public void startGameScreen() {
-        this.gameSceneManager.setScene("gameScene");
-    }
     public void startBikeSelectionScreen(){this.gameSceneManager.setScene("bikeSelectionScene");}
     public boolean getNoiseOn(){
         return noiseOn;
