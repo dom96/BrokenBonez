@@ -8,15 +8,12 @@ import com.dragonfruitstudios.brokenbonez.Game.Camera;
 import com.dragonfruitstudios.brokenbonez.Game.GameObject;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
-import com.dragonfruitstudios.brokenbonez.Gameplay.Bike;
 import com.dragonfruitstudios.brokenbonez.Gameplay.GameState;
 import com.dragonfruitstudios.brokenbonez.Math.Physics.Simulator;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 public class BikeSelectionState extends GameState implements GameObject {
     BikeSelectionLevel bikeSelectionLevel;
-    Bike firstBike;
-    SecondBike bikeTwo;
     private AssetLoader assetLoader;
     private GameSceneManager gameSceneManager;
     private Simulator physicsSimulator;
@@ -39,8 +36,6 @@ public class BikeSelectionState extends GameState implements GameObject {
         this.physicsSimulator = new Simulator();
         camera = new Camera(0, 0);
         bikeSelectionLevel = new BikeSelectionLevel(this);
-        firstBike = new Bike(bikeSelectionLevel, Bike.BodyType.Bicycle);
-        bikeTwo = new SecondBike(bikeSelectionLevel);
         this.assetLoader.AddAssets(new String[]{"nightsky.png", "tvnoise.png"});
         background = assetLoader.getBitmapByName("nightsky.png");
         scaledBackground = background.createScaledBitmap(background, getScreenWidth(), getScreenHeight(), false);
@@ -63,21 +58,13 @@ public class BikeSelectionState extends GameState implements GameObject {
 
     @Override
     public void update(float lastUpdate) {
-        firstBike.update(lastUpdate);
-        if(drawSecondBike() == true) {
-            bikeTwo.update(lastUpdate);
-        }
         physicsSimulator.update(lastUpdate);
-        bikeSelectionLevel.update(lastUpdate, firstBike.getPos());
+        bikeSelectionLevel.update(lastUpdate);
     }
 
     @Override
     public void updateSize(int w, int h) {
         bikeSelectionLevel.updateSize(w, h);
-        firstBike.updateSize(w, h);
-        if(drawSecondBike() == true) {
-            bikeTwo.updateSize(w, h);
-        }
         camera.updateSize(w, h);
     }
 
@@ -91,10 +78,6 @@ public class BikeSelectionState extends GameState implements GameObject {
         view.drawImage(select.scaledSelect, select.pos, select.rotation, GameView.ImageOrigin.TopLeft);
         view.setCamera(camera);
         bikeSelectionLevel.draw(view);
-        firstBike.draw(view);
-        if(drawSecondBike() == true){
-            bikeTwo.draw(view);
-        }
         physicsSimulator.draw(view);
     }
 

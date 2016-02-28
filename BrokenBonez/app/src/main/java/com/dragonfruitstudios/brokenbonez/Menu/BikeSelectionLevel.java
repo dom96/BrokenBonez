@@ -11,8 +11,9 @@ import com.dragonfruitstudios.brokenbonez.Math.Physics.Simulator;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 public class BikeSelectionLevel extends GameLevel {
-    BikeSelectionState bikeSelectionState; // Used to grab assets, and physics simulator.
-    VectorF startPoint; // Holds the coordinates which determine where the bike starts.
+
+    BikeSelectionState bikeSelectionState;
+    VectorF startPoint;
     VectorF bikePos;
 
     public BikeSelectionLevel(BikeSelectionState state) {
@@ -54,7 +55,7 @@ public class BikeSelectionLevel extends GameLevel {
         gameView.drawText(debugInfo, 100, 30, Color.WHITE);
     }
 
-    public void update(float lastUpdate, VectorF bikePos) {
+    public void update(float lastUpdate) {
         this.bikePos = bikePos;
     }
 

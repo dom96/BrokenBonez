@@ -37,11 +37,6 @@ public class Bike implements GameObject {
         Bike, Bicycle
     }
 
-    // TODO: Remove this empty constructor.
-    public Bike() {
-
-    }
-
     public Bike(Level currentLevel, BodyType bodyType) {
         this.currentLevel = currentLevel;
 
