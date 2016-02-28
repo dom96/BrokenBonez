@@ -74,6 +74,10 @@ public class Level {
         }
     }
 
+    public Level() {
+
+    }
+
     public void updateSize(int w, int h) {
         Log.d("UpdateSize", "Updating size in Level: " + w + " " + h);
         startPoint = calcStartPoint(w, h);

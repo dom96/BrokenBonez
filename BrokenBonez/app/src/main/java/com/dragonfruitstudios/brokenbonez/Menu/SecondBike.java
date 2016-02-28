@@ -1,24 +1,19 @@
-package com.dragonfruitstudios.brokenbonez.Gameplay;
+package com.dragonfruitstudios.brokenbonez.Menu;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.util.Log;
-
-import com.dragonfruitstudios.brokenbonez.Game.Camera;
-import com.dragonfruitstudios.brokenbonez.Game.Graphics;
-import com.dragonfruitstudios.brokenbonez.Math.Collisions.Circle;
-import com.dragonfruitstudios.brokenbonez.Math.Collisions.Manifold;
 import com.dragonfruitstudios.brokenbonez.Game.GameObject;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
+import com.dragonfruitstudios.brokenbonez.Gameplay.Bike;
+import com.dragonfruitstudios.brokenbonez.Gameplay.Level;
+import com.dragonfruitstudios.brokenbonez.Math.Collisions.Circle;
 import com.dragonfruitstudios.brokenbonez.Math.Physics.DynamicBody;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
-
-import java.util.ArrayList;
-
-public class Bike implements GameObject {
+public class SecondBike extends Bike implements GameObject {
     // Some constants related to the wheels.
-    final float wheelSeparation = 74f; // TODO: Change this depending on body type.
+    final float wheelSeparation = 74f;
     final float wheelRadius = 20f;
     final float wheelMass = 200f;
 
@@ -32,22 +27,9 @@ public class Bike implements GameObject {
     // The start position of this bike.
     VectorF startPos;
 
-    // Customisation of the bike.
-    Bitmap body;
-    BodyType bodyType;
-    int color; // The bike color.
-
-    public enum BodyType {
-        Bike, Bicycle
-    }
-
-    public Bike() {
-
-    }
-
-    public Bike(Level currentLevel, BodyType bodyType) {
+    public SecondBike(Level currentLevel) {
+        super();
         this.currentLevel = currentLevel;
-
         Circle circle = new Circle(new VectorF(0, 0), wheelRadius);
         leftWheel = currentLevel.getPhysicsSimulator().createDynamicBody(circle, wheelMass);
         rightWheel = currentLevel.getPhysicsSimulator().createDynamicBody(circle, wheelMass);
@@ -59,10 +41,6 @@ public class Bike implements GameObject {
         this.rightWheel.getVelocity().set(20, 0);
         //this.rightWheel.acceleration.set(40, 0);
         this.leftWheel.setAngularVelocity(2);
-
-        this.bodyType = bodyType;
-        // Use the setter which assigns the `body` for us.
-        setColor(Color.parseColor("#4d27f6"));
     }
 
     public void draw(GameView gameView) {
@@ -75,6 +53,7 @@ public class Bike implements GameObject {
                 GameView.ImageOrigin.Middle);
 
         // Draw the bike body.
+        Bitmap body = currentLevel.getAssetLoader().getBitmapByName("bike/body_one.png");
         // Calculate the vector between the two wheels.
         VectorF leftToRight = rightWheel.getPos().subtracted(leftWheel.getPos());
         // Check if the left wheel is in the same position as the right wheel.
@@ -153,27 +132,5 @@ public class Bike implements GameObject {
     public void setPos(float x, float y) {
         leftWheel.setPos(x, y);
         rightWheel.setPos(x + wheelSeparation, y);
-    }
-
-    public void setColor(int color) {
-        this.color = color;
-
-        String filename = "bike/body_one.png";
-        String bodyColor = "#4d27f6";
-        switch (bodyType) {
-            case Bike:
-                filename = "bike/body_one.png";
-                bodyColor = "#4d27f6";
-                break;
-            case Bicycle:
-                filename = "bike/body_two.png";
-                bodyColor = "#2caf04";
-                break;
-        }
-         body = currentLevel.getAssetLoader().getBitmapByName(filename);
-        // Need to make a mutable copy of the bitmap in order to change its color.
-        body = body.copy(body.getConfig(), true);
-        // Change the bike body color.
-        Graphics.replaceColor(body, Color.parseColor(bodyColor), color);
     }
 }
