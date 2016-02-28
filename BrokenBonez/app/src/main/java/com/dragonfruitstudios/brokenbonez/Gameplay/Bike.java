@@ -30,6 +30,9 @@ public class Bike implements GameObject {
     // The start position of this bike.
     VectorF startPos;
 
+    // Customisation of the bike.
+    int color; // The bike color.
+
     public Bike(Level currentLevel) {
         this.currentLevel = currentLevel;
 
@@ -55,6 +58,7 @@ public class Bike implements GameObject {
         gameView.drawImage(wheel, rightWheel.getPos(), rightWheel.getRotation(),
                 GameView.ImageOrigin.Middle);
 
+        // TODO: Bike color.
         // Draw the bike body.
         Bitmap body = currentLevel.getAssetLoader().getBitmapByName("bike/body_one.png");
         // Calculate the vector between the two wheels.
@@ -135,5 +139,9 @@ public class Bike implements GameObject {
     public void setPos(float x, float y) {
         leftWheel.setPos(x, y);
         rightWheel.setPos(x + wheelSeparation, y);
+    }
+
+    public void setColor(int color) {
+        this.color = color;
     }
 }
