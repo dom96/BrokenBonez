@@ -49,7 +49,8 @@ public class MenuState implements GameObject {
                     noiseOn = false;
                     noiseWait = false;
                     waitTime = 0;
-                    startGameScreen();
+                    //startGameScreen();
+                    startBikeSelectionScreen();
             }
         }
     }
@@ -111,6 +112,7 @@ public class MenuState implements GameObject {
     public void startGameScreen() {
         this.gameSceneManager.setScene("gameScene");
     }
+    public void startBikeSelectionScreen(){this.gameSceneManager.setScene("bikeSelectionScene");}
     public boolean getNoiseOn(){
         return noiseOn;
     }

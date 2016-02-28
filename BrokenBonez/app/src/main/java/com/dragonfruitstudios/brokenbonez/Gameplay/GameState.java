@@ -32,6 +32,10 @@ public class GameState {
         bike = new Bike(currentLevel);
     }
 
+    public GameState() {
+
+    }
+
     public void update(float lastUpdate) {
         bike.update(lastUpdate);
         physicsSimulator.update(lastUpdate);
@@ -55,7 +59,6 @@ public class GameState {
     public void setBikeAcceleration(float strength) {
         bike.setTorque(strength);
     }
-
     public AssetLoader getAssetLoader() {
         return assetLoader;
     }

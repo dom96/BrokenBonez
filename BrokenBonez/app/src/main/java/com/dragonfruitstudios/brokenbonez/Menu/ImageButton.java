@@ -11,6 +11,12 @@ public class ImageButton {
     Bitmap startGame;
     Bitmap hiScore;
     Bitmap credits;
+    Bitmap next;
+    Bitmap prev;
+    Bitmap select;
+    final Bitmap scaledNext;
+    final Bitmap scaledPrev;
+    final Bitmap scaledSelect;
     final Bitmap scaledStartGame;
     final Bitmap scaledHiScore;
     final Bitmap scaledCredits;
@@ -25,13 +31,19 @@ public class ImageButton {
         this.pos = new VectorF(x, y);
         this.rectangle = new Rect(this.pos, width, height);
         this.assetLoader = assetLoader;
-        this.assetLoader.AddAssets(new String[]{"start.png", "hiscore.png", "credits.png"});
+        this.assetLoader.AddAssets(new String[]{"start.png", "hiscore.png", "credits.png", "next.png", "prev.png", "select.png"});
         startGame = assetLoader.getBitmapByName("start.png");
         hiScore = assetLoader.getBitmapByName("hiscore.png");
         credits = assetLoader.getBitmapByName("credits.png");
+        next = assetLoader.getBitmapByName("next.png");
+        prev = assetLoader.getBitmapByName("prev.png");
+        select = assetLoader.getBitmapByName("select.png");
         this.scaledStartGame = startGame.createScaledBitmap(startGame, 612, 180, false);
         this.scaledHiScore = hiScore.createScaledBitmap(hiScore, 270, 60, false);
         this.scaledCredits = credits.createScaledBitmap(credits, 270, 60, false);
+        this.scaledNext = next.createScaledBitmap(next, 270, 60, false);
+        this.scaledPrev = prev.createScaledBitmap(prev, 270, 60, false);
+        this.scaledSelect = select.createScaledBitmap(select, 270, 60, false);
     }
 
     public void onTouchEvent(MotionEvent event, float x, float y, float width, float height) {
