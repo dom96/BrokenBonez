@@ -11,6 +11,8 @@ public class Circle extends Intersector implements Drawable {
     VectorF center;
     float radius;
 
+    VectorF size;
+
     /**
      * Creates a new Circle bounding shape with the specified center x and y position as well as
      * radius.
@@ -20,6 +22,7 @@ public class Circle extends Intersector implements Drawable {
     public Circle(float cx, float cy, float radius) {
         this.center = new VectorF(cx, cy);
         this.radius = radius;
+        this.size = new VectorF(radius*radius, radius*radius);
     }
 
     /**
@@ -28,6 +31,7 @@ public class Circle extends Intersector implements Drawable {
     public Circle(VectorF center, float radius) {
         this.center = center;
         this.radius = radius;
+        this.size = new VectorF(radius*radius, radius*radius);
     }
 
     /**
@@ -169,6 +173,14 @@ public class Circle extends Intersector implements Drawable {
 
     public float getRadius() {
         return radius;
+    }
+
+    public VectorF getPos() {
+        return center;
+    }
+
+    public VectorF getSize() {
+        return size;
     }
 
     // </editor-fold>

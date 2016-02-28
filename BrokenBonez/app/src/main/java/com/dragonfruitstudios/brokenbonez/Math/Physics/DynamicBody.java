@@ -154,7 +154,7 @@ public class DynamicBody extends Body {
     }
 
     public VectorF getPos() {
-        return boundingShape.getCenter();
+        return boundingShape.getPos();
     }
 
     public void setPos(float x, float y) {
@@ -175,6 +175,10 @@ public class DynamicBody extends Body {
 
     public float getRotation() {
         return rotation;
+    }
+
+    public VectorF getSize() {
+        return boundingShape.getSize();
     }
 
     /**

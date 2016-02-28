@@ -96,4 +96,16 @@ public class CollisionTests {
     }
 
 
+    @Test
+    public void bodySize_isCorrect() {
+        Rect rect = new Rect(new VectorF(50, 50), 500, 500);
+        assertEquals(500, rect.getSize().x, 0.0001);
+        assertEquals(500, rect.getSize().y, 0.0001);
+
+
+        Triangle triangle = new Triangle(new VectorF(0, 0), 300, 150);
+        assertEquals(300, triangle.getSize().x, 0.001);
+        assertEquals(150, triangle.getSize().y, 0.001);
+    }
+
 }

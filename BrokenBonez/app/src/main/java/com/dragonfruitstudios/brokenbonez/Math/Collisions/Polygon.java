@@ -1,5 +1,7 @@
 package com.dragonfruitstudios.brokenbonez.Math.Collisions;
 
+import android.graphics.Color;
+
 import com.dragonfruitstudios.brokenbonez.Game.Drawable;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
@@ -12,7 +14,30 @@ import java.util.Arrays;
  * collision detection between this shape and other shapes.
  */
 public class Polygon extends Intersector implements Drawable {
-    protected ArrayList<Line> lines;
+    private ArrayList<Line> lines;
+
+    private VectorF size;
+
+    private VectorF calcSize() {
+        // TODO: This code sucks. Clean it up. But make sure tests pass.
+        float minX = Float.MAX_VALUE;
+        float maxX = -Float.MAX_VALUE;
+        float minY = Float.MAX_VALUE;
+        float maxY = -Float.MAX_VALUE;
+        for (Line l : lines) {
+            minX = Math.min(minX, l.getStart().x);
+            maxX = Math.max(maxX, l.getStart().x);
+            minY = Math.min(minY, l.getStart().y);
+            maxY = Math.max(maxY, l.getStart().y);
+
+            minX = Math.min(minX, l.getFinish().x);
+            maxX = Math.max(maxX, l.getFinish().x);
+            minY = Math.min(minY, l.getFinish().y);
+            maxY = Math.max(maxY, l.getFinish().y);
+        }
+
+        return new VectorF(maxX - minX, maxY - minY);
+    }
 
     protected Polygon() {
         this.lines = new ArrayList<Line>();
@@ -20,10 +45,12 @@ public class Polygon extends Intersector implements Drawable {
 
     public Polygon(Line[] lines) {
         this.lines = new ArrayList<Line>(Arrays.asList(lines));
+        size = calcSize();
     }
 
     public Polygon(ArrayList<Line> lines) {
         this.lines = lines;
+        size = calcSize();
     }
 
     protected void addVertices(VectorF[] vertices) {
@@ -142,6 +169,14 @@ public class Polygon extends Intersector implements Drawable {
         return new Polygon(new ArrayList<Line>(lines));
     }
 
+    public VectorF getPos() {
+        return lines.get(0).getPos();
+    }
+
+    public VectorF getSize() {
+        return size;
+    }
+
     /**
      This method is used to show where the polygon is on the screen, for debugging purposes only.
      */
@@ -149,5 +184,9 @@ public class Polygon extends Intersector implements Drawable {
         for (Line l : lines) {
             l.draw(view);
         }
+
+        // Draw the size of the polygon somewhere beside it.
+        view.drawText(getSize().x + "x" + getSize().y, lines.get(0).getPos().x - 5,
+                lines.get(0).getPos().y - 10, Color.RED);
     }
 }

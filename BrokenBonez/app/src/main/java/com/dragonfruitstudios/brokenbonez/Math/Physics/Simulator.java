@@ -1,11 +1,14 @@
 package com.dragonfruitstudios.brokenbonez.Math.Physics;
 
+import android.util.Log;
+
 import com.dragonfruitstudios.brokenbonez.Game.Camera;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.GameLoop;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Circle;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Intersector;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Manifold;
+import com.dragonfruitstudios.brokenbonez.Math.MathUtils;
 
 import java.util.ArrayList;
 
@@ -35,6 +38,11 @@ public class Simulator {
         for (DynamicBody dBody : dynamicBodies) {
             ArrayList<Manifold> collisions = new ArrayList<>();
             for (StaticBody sBody : staticBodies) {
+                // Check if the two bodies are sufficiently close together for a collision to occur.
+                if (!sBody.mightCollide(dBody)) {
+                    // Don't test for collision if sufficiently far enough.
+                    continue;
+                }
                 Manifold collision = sBody.collisionTest(dBody);
                 if (collision.hasCollided()) {
                     collisions.add(collision);
