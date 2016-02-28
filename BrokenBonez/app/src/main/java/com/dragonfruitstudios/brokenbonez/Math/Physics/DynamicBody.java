@@ -105,11 +105,14 @@ public class DynamicBody extends Body {
 
                 if (wasInAir) {
                     wasInAir = false;
-                    // TODO: Measure amount of time in air, if it's above some threshold then
-                    // TODO: calculate angular vel.
                     // Velocity = ω * radius
-                    VectorF newVelocity = new VectorF(angularVelocity * boundingShape.getRadius(), 0);
-                    //velocity.add(newVelocity);
+                    // Calculate the magnitude of the new velocity based on the bodies angular
+                    // velocity. Use the magnitude to find the new vector velocity based on
+                    // the direction of the old velocity.
+                    VectorF newVelocity = velocity.normalised();
+                    newVelocity.mult(angularVelocity * boundingShape.getRadius());
+
+                    velocity = newVelocity;
                 } else {
                     // Calculate the body's angular velocity based on its linear velocity.
                     // i.e. make the wheels spin!
