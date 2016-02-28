@@ -117,7 +117,7 @@ public class DynamicBody extends Body {
                     // velocity. Use the magnitude to find the new vector velocity based on
                     // the direction of the old velocity.
                     VectorF newVelocity = velocity.normalised();
-                    newVelocity.mult(angularVelocity * boundingShape.getRadius());
+                    newVelocity.mult(Math.abs(angularVelocity) * boundingShape.getRadius());
 
                     velocity = newVelocity;
                 } else {
