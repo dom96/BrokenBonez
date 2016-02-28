@@ -57,5 +57,8 @@ public class GameScene extends Scene {
     @Override
     public void activate() {
         state.getAssetLoader().getSoundByName("bikeEngine.mp3").play(true);
+        state.getAssetLoader().getSoundByName("bikeEngine.mp3").setVolume(0.5f);
+        state.getAssetLoader().getSoundByName("brokenboneztheme.ogg").setVolume(0.3f);
+        state.getAssetLoader().getSoundByName("brokenboneztheme.ogg").play(true);
     }
 }

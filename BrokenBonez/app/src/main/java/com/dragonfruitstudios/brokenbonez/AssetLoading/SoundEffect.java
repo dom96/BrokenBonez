@@ -14,6 +14,7 @@ public class SoundEffect extends Sound {
     SoundPool s;
     int id;
     boolean loaded = false;
+    int streamID;
     public SoundEffect(SoundPool soundPool, AssetManager assetM, String filePath){
         super(soundPool, assetM, filePath);
         try {
@@ -36,16 +37,15 @@ public class SoundEffect extends Sound {
 
     }
 
-    private void tryPlay( final boolean loop){
+    private void tryPlay( final boolean loop){ //May be used later -AM
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
-                if (loaded){
-                    if (loop){
-                        soundPool.play(id, 1, 1, 1, -1, 1);
-                    }
-                    else{
-                        soundPool.play(id, 1, 1, 1, 0, 1);
+                if (loaded) {
+                    if (loop) {
+                        streamID = soundPool.play(id, 1, 1, 1, -1, 1);
+                    } else {
+                        streamID = soundPool.play(id, 1, 1, 1, 0, 1);
                     }
                 } else{
                     tryPlay(loop);
@@ -53,30 +53,66 @@ public class SoundEffect extends Sound {
             }
         }, 30);
     }
+
+    private void playSound(boolean loop){
+        if (loop) {
+            streamID = soundPool.play(id, 1, 1, 1, -1, 1);
+        } else {
+            streamID = soundPool.play(id, 1, 1, 1, 0, 1);
+        }
+    }
+
+    @Override
+    public void play() {
+        Log.d("Sound", "Playing sound " + id);
+        playSound(false);
+    }
+
     @Override
     public void play(boolean loop){
-        loaded = true; //Bypass OnLoadCompleteListener handler bug for now - AM
         Log.d("Sound", "Playing sound " + id);
-        tryPlay(loop);
+        playSound(loop);
     }
+
+    @Override
+    public void play(float volume) {
+        Log.d("Sound", "Playing sound " + id);
+        playSound(false);
+        this.setVolume(volume);
+    }
+
+    @Override
+    public void play(boolean loop, float volume) {
+        Log.d("Sound", "Playing sound " + id);
+        playSound(loop);
+        this.setVolume(volume);
+    }
+
     @Override
     public void pause(){
-        soundPool.pause(id);
+        soundPool.pause(streamID);
     }
 
     @Override
     public void resume(){
-        soundPool.resume(id);
+        soundPool.resume(streamID);
     }
 
     @Override
     public void stop(){
-        soundPool.stop(id);
+        soundPool.stop(this.streamID);
     }
 
     @Override
     public void destroy() {
         //TODO
     }
+
+    @Override
+    public void setVolume(float volume) {
+        soundPool.setVolume(streamID, volume, volume);
+        this.volume = volume;
+    }
+
 
 }
