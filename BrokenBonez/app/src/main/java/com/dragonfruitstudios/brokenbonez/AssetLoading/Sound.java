@@ -9,12 +9,23 @@ public abstract class Sound{
      */
 
     SoundPool soundPool;
+    protected float volume = 1f;
 
     public Sound(SoundPool soundPool, AssetManager assetM, String filePath){
         this.soundPool = soundPool;
     }
 
+    public float getVolume(){
+        return this.volume;
+    }
+
     public abstract void play(boolean loop);
+
+    public abstract void play();
+
+    public abstract void play(float volume);
+
+    public abstract void play(boolean loop, float volume);
 
     public abstract void pause();
 
@@ -23,5 +34,7 @@ public abstract class Sound{
     public abstract void stop();
 
     public abstract void destroy();
+
+    public abstract void setVolume(float volume);
 
 }

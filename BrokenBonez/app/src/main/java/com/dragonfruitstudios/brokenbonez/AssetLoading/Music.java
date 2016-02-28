@@ -2,6 +2,7 @@ package com.dragonfruitstudios.brokenbonez.AssetLoading;
 
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.util.Log;
@@ -16,6 +17,7 @@ public class Music extends Sound {
         super(soundPool, assetM, filePath);
         try {
             MediaPlayer m = new MediaPlayer();
+            m.setAudioStreamType(AudioManager.STREAM_MUSIC);
             Log.d("AssetLoader", "Loading music from " + filePath);
             AssetFileDescriptor df = assetM.openFd(filePath);
             m.setDataSource(df.getFileDescriptor(), df.getStartOffset(), df.getLength());
@@ -30,9 +32,28 @@ public class Music extends Sound {
 
 
     @Override
+    public void play() {
+        this.m.setLooping(false);
+        this.m.start();
+    }
+
+    @Override
     public void play(boolean loop){
         this.m.setLooping(loop);
         this.m.start();
+    }
+
+    @Override
+    public void play(float volume) {
+        this.m.start();
+        this.setVolume(volume);
+    }
+
+    @Override
+    public void play(boolean loop, float volume) {
+        this.m.setLooping(loop);
+        this.m.start();
+        this.setVolume(volume);
     }
 
     @Override
@@ -42,7 +63,8 @@ public class Music extends Sound {
 
     @Override
     public void resume(){
-        this.m.start();
+        if (m.getCurrentPosition() > 1)
+            this.m.start();
     }
 
     @Override
@@ -53,6 +75,12 @@ public class Music extends Sound {
     @Override
     public void destroy() {
         //TODO
+    }
+
+    @Override
+    public void setVolume(float volume) {
+        this.m.setVolume(volume, volume);
+        this.volume = volume;
     }
 
 

@@ -5,9 +5,11 @@ import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
+import android.os.Build;
 import android.util.Log;
 
 import java.io.IOException;
@@ -32,7 +34,16 @@ public class AssetLoader {
      */
     public AssetLoader(Activity activity, String[] assets){
         this.activity = activity;
-        this.soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC,0);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            AudioAttributes audioAttributes = new AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).setUsage(AudioAttributes.USAGE_GAME).build();
+            this.soundPool = new SoundPool.Builder().setMaxStreams(5).setAudioAttributes(audioAttributes).build();
+        }
+        else
+        {
+            this.soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC,0);
+        }
+
         this.assetManager = this.activity.getAssets();
         AddAssets(assets);
     }
@@ -56,13 +67,13 @@ public class AssetLoader {
         for (int count = 0; count < assets.length; count++) {
             long length = 0;
             try {
-                if (assets[count].substring(assets[count].length() - 3).equals("mp3")) {
+                if (isSound(assets[count])) {
                     AssetFileDescriptor df = assetManager.openFd("sound/" + assets[count]);
                     length = df.getLength();
                 }
-            if ((assets[count].substring(assets[count].length() - 3).equals("mp3")) && (length < 1000000)) {
+            if ((isSound(assets[count])) && (length < 1000000)) {
                 this.sounds.put(assets[count], loadInSoundEffect(assetManager, "sound/" + assets[count]));
-            } else if (assets[count].substring(assets[count].length() - 3).equals("mp3")){
+            } else if (isSound(assets[count])){
                 Sound x = loadInMusicFile(assetManager, "sound/" + assets[count]);
                 this.sounds.put(assets[count], loadInMusicFile(assetManager, "sound/" + assets[count]));
             }
@@ -75,6 +86,17 @@ public class AssetLoader {
             }
         }
         return this;
+    }
+
+    private boolean isSound(String filePath){
+        // Returns true if the provided string is a sound (uses .mp3 or .ogg)
+        if (filePath.substring(filePath.length() - 3).equals("mp3") || filePath.substring(filePath.length() - 3).equals("ogg")){
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     public Bitmap getBitmapByName(String key) {
