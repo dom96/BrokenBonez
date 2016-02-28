@@ -21,6 +21,11 @@ public abstract class Scene implements GameObject {
     GameSceneManager gameSceneManager;
     public AssetLoader assetLoader;
 
+    public Scene(AssetLoader assetLoader, GameSceneManager gameSceneManager) {
+        this.assetLoader = assetLoader;
+        this.gameSceneManager = gameSceneManager;
+    }
+
     /**
      * The method which will be called whenever the screen has been touched.
      * @param event Information about the event.

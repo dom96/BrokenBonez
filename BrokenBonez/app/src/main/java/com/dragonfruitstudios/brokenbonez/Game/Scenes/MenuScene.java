@@ -11,8 +11,7 @@ public class MenuScene extends Scene {
     MenuState state;
 
     public MenuScene(AssetLoader assetLoader, GameSceneManager gameSceneManager) {
-        this.gameSceneManager = gameSceneManager;
-        this.assetLoader = assetLoader;
+        super(assetLoader, gameSceneManager);
         this.state = new MenuState(assetLoader, gameSceneManager);
     }
 
@@ -30,25 +29,5 @@ public class MenuScene extends Scene {
 
     public void onTouchEvent(MotionEvent event) {
        state.onTouchEvent(event);
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void activate() {
-
-    }
-
-    @Override
-    public void deactivate() {
-
     }
 }

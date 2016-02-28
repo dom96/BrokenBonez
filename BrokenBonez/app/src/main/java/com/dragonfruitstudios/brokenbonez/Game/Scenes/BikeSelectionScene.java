@@ -12,8 +12,7 @@ public class BikeSelectionScene extends Scene {
     BikeSelectionState state;
 
     public BikeSelectionScene(AssetLoader assetLoader, GameSceneManager gameSceneManager){
-        this.gameSceneManager = gameSceneManager;
-        this.assetLoader = assetLoader;
+        super(assetLoader, gameSceneManager);
         this.state = new BikeSelectionState(assetLoader, gameSceneManager);
     }
 
