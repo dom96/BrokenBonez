@@ -52,9 +52,6 @@ public class GameLoop implements Runnable {
         this.gameSceneManager.addScene("bikeSelectionScene", bikeSelectionScene, false);
         this.gameSceneManager.addScene("bikeShowcaseScene",
                 new BikeShowcaseScene(assetLoader, gameSceneManager), false);
-        /**GameScene gameScene = new GameScene(assetLoader);
-        gameSceneManager = new GameSceneManager(gameView, "gameScene", gameScene);**/
-
 
         updateLock = new ReentrantLock();
 
@@ -208,6 +205,9 @@ public class GameLoop implements Runnable {
                 break;
             case KeyEvent.KEYCODE_S:
                 step = true;
+                break;
+            case KeyEvent.KEYCODE_D:
+                gameSceneManager.setScene("gameScene");
                 break;
         }
 
