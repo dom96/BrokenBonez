@@ -6,7 +6,7 @@ import android.util.Log;
 import com.dragonfruitstudios.brokenbonez.Game.GameObject;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Gameplay.Bike;
-import com.dragonfruitstudios.brokenbonez.Gameplay.Level;
+import com.dragonfruitstudios.brokenbonez.Gameplay.GameLevel;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Circle;
 import com.dragonfruitstudios.brokenbonez.Math.Physics.DynamicBody;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
@@ -18,7 +18,7 @@ public class SecondBike extends Bike implements GameObject {
     final float wheelMass = 200f;
 
     // The current level that this bike is on.
-    Level currentLevel;
+    GameLevel currentLevel;
 
     // The wheel's of this bike.
     DynamicBody leftWheel;
@@ -27,7 +27,7 @@ public class SecondBike extends Bike implements GameObject {
     // The start position of this bike.
     VectorF startPos;
 
-    public SecondBike(Level currentLevel) {
+    public SecondBike(GameLevel currentLevel) {
         super();
         this.currentLevel = currentLevel;
         Circle circle = new Circle(new VectorF(0, 0), wheelRadius);

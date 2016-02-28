@@ -1,17 +1,16 @@
 package com.dragonfruitstudios.brokenbonez.Menu;
 
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.util.Log;
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
-import com.dragonfruitstudios.brokenbonez.Gameplay.Level;
+import com.dragonfruitstudios.brokenbonez.Gameplay.GameLevel;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Rect;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Math.Physics.Simulator;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
-public class BikeSelectionLevel extends Level {
+public class BikeSelectionLevel extends GameLevel {
     BikeSelectionState bikeSelectionState; // Used to grab assets, and physics simulator.
     VectorF startPoint; // Holds the coordinates which determine where the bike starts.
     VectorF bikePos;

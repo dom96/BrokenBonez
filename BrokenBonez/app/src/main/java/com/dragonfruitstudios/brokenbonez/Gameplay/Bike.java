@@ -4,17 +4,13 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.util.Log;
 
-import com.dragonfruitstudios.brokenbonez.Game.Camera;
 import com.dragonfruitstudios.brokenbonez.Game.Graphics;
+import com.dragonfruitstudios.brokenbonez.Game.Level;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Circle;
-import com.dragonfruitstudios.brokenbonez.Math.Collisions.Manifold;
 import com.dragonfruitstudios.brokenbonez.Game.GameObject;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Math.Physics.DynamicBody;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
-
-
-import java.util.ArrayList;
 
 public class Bike implements GameObject {
     // Some constants related to the wheels.
@@ -41,6 +37,7 @@ public class Bike implements GameObject {
         Bike, Bicycle
     }
 
+    // TODO: Remove this empty constructor.
     public Bike() {
 
     }
@@ -170,10 +167,15 @@ public class Bike implements GameObject {
                 bodyColor = "#2caf04";
                 break;
         }
-         body = currentLevel.getAssetLoader().getBitmapByName(filename);
+        body = currentLevel.getAssetLoader().getBitmapByName(filename);
         // Need to make a mutable copy of the bitmap in order to change its color.
         body = body.copy(body.getConfig(), true);
         // Change the bike body color.
         Graphics.replaceColor(body, Color.parseColor(bodyColor), color);
+    }
+
+    public void setBodyType(BodyType bodyType) {
+        this.bodyType = bodyType;
+        setColor(color); // Refresh body image.
     }
 }

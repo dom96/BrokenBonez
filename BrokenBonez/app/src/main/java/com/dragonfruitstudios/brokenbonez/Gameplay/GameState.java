@@ -7,7 +7,7 @@ import com.dragonfruitstudios.brokenbonez.Math.Physics.Simulator;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
 
 public class GameState {
-    Level currentLevel;
+    GameLevel currentLevel;
     Bike bike;
 
     private AssetLoader assetLoader;
@@ -30,7 +30,7 @@ public class GameState {
 
         camera = new Camera(0, 0);
 
-        currentLevel = new Level(this);
+        currentLevel = new GameLevel(this);
         bike = new Bike(currentLevel, Bike.BodyType.Bike);
     }
 
