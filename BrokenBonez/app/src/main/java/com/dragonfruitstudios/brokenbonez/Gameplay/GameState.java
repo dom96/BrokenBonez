@@ -21,7 +21,8 @@ public class GameState {
 
         // Load assets.
         this.assetLoader = assetLoader;
-        this.assetLoader.AddAssets(new String[] {"bike/wheel_basic.png", "bike/body_one.png"});
+        this.assetLoader.AddAssets(new String[] {"bike/wheel_basic.png", "bike/body_one.png",
+                "bike/body_two.png"});
         this.assetLoader.AddAssets(new String[]{"bikeEngine.mp3", "bikeEngineRev.mp3"});
 
         // Create a new physics simulator.
@@ -30,7 +31,7 @@ public class GameState {
         camera = new Camera(0, 0);
 
         currentLevel = new Level(this);
-        bike = new Bike(currentLevel);
+        bike = new Bike(currentLevel, Bike.BodyType.Bike);
     }
 
     public void update(float lastUpdate) {

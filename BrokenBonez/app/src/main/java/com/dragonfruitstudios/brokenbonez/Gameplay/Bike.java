@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class Bike implements GameObject {
     // Some constants related to the wheels.
-    final float wheelSeparation = 74f;
+    final float wheelSeparation = 74f; // TODO: Change this depending on body type.
     final float wheelRadius = 20f;
     final float wheelMass = 200f;
 
@@ -33,9 +33,14 @@ public class Bike implements GameObject {
 
     // Customisation of the bike.
     Bitmap body;
+    BodyType bodyType;
     int color; // The bike color.
 
-    public Bike(Level currentLevel) {
+    public enum BodyType {
+        Bike, Bicycle
+    }
+
+    public Bike(Level currentLevel, BodyType bodyType) {
         this.currentLevel = currentLevel;
 
         Circle circle = new Circle(new VectorF(0, 0), wheelRadius);
@@ -50,6 +55,7 @@ public class Bike implements GameObject {
         //this.rightWheel.acceleration.set(40, 0);
         this.leftWheel.setAngularVelocity(2);
 
+        this.bodyType = bodyType;
         // Use the setter which assigns the `body` for us.
         setColor(Color.parseColor("#4d27f6"));
     }
@@ -146,10 +152,23 @@ public class Bike implements GameObject {
 
     public void setColor(int color) {
         this.color = color;
-        body = currentLevel.getAssetLoader().getBitmapByName("bike/body_one.png");
+
+        String filename = "bike/body_one.png";
+        String bodyColor = "#4d27f6";
+        switch (bodyType) {
+            case Bike:
+                filename = "bike/body_one.png";
+                bodyColor = "#4d27f6";
+                break;
+            case Bicycle:
+                filename = "bike/body_two.png";
+                bodyColor = "#2caf04";
+                break;
+        }
+         body = currentLevel.getAssetLoader().getBitmapByName(filename);
         // Need to make a mutable copy of the bitmap in order to change its color.
         body = body.copy(body.getConfig(), true);
         // Change the bike body color.
-        Graphics.replaceColor(body, Color.parseColor("#4d27f6"), color);
+        Graphics.replaceColor(body, Color.parseColor(bodyColor), color);
     }
 }
