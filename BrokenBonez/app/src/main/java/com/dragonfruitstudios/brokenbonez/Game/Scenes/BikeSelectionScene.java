@@ -32,4 +32,20 @@ public class BikeSelectionScene extends Scene {
     public void onTouchEvent(MotionEvent event) {
         state.onTouchEvent(event);
     }
+
+    public void activate() {
+
+    }
+
+    public void deactivate() {
+
+    }
+
+    public void resume() {
+
+    }
+
+    public void pause() {
+
+    }
 }

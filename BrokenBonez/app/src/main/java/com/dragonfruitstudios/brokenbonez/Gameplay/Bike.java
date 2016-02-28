@@ -31,6 +31,10 @@ public class Bike implements GameObject {
     // The start position of this bike.
     VectorF startPos;
 
+    public Bike() {
+
+    }
+
     public Bike(Level currentLevel) {
         this.currentLevel = currentLevel;
 
