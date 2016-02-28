@@ -24,6 +24,7 @@ public class GameLoop implements Runnable {
     volatile boolean run = false;
     GameView gameView;
     GameSceneManager gameSceneManager;
+    AssetLoader assetLoader;
 
     // This lock prevents the drawing of objects while they are being updated.
     // Without it there were bugs like for example the bike "teleporting" forward for a split
@@ -37,6 +38,7 @@ public class GameLoop implements Runnable {
     public GameLoop(GameView gameView, AssetLoader assetLoader) {
         targetTime = 1000000000 / targetFPS;
         this.gameView = gameView;
+        this.assetLoader = assetLoader;
 
 
         this.gameSceneManager = new GameSceneManager(gameView); //Setup the GameSceneManager
@@ -212,10 +214,14 @@ public class GameLoop implements Runnable {
     // or when the 'P' key is pressed (when debugging in an emulator).
     public void pause() {
         run = false;
+        this.assetLoader.pause();
+        gameSceneManager.pause();
     }
 
     // Called when the user resumes the game from the android menu.
     public void resume() {
         run = true;
+        this.assetLoader.resume();
+        gameSceneManager.resume();
     }
 }

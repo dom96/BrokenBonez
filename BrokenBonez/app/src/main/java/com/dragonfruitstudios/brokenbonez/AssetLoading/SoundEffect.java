@@ -54,11 +54,9 @@ public class SoundEffect extends Sound {
         }, 30);
     }
     @Override
-    /**
-     *
-     *
-     */
     public void play(boolean loop){
+        loaded = true; //Bypass OnLoadCompleteListener handler bug for now - AM
+        Log.d("Sound", "Playing sound " + id);
         tryPlay(loop);
     }
     @Override

@@ -19,11 +19,19 @@ import com.dragonfruitstudios.brokenbonez.GameSceneManager;
  */
 public abstract class Scene implements GameObject {
     GameSceneManager gameSceneManager;
-    AssetLoader assetLoader;
+    public AssetLoader assetLoader;
 
     /**
      * The method which will be called whenever the screen has been touched.
      * @param event Information about the event.
      */
     public abstract void onTouchEvent(MotionEvent event);
+
+    public abstract void pause();
+
+    public abstract void resume();
+
+    public abstract void activate();
+
+    public abstract void deactivate();
 }
