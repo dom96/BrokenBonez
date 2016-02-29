@@ -7,7 +7,7 @@ import android.view.MotionEvent;
 
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
-import com.dragonfruitstudios.brokenbonez.Game.Scenes.BikeShowcaseScene;
+import com.dragonfruitstudios.brokenbonez.Game.Scenes.BikeSelectionScene;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.GameScene;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.MenuScene;
 
@@ -47,8 +47,7 @@ public class GameLoop implements Runnable {
         GameScene gameScene = new GameScene(assetLoader, gameSceneManager);   //Create the new GameScene
         this.gameSceneManager.addScene("menuScene", menuScene, true);  //Add the MenuScene just created to the GameSceneManager, then sets it as the active scene
         this.gameSceneManager.addScene("gameScene", gameScene, false); //Add the Gamescene just created to the GameSceneManager, then makes sure it isn't set as active
-        this.gameSceneManager.addScene("bikeShowcaseScene",
-                new BikeShowcaseScene(assetLoader, gameSceneManager), false);
+        this.gameSceneManager.addScene("bikeSelectionScene", new BikeSelectionScene(assetLoader, gameSceneManager), false);
 
         updateLock = new ReentrantLock();
 
