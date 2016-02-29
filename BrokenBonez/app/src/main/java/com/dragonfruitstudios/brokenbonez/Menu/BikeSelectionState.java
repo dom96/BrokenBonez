@@ -54,7 +54,7 @@ public class BikeSelectionState extends GameState implements GameObject {
         this.assetLoader.AddAssets(new String[]{"nightsky.png", "tvnoise.png", "dirtbike.png", "bmx.png"});
         background = assetLoader.getBitmapByName("nightsky.png");
         blue = Color.BLUE;
-        purple = Color.parseColor("#800080");
+        purple = Color.parseColor("#7b2b80");
         green = Color.parseColor("#008000");
         red = Color.parseColor("#FF0000");
         yellow = Color.parseColor("#FFFF00");
@@ -173,7 +173,7 @@ public class BikeSelectionState extends GameState implements GameObject {
                 case 0:  bike.setColor(Color.BLUE);
                     setColor(0);
                     break;
-                case 1:  bike.setColor(Color.parseColor("#800080"));
+                case 1:  bike.setColor(Color.parseColor("#7b2b80"));
                     setColor(1);
                     break;
                 case 2:  bike.setColor(Color.parseColor("#008000"));
