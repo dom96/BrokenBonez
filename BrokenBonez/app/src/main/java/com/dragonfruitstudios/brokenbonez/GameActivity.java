@@ -10,6 +10,7 @@ import android.view.WindowManager;
 
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
+import com.plattysoft.leonids.ParticleSystem;
 
 /**
  * Game Activity class used for creating a new game view and game loop instance. Also defines some
@@ -38,7 +39,6 @@ public class GameActivity extends Activity {
         setContentView(gameView);
         new Thread(gameLoop).start();
     }
-
     @Override
     public void onBackPressed() {
         gameLoop.assetLoader.pause(); //Stop all sounds when back button pressed
@@ -66,6 +66,7 @@ public class GameActivity extends Activity {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        new ParticleSystem(this, 100, R.drawable.test, 800).setSpeedRange(0.1f, 0.25f).oneShot(gameView, 100);
         gameLoop.onGameTouch(event);
         return super.onTouchEvent(event);
     }

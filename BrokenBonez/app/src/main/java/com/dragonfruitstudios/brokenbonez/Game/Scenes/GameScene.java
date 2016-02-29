@@ -9,6 +9,8 @@ import com.dragonfruitstudios.brokenbonez.GameSceneManager;
 import com.dragonfruitstudios.brokenbonez.Gameplay.GameState;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Input.TouchHandler;
+import com.dragonfruitstudios.brokenbonez.R;
+import com.plattysoft.leonids.ParticleSystem;
 
 /**
  * Implements the game scene in which the bulk of the gameplay occurs.
