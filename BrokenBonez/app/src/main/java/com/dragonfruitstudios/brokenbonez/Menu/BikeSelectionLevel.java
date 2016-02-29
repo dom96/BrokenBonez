@@ -1,6 +1,8 @@
 package com.dragonfruitstudios.brokenbonez.Menu;
 
 import android.content.res.Resources;
+import android.graphics.Color;
+
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Gameplay.GameLevel;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Rect;
@@ -39,7 +41,6 @@ public class BikeSelectionLevel extends GameLevel {
     }
 
     public void draw(GameView gameView) {
-
     }
 
     public void update(float lastUpdate) {

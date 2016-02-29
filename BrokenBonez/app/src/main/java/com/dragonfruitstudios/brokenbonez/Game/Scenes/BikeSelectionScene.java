@@ -1,5 +1,6 @@
 package com.dragonfruitstudios.brokenbonez.Game.Scenes;
 
+import android.graphics.Color;
 import android.view.MotionEvent;
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
@@ -16,7 +17,6 @@ public class BikeSelectionScene extends Scene {
 
     public void draw(GameView view) {
         state.draw(view);
-
     }
 
     public void update(float lastUpdate) {

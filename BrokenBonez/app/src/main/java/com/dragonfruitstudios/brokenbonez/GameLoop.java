@@ -40,14 +40,14 @@ public class GameLoop implements Runnable {
         this.gameView = gameView;
         this.assetLoader = assetLoader;
 
-
         this.gameSceneManager = new GameSceneManager(gameView); //Setup the GameSceneManager
 
         MenuScene menuScene = new MenuScene(assetLoader, gameSceneManager);   //Create the new MenuScene
         GameScene gameScene = new GameScene(assetLoader, gameSceneManager);   //Create the new GameScene
+        BikeSelectionScene bikeSelectionScene = new BikeSelectionScene(assetLoader, gameSceneManager);
         this.gameSceneManager.addScene("menuScene", menuScene, true);  //Add the MenuScene just created to the GameSceneManager, then sets it as the active scene
         this.gameSceneManager.addScene("gameScene", gameScene, false); //Add the Gamescene just created to the GameSceneManager, then makes sure it isn't set as active
-        this.gameSceneManager.addScene("bikeSelectionScene", new BikeSelectionScene(assetLoader, gameSceneManager), false);
+        this.gameSceneManager.addScene("bikeSelectionScene", bikeSelectionScene, false);
 
         updateLock = new ReentrantLock();
 
