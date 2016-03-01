@@ -19,16 +19,24 @@ public class Line extends Intersector implements Drawable {
     private VectorF start;
     private VectorF end;
 
+    private VectorF size;
+
     private long timeOfLastCollision;
+
+    private VectorF calcSize() {
+        return this.size = new VectorF(Math.abs(start.x-end.x), Math.abs(start.y-end.y));
+    }
 
     public Line(VectorF start, VectorF end) {
         this.start = start;
         this.end = end;
+        this.size = calcSize();
     }
 
     public Line(float x1, float y1, float x2, float y2) {
         this.start = new VectorF(x1, y1);
         this.end = new VectorF(x2, y2);
+        this.size = calcSize();
     }
 
     /**
@@ -152,6 +160,14 @@ public class Line extends Intersector implements Drawable {
 
     public VectorF getFinish() {
         return end;
+    }
+
+    public VectorF getPos() {
+        return start;
+    }
+
+    public VectorF getSize() {
+        return size;
     }
 
     /**

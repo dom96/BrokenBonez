@@ -22,4 +22,19 @@ public abstract class Intersector implements Drawable {
     public abstract Manifold collisionTest(Intersector shape);
 
     public abstract Intersector copy();
+
+    /**
+     * Returns the position of the center of this shape.
+     *
+     * Note: There are some shapes which return the top-left (TODO).
+     */
+    public abstract VectorF getPos();
+
+    /**
+     * Returns a rough size of the shape. For example, a circle will return the size of the
+     * square which fits the circle exactly.
+     *
+     * This is cached by the bounding shapes for efficiency.
+     */
+    public abstract VectorF getSize();
 }

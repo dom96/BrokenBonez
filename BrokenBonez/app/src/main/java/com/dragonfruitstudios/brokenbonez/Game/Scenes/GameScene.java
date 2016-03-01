@@ -16,8 +16,7 @@ public class GameScene extends Scene {
     GameState state;
 
     public GameScene(AssetLoader assetLoader, GameSceneManager gameSceneManager) {
-        this.gameSceneManager = gameSceneManager;
-        this.assetLoader = assetLoader;
+        super(assetLoader, gameSceneManager);
         this.state = new GameState(assetLoader, this.gameSceneManager);
     }
 
@@ -56,25 +55,10 @@ public class GameScene extends Scene {
     }
 
     @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
     public void activate() {
         state.getAssetLoader().getSoundByName("bikeEngine.mp3").play(true);
         state.getAssetLoader().getSoundByName("bikeEngine.mp3").setVolume(0.5f);
-        state.getAssetLoader().getSoundByName("brokenboneztheme.ogg").setVolume(0.3f);
+        state.getAssetLoader().getSoundByName("brokenboneztheme.ogg").setVolume(1f);
         state.getAssetLoader().getSoundByName("brokenboneztheme.ogg").play(true);
-    }
-
-    @Override
-    public void deactivate() {
-
     }
 }

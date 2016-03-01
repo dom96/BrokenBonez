@@ -50,11 +50,16 @@ public class GameView extends View {
                 w, h, oldw, oldh));
         callbacks.onSizeChanged(this, w, h, oldw, oldh);
 
+        // Update camera size.
+        camera.updateSize(w, h);
     }
 
     public GameView(Context context) {
         super(context);
         paint = new Paint();
+
+        // Set a default camera.
+        camera = new Camera(0, 0);
     }
 
     public void setCallbacks(GVCallbacks drawingFunction) {
@@ -87,6 +92,9 @@ public class GameView extends View {
     }
 
     public void enableCamera() {
+        if (this.camera == null) {
+            throw new RuntimeException("You need to set a camera first.");
+        }
         if (this.cameraEnabled) {
             throw new RuntimeException("Camera has already been enabled.");
         }

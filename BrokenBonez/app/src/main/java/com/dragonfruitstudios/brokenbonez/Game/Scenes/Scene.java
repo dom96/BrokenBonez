@@ -21,17 +21,37 @@ public abstract class Scene implements GameObject {
     GameSceneManager gameSceneManager;
     public AssetLoader assetLoader;
 
+    public Scene(AssetLoader assetLoader, GameSceneManager gameSceneManager) {
+        this.assetLoader = assetLoader;
+        this.gameSceneManager = gameSceneManager;
+    }
+
     /**
      * The method which will be called whenever the screen has been touched.
      * @param event Information about the event.
      */
     public abstract void onTouchEvent(MotionEvent event);
 
-    public abstract void pause();
+    // These methods are optional but can be overriden to receive notifications about the events
+    // they represent.
 
-    public abstract void resume();
+    /**
+     * Called when the game is paused.
+     */
+    public void pause() {}
 
-    public abstract void activate();
+    /**
+     * Called when the game is resumed.
+     */
+    public void resume() {}
 
-    public abstract void deactivate();
+    /**
+     * Called when this Scene is shown to the user.
+     */
+    public void activate() {}
+
+    /**
+     * Called when this Scene is hidden from the user and another Scene takes its place.
+     */
+    public void deactivate() {}
 }

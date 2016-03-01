@@ -1,18 +1,19 @@
 package com.dragonfruitstudios.brokenbonez.Game.Scenes;
 
 import android.view.MotionEvent;
+
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
-import com.dragonfruitstudios.brokenbonez.Gameplay.Bike;
+import com.dragonfruitstudios.brokenbonez.Menu.BikeSelectionState;
 import com.dragonfruitstudios.brokenbonez.Menu.MenuState;
 
-public class MenuScene extends Scene {
-    MenuState state;
+public class BikeSelectionScene extends Scene {
+    BikeSelectionState state;
 
-    public MenuScene(AssetLoader assetLoader, GameSceneManager gameSceneManager) {
+    public BikeSelectionScene(AssetLoader assetLoader, GameSceneManager gameSceneManager){
         super(assetLoader, gameSceneManager);
-        this.state = new MenuState(assetLoader, gameSceneManager);
+        this.state = new BikeSelectionState(assetLoader, gameSceneManager);
     }
 
     public void draw(GameView view) {
@@ -28,6 +29,22 @@ public class MenuScene extends Scene {
     }
 
     public void onTouchEvent(MotionEvent event) {
-       state.onTouchEvent(event);
+        state.onTouchEvent(event);
+    }
+
+    public void activate() {
+
+    }
+
+    public void deactivate() {
+
+    }
+
+    public void resume() {
+
+    }
+
+    public void pause() {
+
     }
 }

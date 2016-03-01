@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.Camera;
+import com.dragonfruitstudios.brokenbonez.Game.Level;
 import com.dragonfruitstudios.brokenbonez.Game.LevelInfo;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Circle;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Intersector;
@@ -23,7 +24,7 @@ import java.util.ArrayList;
 // Currently just a simple class to draw the level.
 // TODO: Load level design from file.
 // TODO: Scroll the level based on camera position
-public class Level {
+public class GameLevel extends Level {
     GameState gameState; // Used to grab assets, and physics simulator.
 
     VectorF startPoint; // Holds the coordinates which determine where the bike starts.
@@ -32,7 +33,7 @@ public class Level {
 
     VectorF bikePos;
 
-    public Level(GameState state) {
+    public GameLevel(GameState state) {
         gameState = state;
 
         startPoint = new VectorF(0, 0); // Just a reasonable default.
@@ -72,6 +73,11 @@ public class Level {
             Rect rect = new Rect(new VectorF(20*3000, info.calcGroundHeight(getAssetLoader(), 720)- 200), 200, 700);
             physicsSimulator.createStaticBody(rect);
         }
+    }
+
+    // TODO: Remove
+    public GameLevel() {
+
     }
 
     public void updateSize(int w, int h) {

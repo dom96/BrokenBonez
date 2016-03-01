@@ -63,6 +63,13 @@ public class DynamicBody extends Body {
         rotation += angularVelocity * updateFactor;
     }
 
+    private VectorF calcAirResistance() {
+        // Deceleration due to air resistance. It acts in the opposite direction to the
+        // velocity.
+        return new VectorF(-(Simulator.airResistance * velocity.getX()),
+                -(Simulator.airResistance * velocity.getY()));
+    }
+
     void update(float updateFactor, ArrayList<Manifold> manifolds) {
         // Save the collision info so that the normals can be drawn in the next frame.
         // (Just for debugging).
@@ -105,11 +112,14 @@ public class DynamicBody extends Body {
 
                 if (wasInAir) {
                     wasInAir = false;
-                    // TODO: Measure amount of time in air, if it's above some threshold then
-                    // TODO: calculate angular vel.
                     // Velocity = ω * radius
-                    VectorF newVelocity = new VectorF(angularVelocity * boundingShape.getRadius(), 0);
-                    //velocity.add(newVelocity);
+                    // Calculate the magnitude of the new velocity based on the bodies angular
+                    // velocity. Use the magnitude to find the new vector velocity based on
+                    // the direction of the old velocity.
+                    VectorF newVelocity = velocity.normalised();
+                    newVelocity.mult(Math.abs(angularVelocity) * boundingShape.getRadius());
+
+                    velocity = newVelocity;
                 } else {
                     // Calculate the body's angular velocity based on its linear velocity.
                     // i.e. make the wheels spin!
@@ -125,9 +135,6 @@ public class DynamicBody extends Body {
                 // Set velocity based on torque.
                 // Divide updateFactor by 2 so that gravity wins and the wheels don't slide.
                 velocity.multAdd(new VectorF(torque, 0), updateFactor/2);
-
-                // Update the wheels' velocity based on acceleration.
-                velocity.multAdd(acceleration, updateFactor);
             }
         }
         else {
@@ -136,17 +143,17 @@ public class DynamicBody extends Body {
 
             // Acceleration due to gravity.
             acceleration.setY(Simulator.gravityScaled);
-            // Deceleration due to air resistance. It acts in the opposite direction to the
-            // velocity.
-            VectorF airResistance = new VectorF(-(0.1f * velocity.getX()),
-                    -(0.1f * velocity.getY()));
-            // Calculate the resultant acceleration.
-            VectorF resultantAccel = new VectorF(acceleration);
-            resultantAccel.add(airResistance);
-
-            // Update the bodies' velocity based on acceleration.
-            velocity.multAdd(resultantAccel, updateFactor);
         }
+
+        // Calculate the air resistance.
+        VectorF airResistance = calcAirResistance();
+
+        // Calculate the resultant acceleration.
+        VectorF resultantAccel = new VectorF(acceleration);
+        resultantAccel.add(airResistance);
+
+        // Update the bodies' velocity based on acceleration.
+        velocity.multAdd(resultantAccel, updateFactor);
     }
 
     public Circle getBoundingShape() {
@@ -154,7 +161,7 @@ public class DynamicBody extends Body {
     }
 
     public VectorF getPos() {
-        return boundingShape.getCenter();
+        return boundingShape.getPos();
     }
 
     public void setPos(float x, float y) {
@@ -175,6 +182,10 @@ public class DynamicBody extends Body {
 
     public float getRotation() {
         return rotation;
+    }
+
+    public VectorF getSize() {
+        return boundingShape.getSize();
     }
 
     /**

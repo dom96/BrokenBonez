@@ -7,7 +7,7 @@ import com.dragonfruitstudios.brokenbonez.Math.Physics.Simulator;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
 
 public class GameState {
-    Level currentLevel;
+    GameLevel currentLevel;
     Bike bike;
 
     private AssetLoader assetLoader;
@@ -21,16 +21,22 @@ public class GameState {
 
         // Load assets.
         this.assetLoader = assetLoader;
-        this.assetLoader.AddAssets(new String[] {"bike/wheel_basic.png", "bike/body_one.png"});
-        this.assetLoader.AddAssets(new String[]{"bikeEngine.mp3", "bikeEngineRev.mp3", "brokenboneztheme.ogg"});
+        this.assetLoader.AddAssets(new String[] {"bike/wheel_basic.png", "bike/body_one.png",
+                "bike/body_two.png"});
+        this.assetLoader.AddAssets(new String[]{"bikeEngine.mp3", "bikeEngineRev.mp3",
+                "brokenboneztheme.ogg"});
 
         // Create a new physics simulator.
         this.physicsSimulator = new Simulator();
 
         camera = new Camera(0, 0);
 
-        currentLevel = new Level(this);
-        bike = new Bike(currentLevel);
+        currentLevel = new GameLevel(this);
+        bike = new Bike(currentLevel, Bike.BodyType.Bike);
+    }
+
+    public GameState() {
+
     }
 
     public void update(float lastUpdate) {
@@ -56,7 +62,6 @@ public class GameState {
     public void setBikeAcceleration(float strength) {
         bike.setTorque(strength);
     }
-
     public AssetLoader getAssetLoader() {
         return assetLoader;
     }

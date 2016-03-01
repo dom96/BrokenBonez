@@ -38,4 +38,12 @@ public class StaticBody extends Body {
         return result;
     }
 
+    public VectorF getPos() {
+        return boundingShape.getPos();
+    }
+
+    public VectorF getSize() {
+        return boundingShape.getSize();
+    }
+
 }

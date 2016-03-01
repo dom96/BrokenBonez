@@ -7,6 +7,8 @@ import android.view.MotionEvent;
 
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
+import com.dragonfruitstudios.brokenbonez.Game.Scenes.BikeSelectionScene;
+import com.dragonfruitstudios.brokenbonez.Game.Scenes.BikeShowcaseScene;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.GameScene;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.HighScoreScene;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.MenuScene;
@@ -46,13 +48,12 @@ public class GameLoop implements Runnable {
         MenuScene menuScene = new MenuScene(assetLoader, gameSceneManager);   //Create the new MenuScene
         GameScene gameScene = new GameScene(assetLoader, gameSceneManager);   //Create the new GameScene
         HighScoreScene highScoreScene = new HighScoreScene(assetLoader, gameSceneManager);
-
+        BikeSelectionScene bikeSelectionScene = new BikeSelectionScene(assetLoader, gameSceneManager); //Create the BikeSelectionScene
         this.gameSceneManager.addScene("menuScene", menuScene, true);  //Add the MenuScene just created to the GameSceneManager, then sets it as the active scene
         this.gameSceneManager.addScene("gameScene", gameScene, false); //Add the Gamescene just created to the GameSceneManager, then makes sure it isn't set as active
+        this.gameSceneManager.addScene("bikeSelectionScene", bikeSelectionScene, false);
+        this.gameSceneManager.addScene("bikeShowcaseScene", new BikeShowcaseScene(assetLoader, gameSceneManager), false);
         this.gameSceneManager.addScene("highScoreScene", highScoreScene, false);
-        /**GameScene gameScene = new GameScene(assetLoader);
-        gameSceneManager = new GameSceneManager(gameView, "gameScene", gameScene);**/
-
 
         updateLock = new ReentrantLock();
 
@@ -206,6 +207,9 @@ public class GameLoop implements Runnable {
                 break;
             case KeyEvent.KEYCODE_S:
                 step = true;
+                break;
+            case KeyEvent.KEYCODE_D:
+                gameSceneManager.setScene("gameScene");
                 break;
         }
 
