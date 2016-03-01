@@ -69,11 +69,11 @@ public class BikeSelectionState extends GameState implements GameObject {
         textPos = new VectorF(getScreenWidth() / 4 + 190, getScreenHeight() / 4 * 2 + 30);
         colorPos = new VectorF(getScreenWidth() / 4 + 260, getScreenHeight() / 4 * 2 + 130);
         rotation = 0;
-        next = new ImageButton(assetLoader, getScreenWidth() / 4 * 3 - 100, getScreenHeight() / 4 * 2 + 20, 270, 60);
-        prev = new ImageButton(assetLoader, getScreenWidth() / 4 - 150, getScreenHeight() / 4 * 2 + 20, 270, 60);
-        nextNext = new ImageButton(assetLoader, getScreenWidth() / 4 * 3 - 100, getScreenHeight() / 4 * 3 - 40, 270, 60);
-        prevPrev = new ImageButton(assetLoader, getScreenWidth() / 4 - 150, getScreenHeight() / 4 * 3 - 40, 270, 60);
-        select = new ImageButton(assetLoader, getScreenWidth() / 4 + 175, getScreenHeight() / 4 * 3 + 100, 270, 60);
+        next = new ImageButton("next.png", assetLoader, getScreenWidth() / 4 * 3 - 100, getScreenHeight() / 4 * 2 + 20, 270, 60);
+        prev = new ImageButton("prev.png", assetLoader, getScreenWidth() / 4 - 150, getScreenHeight() / 4 * 2 + 20, 270, 60);
+        nextNext = new ImageButton("next.png", assetLoader, getScreenWidth() / 4 * 3 - 100, getScreenHeight() / 4 * 3 - 40, 270, 60);
+        prevPrev = new ImageButton("prev.png", assetLoader, getScreenWidth() / 4 - 150, getScreenHeight() / 4 * 3 - 40, 270, 60);
+        select = new ImageButton("select.png", assetLoader, getScreenWidth() / 4 + 175, getScreenHeight() / 4 * 3 + 100, 270, 60);
         level = new BikeSelectionLevel(this);
         bike = new Bike(level, Bike.BodyType.Bike);
         bike.setColor(Color.BLUE);
@@ -106,13 +106,13 @@ public class BikeSelectionState extends GameState implements GameObject {
     @Override
     public void draw(GameView view) {
         view.drawImage(scaledBackground, pos, rotation, GameView.ImageOrigin.TopLeft);
-        view.drawImage(next.scaledNext, next.pos, next.rotation, GameView.ImageOrigin.TopLeft);
-        view.drawImage(prev.scaledPrev, prev.pos, prev.rotation, GameView.ImageOrigin.TopLeft);
-        view.drawImage(nextNext.scaledNext, nextNext.pos, nextNext.rotation, GameView.ImageOrigin.TopLeft);
-        view.drawImage(prevPrev.scaledPrev, prevPrev.pos, prevPrev.rotation, GameView.ImageOrigin.TopLeft);
-        view.drawImage(select.scaledSelect, select.pos, select.rotation, GameView.ImageOrigin.TopLeft);
         view.drawRect(getScreenWidth()/2 + 60 - 100, 500, getScreenWidth()/2 + 60, 600, color);
         view.drawImage(text, textPos, rotation, GameView.ImageOrigin.TopLeft);
+        next.draw(view);
+        prev.draw(view);
+        nextNext.draw(view);
+        prevPrev.draw(view);
+        select.draw(view);
         view.setCamera(camera);
         bikeSelectionLevel.draw(view);
         physicsSimulator.draw(view);

@@ -4,46 +4,41 @@ import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.view.MotionEvent;
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
+import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Rect;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 public class ImageButton {
-    Bitmap startGame;
-    Bitmap hiScore;
-    Bitmap credits;
-    Bitmap next;
-    Bitmap prev;
-    Bitmap select;
-    final Bitmap scaledNext;
-    final Bitmap scaledPrev;
-    final Bitmap scaledSelect;
-    final Bitmap scaledStartGame;
-    final Bitmap scaledHiScore;
-    final Bitmap scaledCredits;
+    Bitmap image;
+    final Bitmap scaledImage;
+    String imageName;
     AssetLoader assetLoader;
     VectorF pos;
     float rotation;
     boolean isTouched;
     Rect rectangle;
 
-    public ImageButton(AssetLoader assetLoader, float x, float y, float width, float height){
+    public ImageButton(String imageName, AssetLoader assetLoader, float x, float y, float width, float height){
+        this.imageName = imageName;
         this.rotation = 0;
         this.pos = new VectorF(x, y);
         this.rectangle = new Rect(this.pos, width, height);
         this.assetLoader = assetLoader;
         this.assetLoader.AddAssets(new String[]{"start.png", "hiscore.png", "credits.png", "next.png", "prev.png", "select.png"});
-        startGame = assetLoader.getBitmapByName("start.png");
+        this.image = assetLoader.getBitmapByName(imageName);
+        this.scaledImage = image.createScaledBitmap(image, (int)width, (int)height, false);
+
+        /**startGame = assetLoader.getBitmapByName("start.png");
         hiScore = assetLoader.getBitmapByName("hiscore.png");
         credits = assetLoader.getBitmapByName("credits.png");
         next = assetLoader.getBitmapByName("next.png");
         prev = assetLoader.getBitmapByName("prev.png");
-        select = assetLoader.getBitmapByName("select.png");
-        this.scaledStartGame = startGame.createScaledBitmap(startGame, 612, 180, false);
-        this.scaledHiScore = hiScore.createScaledBitmap(hiScore, 270, 60, false);
-        this.scaledCredits = credits.createScaledBitmap(credits, 270, 60, false);
-        this.scaledNext = next.createScaledBitmap(next, 270, 60, false);
-        this.scaledPrev = prev.createScaledBitmap(prev, 270, 60, false);
-        this.scaledSelect = select.createScaledBitmap(select, 270, 60, false);
+        select = assetLoader.getBitmapByName("select.png");**/
+
+    }
+
+    public void draw(GameView view) {
+        view.drawImage(scaledImage, pos, rotation, GameView.ImageOrigin.TopLeft);
     }
 
     public void onTouchEvent(MotionEvent event, float x, float y, float width, float height) {
