@@ -1,11 +1,13 @@
 package com.dragonfruitstudios.brokenbonez.Game.Scenes;
 
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.MotionEvent;
 
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
+import com.dragonfruitstudios.brokenbonez.Gameplay.Bike;
 import com.dragonfruitstudios.brokenbonez.Gameplay.GameState;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Input.TouchHandler;
@@ -21,6 +23,11 @@ public class GameScene extends Scene {
     public GameScene(AssetLoader assetLoader, GameSceneManager gameSceneManager) {
         super(assetLoader, gameSceneManager);
         this.state = new GameState(assetLoader, this.gameSceneManager);
+        newGame(Bike.BodyType.Bike, Color.BLUE);
+    }
+
+    public void newGame(Bike.BodyType bikeBodyType, int bikeColor) {
+        this.state.newGame(bikeBodyType, bikeColor);
     }
 
     public void draw(GameView view) {

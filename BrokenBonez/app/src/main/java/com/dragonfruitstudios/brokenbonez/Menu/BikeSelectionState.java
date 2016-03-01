@@ -8,6 +8,7 @@ import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.Camera;
 import com.dragonfruitstudios.brokenbonez.Game.GameObject;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
+import com.dragonfruitstudios.brokenbonez.Game.Scenes.GameScene;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
 import com.dragonfruitstudios.brokenbonez.Gameplay.Bike;
 import com.dragonfruitstudios.brokenbonez.Gameplay.GameState;
@@ -15,7 +16,7 @@ import com.dragonfruitstudios.brokenbonez.Math.Collisions.Rect;
 import com.dragonfruitstudios.brokenbonez.Math.Physics.Simulator;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
-public class BikeSelectionState extends GameState implements GameObject {
+public class BikeSelectionState implements GameObject {
     BikeSelectionLevel bikeSelectionLevel;
     private AssetLoader assetLoader;
     private GameSceneManager gameSceneManager;
@@ -129,6 +130,8 @@ public class BikeSelectionState extends GameState implements GameObject {
         
         if(select.isTouched() == true){
             select.isTouched = false;
+            GameScene gameScene = (GameScene)this.gameSceneManager.getGameSceneByName("gameScene");
+            gameScene.newGame(bike.getBodyType(), bike.getColor());
             this.gameSceneManager.setScene("gameScene");
         }
         // bike model

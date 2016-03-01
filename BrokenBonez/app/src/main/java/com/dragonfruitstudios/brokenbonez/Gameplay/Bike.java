@@ -125,6 +125,15 @@ public class Bike implements GameObject {
     }
 
     /**
+     * Resets the bike to its original position at rest.
+     */
+    public void reset() {
+        updateStartPos(currentLevel.getStartPoint());
+        leftWheel.reset();
+        rightWheel.reset();
+    }
+
+    /**
      * Sets the torque of the bike. The strength should be a value between 0 and 1. 0 means
      * no acceleration and 1 means maximum acceleration.
      * @param strength
@@ -140,6 +149,14 @@ public class Bike implements GameObject {
 
     public VectorF getPos() {
         return new VectorF(leftWheel.getPos().x + (wheelSeparation/2), leftWheel.getPos().y);
+    }
+
+    public int getColor() {
+        return color;
+    }
+
+    public BodyType getBodyType() {
+        return bodyType;
     }
 
     public void setPos(float x, float y) {

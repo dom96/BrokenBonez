@@ -156,6 +156,16 @@ public class DynamicBody extends Body {
         velocity.multAdd(resultantAccel, updateFactor);
     }
 
+    public void reset() {
+        velocity.set(0, 0);
+        acceleration.set(0, 0);
+        rotation = 0;
+        angularVelocity = 0;
+        angularAcceleration = 0;
+        wasInAir = false;
+        torque = 0;
+    }
+
     public Circle getBoundingShape() {
         return boundingShape;
     }

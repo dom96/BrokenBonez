@@ -41,8 +41,10 @@ public class GameState {
         bike = new Bike(currentLevel, Bike.BodyType.Bike);
     }
 
-    public GameState() {
-
+    public void newGame(Bike.BodyType bikeBodyType, int bikeColor) {
+        bike.setColor(bikeColor);
+        bike.setBodyType(bikeBodyType);
+        bike.reset();
     }
 
     public void update(float lastUpdate) {
