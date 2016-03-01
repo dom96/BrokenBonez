@@ -39,13 +39,7 @@ public class GameActivity extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         gameLoop = new GameLoop(gameView, new AssetLoader(this, new String[] {}));
         setContentView(gameView);
-        while(counterTest != 1) {
-            counterTest = counterTest + 1;
-            break;
-        }
-        if(counterTest == 1) {
-            new Thread(gameLoop).start();
-        }
+        new Thread(gameLoop).start();
     }
     @Override
     public void onBackPressed() {
