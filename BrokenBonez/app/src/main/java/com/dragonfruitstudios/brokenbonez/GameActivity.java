@@ -10,6 +10,7 @@ import android.view.WindowManager;
 
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
+import com.dragonfruitstudios.brokenbonez.Gameplay.GameState;
 import com.plattysoft.leonids.ParticleSystem;
 
 /**
@@ -20,6 +21,7 @@ public class GameActivity extends Activity {
     private GameLoop gameLoop;
     GameView gameView;
     PowerManager.WakeLock mWakeLock;
+    int counterTest = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,7 +39,13 @@ public class GameActivity extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         gameLoop = new GameLoop(gameView, new AssetLoader(this, new String[] {}));
         setContentView(gameView);
-        new Thread(gameLoop).start();
+        while(counterTest != 1) {
+            counterTest = counterTest + 1;
+            break;
+        }
+        if(counterTest == 1) {
+            new Thread(gameLoop).start();
+        }
     }
     @Override
     public void onBackPressed() {
@@ -48,7 +56,6 @@ public class GameActivity extends Activity {
             this.gameLoop.gameSceneManager.setScene("menuScene");
         }
     }
-
 
     @Override
     public void onPause() {
@@ -66,9 +73,12 @@ public class GameActivity extends Activity {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        new ParticleSystem(this, 100, R.drawable.test, 800).setSpeedRange(0.1f, 0.25f).oneShot(gameView, 100);
         gameLoop.onGameTouch(event);
         return super.onTouchEvent(event);
+
+        /**new ParticleSystem(this, 400, R.drawable.smoke, 400)
+                .setSpeedModuleAndAngleRange(0.2f, 0.4f, 180, 200)
+                .emit(gameView, 400);**/
     }
 
     @Override
