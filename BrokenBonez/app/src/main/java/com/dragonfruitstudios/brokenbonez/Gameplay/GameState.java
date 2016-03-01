@@ -48,7 +48,7 @@ public class GameState {
     public void update(float lastUpdate) {
         bike.update(lastUpdate);
         physicsSimulator.update(lastUpdate);
-        currentLevel.update(lastUpdate);
+        currentLevel.update(lastUpdate, bike.getPos());
         camera.centerHorizontally(bike.getPos().x);
     }
 
