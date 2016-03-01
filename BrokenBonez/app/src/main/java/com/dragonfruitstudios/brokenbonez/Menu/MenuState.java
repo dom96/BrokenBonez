@@ -29,9 +29,9 @@ public class MenuState implements GameObject {
     public MenuState(AssetLoader assetLoader, GameSceneManager gameSceneManager) {
         this.assetLoader = assetLoader;
         this.gameSceneManager = gameSceneManager;
-        startGame = new ImageButton(assetLoader, getScreenWidth() / 4 - 14, getScreenHeight() / 4 + 60, 612, 180);
-        hiScore = new ImageButton(assetLoader, getScreenWidth() / 4 - 14, getScreenHeight() / 4 * 2 + 120, 270, 60);
-        credits = new ImageButton(assetLoader,  getScreenWidth() / 4 * 2 + 29, getScreenHeight() / 4 * 2 + 120, 270, 60);
+        startGame = new ImageButton("start.png", assetLoader, getScreenWidth() / 4 - 14, getScreenHeight() / 4 + 60, 612, 180);
+        hiScore = new ImageButton("hiscore.png", assetLoader, getScreenWidth() / 4 - 14, getScreenHeight() / 4 * 2 + 120, 270, 60);
+        credits = new ImageButton("credits.png", assetLoader,  getScreenWidth() / 4 * 2 + 29, getScreenHeight() / 4 * 2 + 120, 270, 60);
         this.assetLoader.AddAssets(new String[]{"tv.png", "tvnoise.png"});
         noise = assetLoader.getBitmapByName("tvnoise.png");
         background = assetLoader.getBitmapByName("tv.png");
@@ -49,7 +49,6 @@ public class MenuState implements GameObject {
                     noiseOn = false;
                     noiseWait = false;
                     waitTime = 0;
-                    //startGameScreen();
                     startBikeSelectionScreen();
             }
         }
@@ -73,9 +72,9 @@ public class MenuState implements GameObject {
     @Override
     public void draw(GameView view) {
         view.drawImage(scaledBackground, pos, rotation, GameView.ImageOrigin.TopLeft);
-        view.drawImage(startGame.scaledStartGame, startGame.pos, startGame.rotation, GameView.ImageOrigin.TopLeft);
-        view.drawImage(hiScore.scaledHiScore, hiScore.pos, hiScore.rotation, GameView.ImageOrigin.TopLeft);
-        view.drawImage(credits.scaledCredits, credits.pos, credits.rotation, GameView.ImageOrigin.TopLeft);
+        startGame.draw(view);
+        hiScore.draw(view);
+        credits.draw(view);
         if(getNoiseOn() == true){
             view.drawImage(scaledNoise, pos, rotation, GameView.ImageOrigin.TopLeft);
         }
@@ -109,7 +108,7 @@ public class MenuState implements GameObject {
         }
     }
 
-    public void startBikeSelectionScreen(){this.gameSceneManager.setScene("bikeShowcaseScene");}
+    public void startBikeSelectionScreen(){this.gameSceneManager.setScene("bikeSelectionScene");}
     public boolean getNoiseOn(){
         return noiseOn;
     }

@@ -8,7 +8,6 @@ import android.view.MotionEvent;
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.BikeSelectionScene;
-import com.dragonfruitstudios.brokenbonez.Game.Scenes.BikeShowcaseScene;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.GameScene;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.MenuScene;
 
@@ -19,7 +18,6 @@ import java.util.concurrent.locks.ReentrantLock;
  * Core game loop class which handles drawing and updating of the game.
  */
 public class GameLoop implements Runnable {
-    long lastTime = System.nanoTime();
     public static int targetFPS = 60; // Mutable so that we can slow down simulation -DP
     final long targetTime;
     volatile boolean run = false;
@@ -41,17 +39,14 @@ public class GameLoop implements Runnable {
         this.gameView = gameView;
         this.assetLoader = assetLoader;
 
-
         this.gameSceneManager = new GameSceneManager(gameView); //Setup the GameSceneManager
 
         MenuScene menuScene = new MenuScene(assetLoader, gameSceneManager);   //Create the new MenuScene
         GameScene gameScene = new GameScene(assetLoader, gameSceneManager);   //Create the new GameScene
-        BikeSelectionScene bikeSelectionScene = new BikeSelectionScene(assetLoader, gameSceneManager); //Create the BikeSelectionScene
+        BikeSelectionScene bikeSelectionScene = new BikeSelectionScene(assetLoader, gameSceneManager);
         this.gameSceneManager.addScene("menuScene", menuScene, true);  //Add the MenuScene just created to the GameSceneManager, then sets it as the active scene
         this.gameSceneManager.addScene("gameScene", gameScene, false); //Add the Gamescene just created to the GameSceneManager, then makes sure it isn't set as active
         this.gameSceneManager.addScene("bikeSelectionScene", bikeSelectionScene, false);
-        this.gameSceneManager.addScene("bikeShowcaseScene",
-                new BikeShowcaseScene(assetLoader, gameSceneManager), false);
 
         updateLock = new ReentrantLock();
 
@@ -85,17 +80,24 @@ public class GameLoop implements Runnable {
     boolean slowMotion = false;
     boolean step = false;
 
+    static double lastTime;
+    static double presentTime;
+    static double updateTime;
+    static long sleepTime;
+
     @Override
     public void run(){
         while (true) { //
-            long presentTime = System.nanoTime(); // Sets the present time to the current system time.
-            long sleepTime; // Variable for the amount of time the thread needs to sleep for.
+            presentTime = System.nanoTime(); // Sets the present time to the current system time.
+            lastTime = System.nanoTime();
+            // Variable for the amount of time the thread needs to sleep for.
             // Setting the update time to the present time subtracted from the last time
             // in which the game loop was run.
-            long updateTime = presentTime - lastTime;
-            lastTime = presentTime; // Setting the last time to the present time.
+            updateTime += presentTime - lastTime;
+            lastTime = System.nanoTime();
+            //lastTime = presentTime; // Setting the last time to the present time.
             // Adding the update time to the last time and setting the result to last time.
-            lastTime += updateTime;
+            //lastTime += updateTime;
             counter++;
 
             // If statement for checking if the last fps time was over 1 million.
@@ -104,20 +106,17 @@ public class GameLoop implements Runnable {
                 lastFPSTime = 0;
                 counter = 0;
             }
-
             gameUpdate();
             gameView.postInvalidate();
             currFrames++;
-
-            // Sets the last time the loop was run to the present time.
-            lastTime = System.nanoTime();
             // Sleep time will be equal to the last time subtracted from the current time added
             // to the target time. If the sleep time is more than 0 it will try to sleep
             // for the sleep time divided by 1 million in long type.
-            sleepTime = (targetTime + (lastTime - presentTime));
+            sleepTime = (long) (targetTime + (updateTime));
             if (sleepTime > 0) {
                 try {
                     Thread.sleep(sleepTime / 1000000L);
+                    updateTime = 0;
                 }
                 catch (InterruptedException exc) {
                     // TODO: Dom: Look up what to do in this case properly.

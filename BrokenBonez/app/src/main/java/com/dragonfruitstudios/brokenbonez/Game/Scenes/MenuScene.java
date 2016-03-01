@@ -3,9 +3,12 @@ package com.dragonfruitstudios.brokenbonez.Game.Scenes;
 import android.view.MotionEvent;
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
+import com.dragonfruitstudios.brokenbonez.GameActivity;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
 import com.dragonfruitstudios.brokenbonez.Gameplay.Bike;
 import com.dragonfruitstudios.brokenbonez.Menu.MenuState;
+import com.dragonfruitstudios.brokenbonez.R;
+import com.plattysoft.leonids.ParticleSystem;
 
 public class MenuScene extends Scene {
     MenuState state;
