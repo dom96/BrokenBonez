@@ -1,6 +1,7 @@
 package com.dragonfruitstudios.brokenbonez;
 
 import android.graphics.Color;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -11,6 +12,7 @@ import com.dragonfruitstudios.brokenbonez.Game.Scenes.BikeSelectionScene;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.GameScene;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.MenuScene;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -19,7 +21,6 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class GameLoop implements Runnable {
     public static int targetFPS = 60; // Mutable so that we can slow down simulation -DP
-    final long targetTime;
     volatile boolean run = false;
     GameView gameView;
     GameSceneManager gameSceneManager;
@@ -35,7 +36,6 @@ public class GameLoop implements Runnable {
      * GameActivity class or the fps we want our game loop to constantly run at.
      */
     public GameLoop(GameView gameView, AssetLoader assetLoader) {
-        targetTime = 1000000000 / targetFPS;
         this.gameView = gameView;
         this.assetLoader = assetLoader;
 
@@ -69,36 +69,48 @@ public class GameLoop implements Runnable {
     int counter;
 
     // These flags are used for timing the `update` method
-    long lastUpdate = System.currentTimeMillis();
+    long lastUpdate = TimeUnit.NANOSECONDS.toMillis(System.nanoTime());
 
     // Fields used to store debugging information.
     // These flags are used to report the current FPS.
-    long lastFPSReport = System.currentTimeMillis(); // The time that FPS was reported last.
+    long lastFPSReport = TimeUnit.NANOSECONDS.toMillis(System.nanoTime()); // The time that FPS was reported last.
     long currFrames = 0; // The current amount of frames rendered.
     long currFPS = 0; // The current FPS
     // Debugging flag to determine whether to run the game loop slowly.
     boolean slowMotion = false;
     boolean step = false;
 
-    static double lastTime;
-    static double presentTime;
-    static double updateTime;
-    static long sleepTime;
+    public final int FRAMES_PER_SECOND = 60;
+    public final int WAIT_TIME = 1000 / FRAMES_PER_SECOND;
+    public final int MAX_FRAME_SKIP = 5;
+    long NEXT_UPDATE = TimeUnit.NANOSECONDS.toMillis(System.nanoTime());
+    public final int MAX_FRAMES_PER_SECOND = 60;
+    public final int MIN_WAIT_TIME = 1000 / MAX_FRAMES_PER_SECOND;
+    long LAST_UPDATE = TimeUnit.NANOSECONDS.toMillis(System.nanoTime());
+    int GAME_LOOPS;
 
     @Override
     public void run(){
-        while (true) { //
-            presentTime = System.nanoTime(); // Sets the present time to the current system time.
-            lastTime = System.nanoTime();
-            // Variable for the amount of time the thread needs to sleep for.
-            // Setting the update time to the present time subtracted from the last time
-            // in which the game loop was run.
-            updateTime += presentTime - lastTime;
-            lastTime = System.nanoTime();
-            //lastTime = presentTime; // Setting the last time to the present time.
-            // Adding the update time to the last time and setting the result to last time.
-            //lastTime += updateTime;
-            counter++;
+        while (true) {
+            while (System.currentTimeMillis() < LAST_UPDATE + MIN_WAIT_TIME){
+                try {
+                    Thread.sleep(0);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            LAST_UPDATE = TimeUnit.NANOSECONDS.toMillis(System.nanoTime());
+
+            GAME_LOOPS = 0;
+            while(TimeUnit.NANOSECONDS.toMillis(System.nanoTime()) > NEXT_UPDATE && GAME_LOOPS < MAX_FRAME_SKIP){
+                gameUpdate();
+                NEXT_UPDATE += WAIT_TIME;
+                GAME_LOOPS++;
+                currFrames++;
+                counter++;
+            }
+
+            gameView.postInvalidate();
 
             // If statement for checking if the last fps time was over 1 million.
             // If it was then setCenter the lastFPSTime to 0
@@ -106,31 +118,12 @@ public class GameLoop implements Runnable {
                 lastFPSTime = 0;
                 counter = 0;
             }
-            gameUpdate();
-            gameView.postInvalidate();
-            currFrames++;
-            // Sleep time will be equal to the last time subtracted from the current time added
-            // to the target time. If the sleep time is more than 0 it will try to sleep
-            // for the sleep time divided by 1 million in long type.
-            sleepTime = (long) (targetTime + (updateTime));
-            if (sleepTime > 0) {
-                try {
-                    Thread.sleep(sleepTime / 1000000L);
-                    updateTime = 0;
-                }
-                catch (InterruptedException exc) {
-                    // TODO: Dom: Look up what to do in this case properly.
-                    // TODO: I recall that there is some method that should be called in the
-                    // TODO: event of this.
-                    Log.d("Error", "Interrupted exception was caught.");
-                }
-            }
             // Report the amount of frames that have been rendered.
-            if (System.currentTimeMillis() - lastFPSReport >= 1000) {
+            if (TimeUnit.NANOSECONDS.toMillis(System.nanoTime()) - lastFPSReport >= 1000) {
                 Log.d("FPS", "Current FPS: " + currFPS );
                 currFPS = currFrames;
                 currFrames = 0;
-                lastFPSReport = System.currentTimeMillis();
+                lastFPSReport = TimeUnit.NANOSECONDS.toMillis(System.nanoTime());
             }
         }
     }
@@ -141,7 +134,7 @@ public class GameLoop implements Runnable {
         // Only update when the game is not paused.
         if (run) {
             // Calculate the number of milliseconds since the last update
-            float msSinceLastUpdate = System.currentTimeMillis() - lastUpdate;
+            float msSinceLastUpdate = TimeUnit.NANOSECONDS.toMillis(System.nanoTime()) - lastUpdate;
             if (slowMotion) {
                 msSinceLastUpdate = 1;
             }
@@ -150,7 +143,7 @@ public class GameLoop implements Runnable {
         }
 
         // Update the `lastUpdate` variable with the current time.
-        lastUpdate = System.currentTimeMillis();
+        lastUpdate = TimeUnit.NANOSECONDS.toMillis(System.nanoTime());
 
         // Check to see if a simple 1ms step is wanted.
         if (step) {
