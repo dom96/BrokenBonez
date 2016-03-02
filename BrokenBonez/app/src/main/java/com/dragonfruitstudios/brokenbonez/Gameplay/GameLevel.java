@@ -155,7 +155,7 @@ public class GameLevel extends Level {
 
     }
 
-    public void update(float lastUpdate) {
+    public void update(float lastUpdate, VectorF bikePos) {
         this.bikePos = bikePos;
     }
 
