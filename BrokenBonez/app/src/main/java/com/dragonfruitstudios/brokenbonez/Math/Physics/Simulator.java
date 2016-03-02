@@ -22,6 +22,7 @@ public class Simulator {
 
     public final static float gravity = 9.81f;
     public final static float gravityScaled = 10*gravity;
+    public final static float airResistance = 0.1f; // Percentage of velocity lost due to air resistance.
 
     public Simulator() {
         dynamicBodies = new ArrayList<DynamicBody>();
