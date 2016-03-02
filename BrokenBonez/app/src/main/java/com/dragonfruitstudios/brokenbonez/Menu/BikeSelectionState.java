@@ -107,7 +107,7 @@ public class BikeSelectionState implements GameObject {
     @Override
     public void draw(GameView view) {
         view.drawImage(scaledBackground, pos, rotation, GameView.ImageOrigin.TopLeft);
-        view.drawRect(getScreenWidth() / 2 + 60 - 100, 500, getScreenWidth() / 2 + 60, 600, color);
+        view.drawRect(getScreenWidth()/2 + 60 - 100, 500, getScreenWidth()/2 + 60, 600, color);
         view.drawImage(text, textPos, rotation, GameView.ImageOrigin.TopLeft);
         next.draw(view);
         prev.draw(view);
@@ -143,11 +143,9 @@ public class BikeSelectionState implements GameObject {
             }
             setText(j);
             switch(j){
-                case 0:
-                        bike.setBodyType(Bike.BodyType.Bike);
+                case 0: bike.setBodyType(Bike.BodyType.Bike);
                     break;
-                case 1:
-                        bike.setBodyType(Bike.BodyType.Bicycle);
+                case 1: bike.setBodyType(Bike.BodyType.Bicycle);
                     break;
             }
         }
@@ -160,11 +158,9 @@ public class BikeSelectionState implements GameObject {
             }
             setText(j);
             switch(j){
-                case 0:
-                        bike.setBodyType(Bike.BodyType.Bike);
+                case 0: bike.setBodyType(Bike.BodyType.Bike);
                     break;
-                case 1:
-                        bike.setBodyType(Bike.BodyType.Bicycle);
+                case 1: bike.setBodyType(Bike.BodyType.Bicycle);
                     break;
             }
         }
