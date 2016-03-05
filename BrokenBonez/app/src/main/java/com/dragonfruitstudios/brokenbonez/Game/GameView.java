@@ -144,6 +144,15 @@ public class GameView extends View {
         canvas.drawText(text, x, y, paint);
     }
 
+    public void drawText(String text, float x, float y, int color, int textSize) {
+        checkCanvas();
+        paint.setColor(color);
+        paint.setTextSize(textSize);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setAntiAlias(true);
+        canvas.drawText(text, x, y, paint);
+    }
+
     /**
      * Draws a rectangle at the specified coordinates and with the specified color.
      * The rectangle is drawn with its contents filled.
