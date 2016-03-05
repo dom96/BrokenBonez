@@ -27,6 +27,7 @@ public class HighScoreScene extends Scene {
     private List<PrefData> currentHighScores;
 
     public HighScoreScene(AssetLoader assetLoader, GameSceneManager gameSceneManager){
+        super(assetLoader, gameSceneManager);
         this.gameView = gameSceneManager.gameView;
         this.gamePrefs = gameView.getContext().getSharedPreferences("BrokenScores", Context.MODE_PRIVATE);
         getSortedList();
