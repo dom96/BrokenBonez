@@ -4,12 +4,17 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.WindowManager;
 
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
+import com.dragonfruitstudios.brokenbonez.Game.Scenes.BikeSelectionScene;
+import com.dragonfruitstudios.brokenbonez.Game.Scenes.GameScene;
+import com.dragonfruitstudios.brokenbonez.Game.Scenes.HighScoreScene;
+import com.dragonfruitstudios.brokenbonez.Game.Scenes.MenuScene;
 import com.dragonfruitstudios.brokenbonez.Gameplay.GameState;
 import com.plattysoft.leonids.ParticleSystem;
 
@@ -21,12 +26,12 @@ public class GameActivity extends Activity {
     private GameLoop gameLoop;
     GameView gameView;
     PowerManager.WakeLock mWakeLock;
-    int counterTest = 0;
+
+    Thread gameLoopThread;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        gameView = new GameView(this);
         // Power manager gives control over the power state of the android device.
         PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
         // CPU will run regardless of display timeouts or the state of the screen after
@@ -37,9 +42,55 @@ public class GameActivity extends Activity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        gameLoop = new GameLoop(gameView, new AssetLoader(this, new String[] {}));
+
+        // Initialise a new AssetLoader.
+        AssetLoader assetLoader = new AssetLoader(this, new String[] {});
+
+        gameView = new GameView(this);
+
+        // Initialise GameSceneManager to manage the different scenes for us.
+        final GameSceneManager gameSceneManager = new GameSceneManager(gameView); //Setup the GameSceneManager
+
+        // Initialise GameView and GameLoop for drawing.
+        gameLoop = new GameLoop(gameSceneManager, gameView, assetLoader);
+        gameView.setCallbacks(new GameView.GVCallbacks() {
+            @Override
+            public void performDraw(GameView gameView) {
+
+            }
+
+            @Override
+            public void onSizeChanged(GameView gameView, int w, int h, int oldw, int oldh) {
+                gameSceneManager.updateSize(w, h);
+            }
+
+            @Override
+            public void onSurfaceAvailable(GameView gameView) {
+                gameLoopThread = new Thread(gameLoop);
+                gameLoopThread.start();
+            }
+
+            @Override
+            public void onSurfaceDestroyed(GameView gameView) {
+                gameLoop.stop();
+                try {
+                    gameLoopThread.join();
+                } catch (InterruptedException e) {
+                    Log.e("GameActivity", "InterruptedException caught");
+                }
+            }
+        });
         setContentView(gameView);
-        new Thread(gameLoop).start();
+
+        // Initialise the scenes.
+        MenuScene menuScene = new MenuScene(assetLoader, gameSceneManager);   //Create the new MenuScene
+        GameScene gameScene = new GameScene(assetLoader, gameSceneManager);   //Create the new GameScene
+        HighScoreScene highScoreScene = new HighScoreScene(assetLoader, gameSceneManager);
+        BikeSelectionScene bikeSelectionScene = new BikeSelectionScene(assetLoader, gameSceneManager); //Create the BikeSelectionScene
+        gameSceneManager.addScene("menuScene", menuScene, true);  //Add the MenuScene just created to the GameSceneManager, then sets it as the active scene
+        gameSceneManager.addScene("gameScene", gameScene, false); //Add the Gamescene just created to the GameSceneManager, then makes sure it isn't set as active
+        gameSceneManager.addScene("bikeSelectionScene", bikeSelectionScene, false);
+        gameSceneManager.addScene("highScoreScene", highScoreScene, false);
     }
     @Override
     public void onBackPressed() {

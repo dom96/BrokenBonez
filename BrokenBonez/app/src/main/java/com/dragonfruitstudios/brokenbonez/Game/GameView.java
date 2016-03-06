@@ -4,19 +4,32 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.SurfaceTexture;
+import android.os.Build;
+import android.support.v4.view.ViewCompat;
 import android.util.Log;
+import android.view.Surface;
+import android.view.TextureView;
 import android.view.View;
 
+import com.dragonfruitstudios.brokenbonez.GameLoop;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
+
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  *  This class implements a View which supports drawing. Currently implemented as a custom View,
  *  but the API has been designed to support other backends.
  *  It may for example utilise a GlSurfaceView backend in the future depending on performance.
  */
-public class GameView extends View {
+public class GameView extends TextureView implements TextureView.SurfaceTextureListener {
     boolean ready;
+    boolean locked;
     Canvas canvas;
+    Surface surface;
+
+    Thread gameLoopThread;
+
     Paint paint;
     Camera camera;
     boolean cameraEnabled;
@@ -25,33 +38,66 @@ public class GameView extends View {
         void performDraw(GameView gameView);
 
         void onSizeChanged(GameView gameView, int w, int h, int oldw, int oldh);
+
+        void onSurfaceAvailable(GameView gameView);
+
+        void onSurfaceDestroyed(GameView gameView);
     }
 
     GVCallbacks callbacks;
 
-    @Override
+    /*@Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        //ready = true;
+        //this.canvas = canvas;
+        //callbacks.performDraw(this);
+        //ready = false;
+        //this.canvas = null;
+        synchronized (canvasBitmap) {
+            canvas.drawBitmap(canvasBitmap, 0, 0, null);
+        }
+        ViewCompat.postInvalidateOnAnimation(this);
+    }*/
+
+    @Override
+    public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+        this.surface = new Surface(surface);
+
         ready = true;
-        this.canvas = canvas;
-        callbacks.performDraw(this);
-        ready = false;
-        this.canvas = null;
+        callbacks.onSurfaceAvailable(this);
     }
 
     @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
+    public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int w, int h) {
         if (w == 0 || h == 0) {
             Log.d("GameView", "Size changed to 0, skipping event.");
             return;
         }
-        Log.d("GameView", String.format("Size changed. W: %s, H: %s, oldW: %s, oldH: %s",
-                w, h, oldw, oldh));
-        callbacks.onSizeChanged(this, w, h, oldw, oldh);
+        Log.w("GameView", String.format("Size changed. W: %s, H: %s, oldW: %s, oldH: %s",
+                w, h, 0, 0));
+        callbacks.onSizeChanged(this, w, h, 0, 0);
 
         // Update camera size.
         camera.updateSize(w, h);
+    }
+
+    @Override
+    public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+        Log.w("GameView", "onSurfaceTextureDestroyed");
+
+        ready = false;
+
+        callbacks.onSurfaceDestroyed(this);
+
+        surface.release();
+        surface = null;
+        return true;
+    }
+
+    @Override
+    public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+
     }
 
     public GameView(Context context) {
@@ -60,12 +106,13 @@ public class GameView extends View {
 
         // Set a default camera.
         camera = new Camera(0, 0);
+
+        setSurfaceTextureListener(this);
     }
 
     public void setCallbacks(GVCallbacks drawingFunction) {
         this.callbacks = drawingFunction;
     }
-
 
     /**
      * Sets the translation vector which will be applied to every draw call.
@@ -110,9 +157,25 @@ public class GameView extends View {
         this.cameraEnabled = false;
     }
 
+    public void captureCanvas() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            canvas = surface.lockHardwareCanvas();
+        }
+        else {
+            canvas = surface.lockCanvas(null);
+        }
+        locked = true;
+    }
+
+    public void releaseCanvas() {
+        surface.unlockCanvasAndPost(canvas);
+        canvas = null;
+        locked = false;
+    }
+
     private void checkCanvas() {
-        if (!ready) {
-            throw new IllegalArgumentException("Cannot draw right now, Canvas not ready.");
+        if (!locked) {
+            throw new IllegalArgumentException("Cannot draw right now, Canvas not captured.");
         }
     }
 
@@ -238,6 +301,19 @@ public class GameView extends View {
         canvas.rotate((float) Math.toDegrees(rotation), transformedPos.x + (image.getWidth() / 2),
                 transformedPos.y + (image.getHeight() / 2));
         canvas.drawBitmap(image, transformedPos.getX(), transformedPos.getY(), paint);
+        //paint.setColor(Color.parseColor("#7d0aa9"));
+        //canvas.drawLine(transformedPos.getX(), transformedPos.getY(), transformedPos.getX(), transformedPos.getY() + 30, paint);
+        //canvas.drawLine(pos.getX(), pos.getY(), pos.getX(), pos.getY() + 30, paint);
+        canvas.restore();
+    }
+
+    public void drawImage(Bitmap image, float x, float y, float rotation, ImageOrigin origin) {
+        checkCanvas();
+        canvas.save();
+
+        canvas.rotate((float) Math.toDegrees(rotation), x + (image.getWidth() / 2),
+                y + (image.getHeight() / 2));
+        canvas.drawBitmap(image, x, y, paint);
         //paint.setColor(Color.parseColor("#7d0aa9"));
         //canvas.drawLine(transformedPos.getX(), transformedPos.getY(), transformedPos.getX(), transformedPos.getY() + 30, paint);
         //canvas.drawLine(pos.getX(), pos.getY(), pos.getX(), pos.getY() + 30, paint);

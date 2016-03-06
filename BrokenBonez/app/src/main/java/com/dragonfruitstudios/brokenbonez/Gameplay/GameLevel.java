@@ -109,10 +109,10 @@ public class GameLevel extends Level {
         // Draw the different layers.
         for (LevelInfo.Layer l : info.layers) {
             VectorF pos = bikePos.copy();
-            pos.mult(new VectorF(-l.scrollFactor, 0));
+            pos.mult(new VectorF(-1f, 0));
             Bitmap img = assetLoader.getBitmapByName(info.getLayerKey(l));
             if (l instanceof LevelInfo.ColorLayer) {
-                LevelInfo.ColorLayer cLayer = ((LevelInfo.ColorLayer) l);
+                /*LevelInfo.ColorLayer cLayer = ((LevelInfo.ColorLayer) l);
 
                 // Draw the image
                 pos.add(0, gameView.getHeight() * l.yPos + l.yMargin);
@@ -140,7 +140,7 @@ public class GameLevel extends Level {
                         gameView.drawRect(0, imgBottom,
                                 gameView.getWidth(), imgBottom + cLayer.colorHeight, cLayer.colorBottom);
                         break;
-                }
+                }*/
             }
             else {
                 pos.add(0, gameView.getHeight() * l.yPos + l.yMargin);

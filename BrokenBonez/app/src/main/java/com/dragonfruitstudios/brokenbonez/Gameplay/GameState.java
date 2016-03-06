@@ -1,14 +1,18 @@
 package com.dragonfruitstudios.brokenbonez.Gameplay;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.drawable.Drawable;
+import android.os.Trace;
+import android.util.Log;
 
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.Camera;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Math.Physics.Simulator;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
+import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 import com.dragonfruitstudios.brokenbonez.R;
 import com.plattysoft.leonids.ParticleSystem;
 
@@ -31,6 +35,7 @@ public class GameState {
                 "bike/body_two.png"});
         this.assetLoader.AddAssets(new String[]{"bikeEngine.mp3", "bikeEngineRev.mp3",
                 "brokenboneztheme.ogg"});
+        this.assetLoader.AddAssets(new String[] {"levels/level1/dog.jpg"});
 
         // Create a new physics simulator.
         this.physicsSimulator = new Simulator();
@@ -47,11 +52,17 @@ public class GameState {
         bike.reset();
     }
 
+    //VectorF p = new VectorF(0, 0);
     public void update(float lastUpdate) {
-        bike.update(lastUpdate);
-        physicsSimulator.update(lastUpdate);
-        currentLevel.update(lastUpdate, bike.getPos());
-        camera.centerHorizontally(bike.getPos().x);
+        //camera.update(lastUpdate);
+        //bike.update(lastUpdate);
+        //physicsSimulator.update(lastUpdate);
+        //currentLevel.update(lastUpdate, bike.getPos());
+        //camera.centerHorizontally(bike.getPos().x);
+        //camera.setPos(camera.getPos().added(new VectorF(6f, 0)));
+        //bike.setVelocity(new VectorF(700, 0));
+        //p.set(p.x - 3f, 0);
+        p -= 300f * (lastUpdate/1000);
     }
 
     public void updateSize(int w, int h) {
@@ -59,12 +70,30 @@ public class GameState {
         bike.updateSize(w, h);
         camera.updateSize(w, h);
     }
-
+    Bitmap g = null;
+    float p = 0;
     public void draw(GameView view) {
         view.setCamera(camera);
-        currentLevel.draw(view);
-        bike.draw(view);
-        physicsSimulator.draw(view);
+        if (g == null) {
+            g = assetLoader.getBitmapByName("levels/level1/dog.jpg");
+        }
+        //Log.d("Pos", "Starting at: " + p);
+        Trace.beginSection("DrawImage");
+        for (int i = 0; i < 100; i++) {
+            //Trace.beginSection("AllocVec");
+            //VectorF pa = p.added(new VectorF(g.getWidth() * i, 0));
+            //Trace.endSection();
+
+            float pa = p + g.getWidth() * i;
+            if (pa >= -100 && pa <= 1500) {
+                view.drawImage(g, pa, 0, 0, GameView.ImageOrigin.TopLeft);
+            }
+
+        }
+        Trace.endSection();
+        //currentLevel.draw(view);
+        //bike.draw(view);
+        //physicsSimulator.draw(view);
     }
 
     public void setBikeAcceleration(float strength) {

@@ -198,6 +198,10 @@ public class DynamicBody extends Body {
         return boundingShape.getSize();
     }
 
+    public void setVelocity(VectorF vel) {
+        velocity.set(vel.x, vel.y);
+    }
+
     /**
      * Just for debugging.
      */

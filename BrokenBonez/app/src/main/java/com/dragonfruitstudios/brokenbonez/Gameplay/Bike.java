@@ -164,6 +164,11 @@ public class Bike implements GameObject {
         rightWheel.setPos(x + wheelSeparation, y);
     }
 
+    public void setVelocity(VectorF vel) {
+        rightWheel.setVelocity(vel);
+        leftWheel.setVelocity(vel);
+    }
+
     public void setColor(int color) {
         this.color = color;
 

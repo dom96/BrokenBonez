@@ -1,7 +1,11 @@
 package com.dragonfruitstudios.brokenbonez;
 
+import android.annotation.TargetApi;
 import android.graphics.Color;
+import android.os.Looper;
+import android.os.Trace;
 import android.util.Log;
+import android.view.Choreographer;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
@@ -15,6 +19,8 @@ import com.dragonfruitstudios.brokenbonez.Game.Scenes.MenuScene;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import static android.os.Looper.getMainLooper;
+
 /**
  * Core game loop class which handles drawing and updating of the game.
  */
@@ -25,6 +31,7 @@ public class GameLoop implements Runnable {
     GameView gameView;
     GameSceneManager gameSceneManager;
     AssetLoader assetLoader;
+    boolean threadRunning = false;
 
     // This lock prevents the drawing of objects while they are being updated.
     // Without it there were bugs like for example the bike "teleporting" forward for a split
@@ -35,37 +42,12 @@ public class GameLoop implements Runnable {
      * A method for taking the input fps i.e. fps entered when declaring a new game loop in
      * GameActivity class or the fps we want our game loop to constantly run at.
      */
-    public GameLoop(GameView gameView, AssetLoader assetLoader) {
+    public GameLoop(GameSceneManager gameSceneManager, GameView gameView, AssetLoader assetLoader) {
         targetTime = 1000000000 / targetFPS;
         this.gameView = gameView;
         this.assetLoader = assetLoader;
-
-        this.gameSceneManager = new GameSceneManager(gameView); //Setup the GameSceneManager
-
-        MenuScene menuScene = new MenuScene(assetLoader, gameSceneManager);   //Create the new MenuScene
-        GameScene gameScene = new GameScene(assetLoader, gameSceneManager);   //Create the new GameScene
-        HighScoreScene highScoreScene = new HighScoreScene(assetLoader, gameSceneManager);
-        BikeSelectionScene bikeSelectionScene = new BikeSelectionScene(assetLoader, gameSceneManager); //Create the BikeSelectionScene
-        this.gameSceneManager.addScene("menuScene", menuScene, true);  //Add the MenuScene just created to the GameSceneManager, then sets it as the active scene
-        this.gameSceneManager.addScene("gameScene", gameScene, false); //Add the Gamescene just created to the GameSceneManager, then makes sure it isn't set as active
-        this.gameSceneManager.addScene("bikeSelectionScene", bikeSelectionScene, false);
-        this.gameSceneManager.addScene("highScoreScene", highScoreScene, false);
-
+        this.gameSceneManager = gameSceneManager;
         updateLock = new ReentrantLock();
-
-        // Set the methods which should be called when certain events occur in the GameView.
-        // Unfortunately no lambda support in Java 8, so no beautiful callbacks for us.
-        this.gameView.setCallbacks(new GameView.GVCallbacks() {
-            @Override
-            public void performDraw(GameView gameView) {
-                gameDraw(gameView);
-            }
-
-            @Override
-            public void onSizeChanged(GameView gameView, int w, int h, int oldw, int oldh) {
-                gameUpdateSize(w, h);
-            }
-        });
     }
 
     long lastFPSTime;
@@ -85,9 +67,34 @@ public class GameLoop implements Runnable {
 
     long lastTime;
 
+    long avgFrameTime = 0;
+    long highFrameTime = 0;
+    int frames = 0;
+
     @Override
     public void run(){
-        while (true) { //
+        threadRunning = true;
+        Looper.prepare();
+
+        final Choreographer.FrameCallback cb = new Choreographer.FrameCallback() {
+            @Override
+            public void doFrame(long frameTimeNanos) {
+                //Log.e("GameLoop", "DoFrame " + frameTimeNanos);
+                gameUpdate();
+
+                gameView.captureCanvas();
+                gameDraw(gameView);
+                gameView.releaseCanvas();
+                Choreographer.getInstance().postFrameCallback(this);
+            }
+        };
+
+        Choreographer.getInstance().postFrameCallback(cb);
+
+        Looper.loop();
+        while (threadRunning) { //
+            long beforeUpdTime = System.nanoTime();
+
             long presentTime = System.nanoTime(); // Sets the present time to the current system time.
             long sleepTime; // Variable for the amount of time the thread needs to sleep for.
             // Setting the update time to the present time subtracted from the last time
@@ -105,9 +112,15 @@ public class GameLoop implements Runnable {
                 lastFPSTime = 0;
                 counter = 0;
             }
-
+            Trace.beginSection("gameUpdate");
             gameUpdate();
-            gameView.postInvalidate();
+            Trace.endSection();
+            Trace.beginSection("gameDraw");
+
+            gameView.captureCanvas();
+            gameDraw(gameView);
+            gameView.releaseCanvas();
+            Trace.endSection();
             currFrames++;
 
             // Sets the last time the loop was run to the present time.
@@ -117,7 +130,7 @@ public class GameLoop implements Runnable {
             // for the sleep time divided by 1 million in long type.
             sleepTime = (targetTime - (lastTime - presentTime) - extraSleepTime);
             if (sleepTime > 0) {
-                try {
+                /*try {
                     Thread.sleep(sleepTime / 1000000L);
                     extraSleepTime = (System.nanoTime() - lastTime) - sleepTime;
                 }
@@ -126,7 +139,7 @@ public class GameLoop implements Runnable {
                     // TODO: I recall that there is some method that should be called in the
                     // TODO: event of this.
                     Log.d("Error", "Interrupted exception was caught.");
-                }
+                }*/
             } else {
                 extraSleepTime = 0L;
             }
@@ -136,6 +149,19 @@ public class GameLoop implements Runnable {
                 currFPS = currFrames;
                 currFrames = 0;
                 lastFPSReport = System.currentTimeMillis();
+                if (frames > 0) {
+                    Log.d("FT", String.format("Avg: %1$,.2fms", (avgFrameTime / frames) / 1e6));
+                    Log.d("FT", String.format("High: %1$,.2fms", (highFrameTime) / 1e6));
+                    frames = 0;
+                    highFrameTime = 0;
+                    avgFrameTime = 0;
+                }
+            }
+
+            avgFrameTime += System.nanoTime() - beforeUpdTime;
+            frames++;
+            if (System.nanoTime() - beforeUpdTime > highFrameTime) {
+                highFrameTime = System.nanoTime() - beforeUpdTime;
             }
         }
     }
@@ -152,10 +178,11 @@ public class GameLoop implements Runnable {
             }
             // Pass it to GameState's update method.
             gameSceneManager.update(msSinceLastUpdate);
-        }
 
-        // Update the `lastUpdate` variable with the current time.
-        lastUpdate = System.currentTimeMillis();
+            // Update the `lastUpdate` variable with the current time.
+            lastUpdate = System.currentTimeMillis();
+
+        }
 
         // Check to see if a simple 1ms step is wanted.
         if (step) {
@@ -166,19 +193,22 @@ public class GameLoop implements Runnable {
     }
 
     protected void gameUpdateSize(int w, int h) {
-        updateLock.lock();
+        //updateLock.lock();
         gameSceneManager.updateSize(w, h);
-        updateLock.unlock();
+        //updateLock.unlock();
     }
 
+    @TargetApi(18)
     protected void gameDraw(GameView gameView) {
+        Trace.beginSection("gameDraw");
         updateLock.lock();
         gameView.clear(Color.BLACK);
-
+        Trace.beginSection("sceneManager.draw");
         gameSceneManager.draw();
-
+        Trace.endSection();
         gameView.drawText("FPS: " + currFPS, 20, 30, Color.WHITE);
         updateLock.unlock();
+        Trace.endSection();
     }
 
     public void onGameTouch(MotionEvent event) {
@@ -230,5 +260,12 @@ public class GameLoop implements Runnable {
         run = true;
         this.assetLoader.resume();
         gameSceneManager.resume();
+    }
+
+    /**
+     * Asks the underlying thread to stop executing.
+     */
+    public void stop() {
+        threadRunning = false;
     }
 }
