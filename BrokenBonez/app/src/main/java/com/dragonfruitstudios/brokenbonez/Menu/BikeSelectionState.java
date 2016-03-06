@@ -1,5 +1,6 @@
 package com.dragonfruitstudios.brokenbonez.Menu;
 
+import android.app.Activity;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -9,6 +10,7 @@ import com.dragonfruitstudios.brokenbonez.Game.Camera;
 import com.dragonfruitstudios.brokenbonez.Game.GameObject;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.GameScene;
+import com.dragonfruitstudios.brokenbonez.GameActivity;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
 import com.dragonfruitstudios.brokenbonez.Gameplay.Bike;
 import com.dragonfruitstudios.brokenbonez.Gameplay.GameState;

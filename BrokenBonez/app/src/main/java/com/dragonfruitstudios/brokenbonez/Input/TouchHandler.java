@@ -1,7 +1,6 @@
 package com.dragonfruitstudios.brokenbonez.Input;
 
 import android.graphics.PointF;
-import android.util.Log;
 import android.view.MotionEvent;
 
 /** Touch-Handler**/
