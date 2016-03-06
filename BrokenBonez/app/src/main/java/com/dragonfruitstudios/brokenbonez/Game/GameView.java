@@ -9,6 +9,8 @@ import android.os.Build;
 import android.support.v4.view.ViewCompat;
 import android.util.Log;
 import android.view.Surface;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.TextureView;
 import android.view.View;
 
@@ -22,7 +24,7 @@ import java.util.concurrent.locks.ReentrantLock;
  *  but the API has been designed to support other backends.
  *  It may for example utilise a GlSurfaceView backend in the future depending on performance.
  */
-public class GameView extends TextureView implements TextureView.SurfaceTextureListener {
+public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     boolean ready;
     boolean locked;
     Canvas canvas;
@@ -61,15 +63,16 @@ public class GameView extends TextureView implements TextureView.SurfaceTextureL
     }*/
 
     @Override
-    public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
-        this.surface = new Surface(surface);
+    public void surfaceCreated(SurfaceHolder holder) {
 
         ready = true;
         callbacks.onSurfaceAvailable(this);
     }
 
+
+
     @Override
-    public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int w, int h) {
+    public void onSizeChanged(int w, int h, int oldW, int oldH) {
         if (w == 0 || h == 0) {
             Log.d("GameView", "Size changed to 0, skipping event.");
             return;
@@ -83,20 +86,16 @@ public class GameView extends TextureView implements TextureView.SurfaceTextureL
     }
 
     @Override
-    public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+    public void surfaceDestroyed(SurfaceHolder holder) {
         Log.w("GameView", "onSurfaceTextureDestroyed");
 
         ready = false;
 
         callbacks.onSurfaceDestroyed(this);
-
-        surface.release();
-        surface = null;
-        return true;
     }
 
     @Override
-    public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
 
     }
 
@@ -107,7 +106,7 @@ public class GameView extends TextureView implements TextureView.SurfaceTextureL
         // Set a default camera.
         camera = new Camera(0, 0);
 
-        setSurfaceTextureListener(this);
+        getHolder().addCallback(this);
     }
 
     public void setCallbacks(GVCallbacks drawingFunction) {
@@ -158,17 +157,12 @@ public class GameView extends TextureView implements TextureView.SurfaceTextureL
     }
 
     public void captureCanvas() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            canvas = surface.lockHardwareCanvas();
-        }
-        else {
-            canvas = surface.lockCanvas(null);
-        }
+        canvas = getHolder().lockCanvas();
         locked = true;
     }
 
     public void releaseCanvas() {
-        surface.unlockCanvasAndPost(canvas);
+        getHolder().unlockCanvasAndPost(canvas);
         canvas = null;
         locked = false;
     }

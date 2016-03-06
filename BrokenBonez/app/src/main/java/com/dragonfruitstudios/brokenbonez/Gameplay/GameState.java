@@ -2,6 +2,7 @@ package com.dragonfruitstudios.brokenbonez.Gameplay;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Trace;
@@ -54,15 +55,15 @@ public class GameState {
 
     //VectorF p = new VectorF(0, 0);
     public void update(float lastUpdate) {
-        camera.update(lastUpdate);
-        bike.update(lastUpdate);
-        physicsSimulator.update(lastUpdate);
-        currentLevel.update(lastUpdate, bike.getPos());
-        camera.centerHorizontally(bike.getPos().x);
+        //camera.update(lastUpdate);
+        //bike.update(lastUpdate);
+        //physicsSimulator.update(lastUpdate);
+        //currentLevel.update(lastUpdate, bike.getPos());
+        //camera.centerHorizontally(bike.getPos().x);
         //camera.setPos(camera.getPos().added(new VectorF(6f, 0)));
         //bike.setVelocity(new VectorF(700, 0));
         //p.set(p.x - 3f, 0);
-        //p -= 300f * (lastUpdate/1000);
+        p -= 300f * (lastUpdate/1000);
     }
 
     public void updateSize(int w, int h) {
@@ -74,7 +75,7 @@ public class GameState {
     float p = 0;
     public void draw(GameView view) {
         view.setCamera(camera);
-        /*if (g == null) {
+        if (g == null) {
             g = assetLoader.getBitmapByName("levels/level1/dog.jpg");
         }
         //Log.d("Pos", "Starting at: " + p);
@@ -86,14 +87,15 @@ public class GameState {
 
             float pa = p + g.getWidth() * i;
             if (pa >= -100 && pa <= 1500) {
-                view.drawImage(g, pa, 0, 0, GameView.ImageOrigin.TopLeft);
+                view.drawRect(pa, 0, pa+100, 900, Color.RED);
+                //view.drawImage(g, pa, 0, 0, GameView.ImageOrigin.TopLeft);
             }
 
         }
-        Trace.endSection();*/
-        currentLevel.draw(view);
-        bike.draw(view);
-        physicsSimulator.draw(view);
+        Trace.endSection();
+        //currentLevel.draw(view);
+        //bike.draw(view);
+        //physicsSimulator.draw(view);
     }
 
     public void setBikeAcceleration(float strength) {

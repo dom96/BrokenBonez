@@ -74,7 +74,7 @@ public class GameLoop implements Runnable {
     @Override
     public void run(){
         threadRunning = true;
-        Looper.prepare();
+        /*Looper.prepare();
 
         final Choreographer.FrameCallback cb = new Choreographer.FrameCallback() {
             @Override
@@ -91,7 +91,7 @@ public class GameLoop implements Runnable {
 
         Choreographer.getInstance().postFrameCallback(cb);
 
-        Looper.loop();
+        Looper.loop();*/
         while (threadRunning) { //
             long beforeUpdTime = System.nanoTime();
 
