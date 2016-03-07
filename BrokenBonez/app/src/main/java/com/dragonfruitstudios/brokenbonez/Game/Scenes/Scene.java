@@ -56,5 +56,5 @@ public abstract class Scene implements GameObject {
      */
     public void deactivate() {}
 
-    public abstract void onSensorChanged(SensorEvent event);
+    public void onSensorChanged(SensorEvent event) {}
 }

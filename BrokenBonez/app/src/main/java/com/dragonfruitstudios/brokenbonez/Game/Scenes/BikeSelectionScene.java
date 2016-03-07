@@ -31,9 +31,4 @@ public class BikeSelectionScene extends Scene {
     public void onTouchEvent(MotionEvent event) {
         state.onTouchEvent(event);
     }
-
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-
-    }
 }
