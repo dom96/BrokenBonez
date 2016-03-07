@@ -2,6 +2,7 @@ package com.dragonfruitstudios.brokenbonez.Game.Scenes;
 
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.hardware.SensorEvent;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -78,5 +79,10 @@ public class GameScene extends Scene {
         state.getAssetLoader().getSoundByName("bikeEngine.mp3").setVolume(0.5f);
         state.getAssetLoader().getSoundByName("brokenboneztheme.ogg").setVolume(1f);
         state.getAssetLoader().getSoundByName("brokenboneztheme.ogg").play(true);
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+
     }
 }

@@ -1,6 +1,7 @@
 package com.dragonfruitstudios.brokenbonez;
 
 import android.graphics.Color;
+import android.hardware.SensorEvent;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -180,6 +181,10 @@ public class GameLoop implements Runnable {
 
     public void onGameTouch(MotionEvent event) {
         gameSceneManager.getCurrentSceneObject().onTouchEvent(event);
+    }
+
+    public void onGameSensorChanged(SensorEvent event){
+        gameSceneManager.getCurrentSceneObject().onSensorChanged(event);
     }
 
     /**

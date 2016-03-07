@@ -1,10 +1,12 @@
 package com.dragonfruitstudios.brokenbonez;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.view.KeyEvent;
@@ -21,12 +23,14 @@ import com.plattysoft.leonids.ParticleSystem;
  * Game Activity class used for creating a new game view and game loop instance. Also defines some
  * device related features.
  */
-public class GameActivity extends Activity {
+public class GameActivity extends Activity implements SensorEventListener {
     private GameLoop gameLoop;
     GameView gameView;
     PowerManager.WakeLock mWakeLock;
     int counterTest = 0;
-    Intent intent;
+    SensorManager sensorManager;
+    Sensor thisAccelerometer;
+    Accelerometer accelerometer;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,8 +48,11 @@ public class GameActivity extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         gameLoop = new GameLoop(gameView, new AssetLoader(this, new String[] {}));
         setContentView(gameView);
-        intent = new Intent(GameActivity.this, com.dragonfruitstudios.brokenbonez.Input.Accelerometer.class);
         new Thread(gameLoop).start();
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        thisAccelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        sensorManager.registerListener(this, thisAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        accelerometer = new Accelerometer();
     }
     @Override
     public void onBackPressed() {
@@ -60,6 +67,7 @@ public class GameActivity extends Activity {
     @Override
     public void onPause() {
         super.onPause();
+        sensorManager.unregisterListener(this);
         gameLoop.pause(); // Pauses gameLoop.
         this.mWakeLock.release(); // No need to lock anymore. Calling this saves device's battery.
     }
@@ -67,13 +75,13 @@ public class GameActivity extends Activity {
     @Override
     public void onResume() {
         super.onResume();
+        sensorManager.registerListener(this, thisAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         gameLoop.resume(); // Resumes gameLoop
         this.mWakeLock.acquire(); // Acquires the wake lock forcing the device to stay on.
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        startActivity(intent);
         gameLoop.onGameTouch(event);
         return super.onTouchEvent(event);
         /**new ParticleSystem(this, 400, R.drawable.smoke, 400)
@@ -85,5 +93,16 @@ public class GameActivity extends Activity {
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         gameLoop.onGameKeyUp(keyCode, event);
         return super.onKeyUp(keyCode, event);
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        gameLoop.onGameSensorChanged(event);
+        accelerometer.onSensorChanged(event);
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
     }
 }
