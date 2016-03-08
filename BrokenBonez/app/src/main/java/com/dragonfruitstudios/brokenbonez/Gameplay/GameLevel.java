@@ -54,11 +54,11 @@ public class GameLevel extends Level {
         info.layers.add(new LevelInfo.Layer("ground.png", 1f, 1f, 0f,
                 GameView.ImageOrigin.BottomLeft));
 
-        info.solids.add(LevelInfo.SolidLayer.createRect(new VectorF(0, 410), 200, 1000,
-                info.getSurfaceKey(), info.getTransparentKey(), info.getTransparentKey(),
-                info.getTransparentKey(), info.getGroundKey()));
+        //info.solids.add(LevelInfo.SolidLayer.createRect(new VectorF(0, 410), 200, 1000,
+        //        info.getSurfaceKey(), info.getTransparentKey(), info.getTransparentKey(),
+        //        info.getTransparentKey(), info.getGroundKey()));
 
-        info.loadSVG(state.getAssetLoader(), "level_dino.svg");
+        info.loadSVG(state.getAssetLoader(), "level_dino.svg", new VectorF(0, 410));
 
         /*ArrayList<Line> lines = new ArrayList<Line>();
         ArrayList<String> keys = new ArrayList<String>();

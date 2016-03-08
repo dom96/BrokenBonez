@@ -195,11 +195,10 @@ public class LevelInfo {
      * C 0.00,2.00 17.00,16.00 17.00,16.00
          17.00,16.00 28.00,24.00 29.00,25.00
      */
-    private ArrayList<Line> parsePath(String path) {
+    private ArrayList<Line> parsePath(String path, VectorF pos) {
         // Spec for 'C' here: https://www.w3.org/TR/SVG/paths.html#PathDataCubicBezierCommands
         // Only `curveto` is supported as that's all that GIMP generates.
         // Yep, I wrote a custom parser for this.
-
         ArrayList<Line> result = new ArrayList<>();
         int i = 0;
 
@@ -208,7 +207,7 @@ public class LevelInfo {
         // Params are `x1,y1 x2,y2 x,y`, we only care about the last param.
         int currentParam = 0;
         boolean currentCoordIsY = false;
-        VectorF currentPoint = new VectorF(0, 40); // TODO: Make this configurable.
+        VectorF currentPoint = pos.copy();
         String[] coords = new String[] {"", ""};
         while (i < path.length()) {
             switch (path.charAt(i)) {
@@ -218,7 +217,8 @@ public class LevelInfo {
                 case '\n':
                     if (pathStarted) {
                         if (currentParam == 2) {
-                            VectorF end = new VectorF(Float.valueOf(coords[0]), Float.valueOf(coords[1]));
+                            VectorF end = new VectorF(Float.valueOf(coords[0]) + pos.x,
+                                    Float.valueOf(coords[1]) + pos.y);
                             Assert.assertTrue("Found line which starts and ends in the same place.",
                                     end.subtracted(currentPoint).magnitude() != 0);
                             result.add(new Line(currentPoint.copy(), end));
@@ -275,7 +275,12 @@ public class LevelInfo {
         return result;
     }
 
-    public void loadSVG(AssetLoader loader, String path) {
+    /**
+     * Parses the SVG file at `levels/<path>` and adds the paths defined in it into
+     * this LevelInfo's solid layer's list. The `pos` parameter specifies the starting position
+     * of the paths.
+     */
+    public void loadSVG(AssetLoader loader, String path, VectorF pos) {
         AssetManager assetManager = loader.getAssetManager();
 
         Document dom;
@@ -289,7 +294,7 @@ public class LevelInfo {
             NodeList elements = doc.getElementsByTagName("path");
             for (int i = 0; i < elements.getLength(); i++) {
                 Node d = elements.item(i).getAttributes().getNamedItem("d");
-                ArrayList<Line> lines = parsePath(d.getNodeValue());
+                ArrayList<Line> lines = parsePath(d.getNodeValue(), pos);
                 ArrayList<String> keys = new ArrayList<>();
                 // Assume all the lines in path are surface paths.
                 for (Line l : lines) {
