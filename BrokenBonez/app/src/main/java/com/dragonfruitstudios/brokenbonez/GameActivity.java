@@ -7,6 +7,8 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.view.KeyEvent;
@@ -30,7 +32,6 @@ public class GameActivity extends Activity implements SensorEventListener {
     int counterTest = 0;
     SensorManager sensorManager;
     Sensor thisAccelerometer;
-    Accelerometer accelerometer;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,8 +53,8 @@ public class GameActivity extends Activity implements SensorEventListener {
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         thisAccelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         sensorManager.registerListener(this, thisAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-        accelerometer = new Accelerometer();
     }
+
     @Override
     public void onBackPressed() {
         gameLoop.assetLoader.pause(); //Stop all sounds when back button pressed
@@ -98,7 +99,6 @@ public class GameActivity extends Activity implements SensorEventListener {
     @Override
     public void onSensorChanged(SensorEvent event) {
         gameLoop.onGameSensorChanged(event);
-        accelerometer.onSensorChanged(event);
     }
 
     @Override

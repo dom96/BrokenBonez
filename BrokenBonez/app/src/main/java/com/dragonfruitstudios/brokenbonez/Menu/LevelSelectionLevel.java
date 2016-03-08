@@ -1,7 +1,6 @@
 package com.dragonfruitstudios.brokenbonez.Menu;
 
 import android.content.res.Resources;
-
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Gameplay.GameLevel;

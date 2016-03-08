@@ -19,10 +19,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Input.Accelerometer"></activity>
     </application>
-    <uses-sdk
-        android:minSdkVersion="8" android:targetSdkVersion="23"/>
+    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="23"/>
     <!--allows an application to write to external storage-->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <!--allows using PowerManager WakeLocks to keep processor from sleeping or screen from dimming-->

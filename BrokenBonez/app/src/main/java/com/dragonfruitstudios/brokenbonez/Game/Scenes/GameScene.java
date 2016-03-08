@@ -23,9 +23,11 @@ import com.plattysoft.leonids.ParticleSystem;
  */
 public class GameScene extends Scene {
     GameState state;
+    Accelerometer accelerometer;
     static Acceleration accel;
     public GameScene(AssetLoader assetLoader, GameSceneManager gameSceneManager) {
         super(assetLoader, gameSceneManager);
+        accelerometer = new Accelerometer();
         this.state = new GameState(assetLoader, this.gameSceneManager);
         newGame(Bike.BodyType.Bike, Color.BLUE);
     }
@@ -85,6 +87,7 @@ public class GameScene extends Scene {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
+            accelerometer.onSensorChanged(event);
             Log.d("RETURN VALUE", "" + Accelerometer.getReturnValue());
             // TODO: Test this when bike method is created.
             Accelerometer.getReturnValue();

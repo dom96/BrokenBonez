@@ -1,6 +1,5 @@
 package com.dragonfruitstudios.brokenbonez.Menu;
 
-import android.app.Activity;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -10,11 +9,8 @@ import com.dragonfruitstudios.brokenbonez.Game.Camera;
 import com.dragonfruitstudios.brokenbonez.Game.GameObject;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.GameScene;
-import com.dragonfruitstudios.brokenbonez.GameActivity;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
 import com.dragonfruitstudios.brokenbonez.Gameplay.Bike;
-import com.dragonfruitstudios.brokenbonez.Gameplay.GameState;
-import com.dragonfruitstudios.brokenbonez.Math.Collisions.Rect;
 import com.dragonfruitstudios.brokenbonez.Math.Physics.Simulator;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
@@ -25,6 +21,8 @@ public class BikeSelectionState implements GameObject {
     private Simulator physicsSimulator;
     Bitmap background;
     final Bitmap scaledBackground;
+    Bitmap bikeSelectLogo;
+    final Bitmap scaledBikeSelectLogo;
     VectorF pos;
     VectorF colorPos;
     VectorF textPos;
@@ -54,8 +52,9 @@ public class BikeSelectionState implements GameObject {
         this.physicsSimulator = new Simulator();
         camera = new Camera(0, 0);
         bikeSelectionLevel = new BikeSelectionLevel(this);
-        this.assetLoader.AddAssets(new String[]{"nightsky.png", "tvnoise.png", "dirtbike.png", "bmx.png"});
+        this.assetLoader.AddAssets(new String[]{"nightsky.png", "tvnoise.png", "dirtbike.png", "bmx.png", "bikeselect.png"});
         background = assetLoader.getBitmapByName("nightsky.png");
+        bikeSelectLogo = assetLoader.getBitmapByName("bikeselect.png");
         blue = Color.BLUE;
         purple = Color.parseColor("#7b2b80");
         green = Color.parseColor("#008000");
@@ -68,6 +67,7 @@ public class BikeSelectionState implements GameObject {
         colorList = new int[]{blue, purple, green, red, yellow, white, orange};
         textList = new Bitmap[]{dirtbike, bmx};
         scaledBackground = background.createScaledBitmap(background, getScreenWidth(), getScreenHeight(), false);
+        scaledBikeSelectLogo = bikeSelectLogo.createScaledBitmap(bikeSelectLogo, getScreenWidth(), getScreenHeight(), false);
         pos = new VectorF(0, 0);
         textPos = new VectorF(getScreenWidth() / 4 + 190, getScreenHeight() / 4 * 2 + 30);
         colorPos = new VectorF(getScreenWidth() / 4 + 260, getScreenHeight() / 4 * 2 + 130);
@@ -109,6 +109,7 @@ public class BikeSelectionState implements GameObject {
     @Override
     public void draw(GameView view) {
         view.drawImage(scaledBackground, pos, rotation, GameView.ImageOrigin.TopLeft);
+        view.drawImage(scaledBikeSelectLogo, pos, rotation, GameView.ImageOrigin.TopLeft);
         view.drawRect(getScreenWidth()/2 + 60 - 100, 500, getScreenWidth()/2 + 60, 600, color);
         view.drawImage(text, textPos, rotation, GameView.ImageOrigin.TopLeft);
         next.draw(view);
@@ -134,7 +135,8 @@ public class BikeSelectionState implements GameObject {
             select.isTouched = false;
             GameScene gameScene = (GameScene)this.gameSceneManager.getGameSceneByName("gameScene");
             gameScene.newGame(bike.getBodyType(), bike.getColor());
-            this.gameSceneManager.setScene("gameScene");
+            //this.gameSceneManager.setScene("gameScene");
+            this.gameSceneManager.setScene("levelSelectionScene");
         }
         // bike model
         if(next.isTouched() == true){
