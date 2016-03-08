@@ -12,6 +12,7 @@ import com.dragonfruitstudios.brokenbonez.Gameplay.Bike;
 import com.dragonfruitstudios.brokenbonez.Gameplay.GameState;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Input.Acceleration;
+import com.dragonfruitstudios.brokenbonez.Input.Accelerometer;
 import com.dragonfruitstudios.brokenbonez.Input.TouchHandler;
 import com.dragonfruitstudios.brokenbonez.R;
 import com.plattysoft.leonids.ParticleSystem;
@@ -83,6 +84,7 @@ public class GameScene extends Scene {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-
+            // TODO: Test this when bike method is created.
+            Accelerometer.getReturnValue();
     }
 }
