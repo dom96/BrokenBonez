@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
+import com.dragonfruitstudios.brokenbonez.GameLoop;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
 import com.dragonfruitstudios.brokenbonez.Gameplay.Bike;
 import com.dragonfruitstudios.brokenbonez.Gameplay.GameState;
@@ -84,6 +85,7 @@ public class GameScene extends Scene {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
+            Log.d("RETURN VALUE", "" + Accelerometer.getReturnValue());
             // TODO: Test this when bike method is created.
             Accelerometer.getReturnValue();
     }
