@@ -6,10 +6,12 @@ import android.util.Log;
 
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.Camera;
+import com.dragonfruitstudios.brokenbonez.Game.Graphics;
 import com.dragonfruitstudios.brokenbonez.Game.Level;
 import com.dragonfruitstudios.brokenbonez.Game.LevelInfo;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Circle;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Intersector;
+import com.dragonfruitstudios.brokenbonez.Math.Collisions.Line;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Manifold;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Rect;
 import com.dragonfruitstudios.brokenbonez.Game.Drawable;
@@ -40,7 +42,7 @@ public class GameLevel extends Level {
         bikePos = new VectorF(0, 0);
 
         // Create a default level info object (TODO: This should be loaded from LevelInfo text file).
-        info = new LevelInfo("level1");
+        info = new LevelInfo("level1", "surface.png", "ground.png");
         info.layers.add(new LevelInfo.ColorLayer("sky.png", 0.2f, 0.01f, 0f,
                 GameView.ImageOrigin.MiddleLeft, 40f, "#1e3973", "#466ab9"));
         info.layers.add(new LevelInfo.Layer("buildings1.png", 0.5f, 0.09f, 0f,
@@ -52,11 +54,33 @@ public class GameLevel extends Level {
         info.layers.add(new LevelInfo.Layer("ground.png", 1f, 1f, 0f,
                 GameView.ImageOrigin.BottomLeft));
 
+        info.solids.add(LevelInfo.SolidLayer.createRect(new VectorF(0, 410), 200, 1000,
+                info.getSurfaceKey(), info.getTransparentKey(), info.getTransparentKey(),
+                info.getTransparentKey(), info.getGroundKey()));
+
+        info.loadSVG(state.getAssetLoader(), "level_dino.svg");
+
+        /*ArrayList<Line> lines = new ArrayList<Line>();
+        ArrayList<String> keys = new ArrayList<String>();
+        lines.add(new Line(200, 410, 215, 440));
+        keys.add(info.getSurfaceKey());
+        lines.add(new Line(215, 440, 250, 460));
+        keys.add(info.getSurfaceKey());
+        lines.add(new Line(250, 460, 295, 475));
+        keys.add(info.getSurfaceKey());
+        lines.add(new Line(295, 475, 300, 480));
+        keys.add(info.getSurfaceKey());
+        info.solids.add(LevelInfo.SolidLayer.createPolygon(lines, keys, info.getGroundKey()));*/
+
         // Load bitmaps defined in LevelInfo.
         info.loadAssets(state.getAssetLoader());
 
         Simulator physicsSimulator = gameState.getPhysicsSimulator();
+        for (LevelInfo.SolidLayer sl : info.solids) {
+            physicsSimulator.createStaticBody(sl);
+        }
 
+        /*
         // TODO: Hardcoded for now.
         // Define some test Polygons.
         for (int i = 0; i < 20; i++) {
@@ -73,11 +97,7 @@ public class GameLevel extends Level {
             Rect rect = new Rect(new VectorF(20*3000, info.calcGroundHeight(getAssetLoader(), 720)- 200), 200, 700);
             physicsSimulator.createStaticBody(rect);
         }
-    }
-
-    // TODO: Remove
-    public GameLevel() {
-
+        */
     }
 
     public void updateSize(int w, int h) {
@@ -148,10 +168,33 @@ public class GameLevel extends Level {
             }
         }
 
+
+        // Draw solid layers.
+        gameView.enableCamera();
+        for (LevelInfo.SolidLayer sl : info.solids) {
+            drawSolidLayer(sl, gameView);
+        }
+        gameView.disableCamera();
+
         // Draw debug info.
         String debugInfo = String.format("Level[grndY: %.1f, totalY: %d]",
                 currHeight, gameView.getHeight());
         gameView.drawText(debugInfo, 100, 30, Color.WHITE);
+
+    }
+
+    private void drawSolidLayer(LevelInfo.SolidLayer sl, GameView gameView) {
+        for (int i = 0; i < sl.getLines().size(); i++) {
+            String assetKey = sl.getAssetKey(i);
+            // Don't draw if key is transparent.
+            if (!assetKey.equals(info.getTransparentKey())) {
+                Bitmap asset = getAssetLoader().getBitmapByName(assetKey);
+                Line line = sl.getLines().get(i);
+                Graphics.drawRepeated(gameView, asset, line.getStart(), (int)line.getSize().x,
+                        line.calcRotation());
+            }
+        }
+        //Log.w("GameLeve", "----");
 
     }
 

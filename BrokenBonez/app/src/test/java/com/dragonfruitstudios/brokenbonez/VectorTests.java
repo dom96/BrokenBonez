@@ -35,8 +35,18 @@ public class VectorTests {
 
     @Test
     public void rotate_isCorrect() {
-        vec1.rotate((float)Math.toRadians(180));
+        vec1.rotate((float) Math.toRadians(180));
         assertEquals(-5, vec1.x, 0.0001f);
 
+    }
+
+    @Test
+    public void magnitude_isCorrect() {
+        assertEquals(5, vec1.magnitude(), 0.0001f);
+
+        // Specific tests.
+        VectorF start = new VectorF(35, 40);
+        VectorF end = new VectorF(65, 40);
+        assertEquals(30, end.subtracted(start).magnitude(), 0.0001f);
     }
 }

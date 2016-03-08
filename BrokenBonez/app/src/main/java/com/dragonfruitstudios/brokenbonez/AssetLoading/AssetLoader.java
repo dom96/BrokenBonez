@@ -183,5 +183,8 @@ public class AssetLoader {
         }
     }
 
+    public AssetManager getAssetManager() {
+        return assetManager;
+    }
 
 }

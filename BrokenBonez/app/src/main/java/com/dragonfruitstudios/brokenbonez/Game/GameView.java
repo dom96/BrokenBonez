@@ -4,10 +4,14 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.util.Log;
 import android.view.View;
 
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
+
+import java.security.InvalidParameterException;
 
 /**
  *  This class implements a View which supports drawing. Currently implemented as a custom View,
@@ -241,6 +245,25 @@ public class GameView extends View {
         //paint.setColor(Color.parseColor("#7d0aa9"));
         //canvas.drawLine(transformedPos.getX(), transformedPos.getY(), transformedPos.getX(), transformedPos.getY() + 30, paint);
         //canvas.drawLine(pos.getX(), pos.getY(), pos.getX(), pos.getY() + 30, paint);
+        canvas.restore();
+    }
+
+    /**
+     * Draws a section of the image at the specified `dest` rectangle.
+     * @param image
+     * @param src The section of the image to draw.
+     * @param dest Where to draw the image.
+     * @param rotation The rotation of the image about its top-left corner.
+     */
+    public void drawImage(Bitmap image, Rect src, RectF dest, float rotation) {
+        checkCanvas();
+        if (dest.top > dest.bottom || dest.left > dest.right || src.top > src.bottom ||
+                src.left > src.right) {
+            throw new InvalidParameterException("Invalid rectangle.");
+        }
+        canvas.save();
+        canvas.rotate((float) Math.toDegrees(rotation), dest.left, dest.top);
+        canvas.drawBitmap(image, src, dest, paint);
         canvas.restore();
     }
 }
