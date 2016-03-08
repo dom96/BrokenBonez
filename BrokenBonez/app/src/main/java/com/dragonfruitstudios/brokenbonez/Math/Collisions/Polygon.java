@@ -66,7 +66,7 @@ public class Polygon extends Intersector implements Drawable {
      * @return A Manifold containing information about the collision.
      */
     @Override
-    public Manifold collisionTest(Intersector shape) {
+    public Manifold.Collection collisionTest(Intersector shape) {
         if (shape instanceof Circle) {
             return ((Circle)shape).collisionTest(this);
         }
@@ -89,15 +89,15 @@ public class Polygon extends Intersector implements Drawable {
      * infinity in an arbitrary direction and counting the number of times the ray crosses with
      * the Polygon's edges. If the number is odd then the point is inside.
      */
-    public Manifold collisionTest(VectorF point) {
+    public Manifold.Collection collisionTest(VectorF point) {
         // TODO: This implementation may be too slow when more complex polygons are involved.
-
+        Manifold.Collection result = new Manifold.Collection();
         boolean odd = false;
         for (Line l : lines) {
             // Check if `point` is on the line segment `l`.
             Manifold res = l.collisionTest(point);
             if (res.hasCollided()) {
-                return res;
+                result.add(res);
             }
 
             // Code carefully translated from the C code available here:
@@ -115,7 +115,7 @@ public class Polygon extends Intersector implements Drawable {
         }
         // Check if ray from `point` to infinity collided with an odd number of lines.
         // If so, this suggests that the point is inside the Polygon (See Even-odd rule).
-        if (odd) {
+        if (odd && !result.hasCollisions()) {
             // Need to find the normal and penetration depth.
             // Do this by finding the line closest to `point`.
             Line closestLine = lines.get(0);
@@ -129,9 +129,9 @@ public class Polygon extends Intersector implements Drawable {
             }
             // TODO: Calculate normal correctly. The following approximation works rather
             // well though.
-            return new Manifold(new VectorF(0, 1), (float)Math.sqrt(closestDist), true);
+            result.add(new Manifold(new VectorF(0, 1), (float)Math.sqrt(closestDist), true));
         }
-        return Manifold.noCollision();
+        return result;
     }
 
     /**

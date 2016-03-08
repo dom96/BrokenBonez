@@ -7,6 +7,8 @@ import com.dragonfruitstudios.brokenbonez.Game.Drawable;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
+import java.util.ArrayList;
+
 public class Circle extends Intersector implements Drawable {
     VectorF center;
     float radius;
@@ -43,7 +45,7 @@ public class Circle extends Intersector implements Drawable {
         // Based on answer here: http://stackoverflow.com/a/402019/492186
 
         // Check whether Circle's centre lies within the rectangle.
-        if (shape.collisionTest(center).hasCollided()) { return true; }
+        if (shape.collisionTest(center).hasCollisions()) { return true; }
 
         // Check whether either of the sides intersect with the circle.
         for (Line line : shape.getLines()) {
@@ -60,32 +62,32 @@ public class Circle extends Intersector implements Drawable {
      * @return A Manifold containing information about the collision.
      */
     @Override
-    public Manifold collisionTest(Intersector shape) {
+    public Manifold.Collection collisionTest(Intersector shape) {
         if (shape instanceof Polygon) {
             return collisionTestWithPolygon((Polygon)shape);
         }
         else if (shape instanceof Line) {
-            return collisionTestWithLine((Line)shape);
+            return new Manifold.Collection(collisionTestWithLine((Line)shape));
         }
 
         return collisionNotImplemented(shape);
     }
 
 
-    private Manifold collisionTestWithPolygon(Polygon shape) {
-        Manifold pointResult = shape.collisionTest(center);
-        if (pointResult.hasCollided()) {
-            pointResult.setPenetration(pointResult.getPenetration() + radius);
+    private Manifold.Collection collisionTestWithPolygon(Polygon shape) {
+        Manifold.Collection pointResult = shape.collisionTest(center);
+        if (pointResult.hasCollisions()) {
+            pointResult.addPenetration(radius);
             return pointResult;
         }
 
         for (Line line : shape.getLines()) {
-            Manifold res = collisionTest(line);
+            Manifold res = collisionTestWithLine(line);
             if (res.hasCollided()) {
-                return res;
+                pointResult.add(res);
             }
         }
-        return Manifold.noCollision();
+        return pointResult;
     }
 
     /**
@@ -150,7 +152,7 @@ public class Circle extends Intersector implements Drawable {
      * Determines whether Line AB intersects with this Circle.
      */
     private boolean collidesWith(VectorF a, VectorF b) {
-        return collisionTest(new Line(a, b)).hasCollided();
+        return collisionTest(new Line(a, b)).hasCollisions();
     }
 
     public Circle copy() {

@@ -14,12 +14,12 @@ import java.util.ArrayList;
 // TODO: Clean up the old collidesWith methods in the Line, Polygon etc classes.
 public abstract class Intersector implements Drawable {
 
-    protected Manifold collisionNotImplemented(Intersector shape) {
+    protected Manifold.Collection collisionNotImplemented(Intersector shape) {
         throw new RuntimeException("CollisionTest needs to be implemented for " +
                 this.getClass() + " and " + shape.getClass());
     }
 
-    public abstract Manifold collisionTest(Intersector shape);
+    public abstract Manifold.Collection collisionTest(Intersector shape);
 
     public abstract Intersector copy();
 

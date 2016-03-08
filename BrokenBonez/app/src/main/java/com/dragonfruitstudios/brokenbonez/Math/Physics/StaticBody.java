@@ -31,8 +31,8 @@ public class StaticBody extends Body {
         boundingShape.draw(view);
     }
 
-    Manifold collisionTest(DynamicBody dBody) {
-        Manifold result = dBody.getBoundingShape().collisionTest(boundingShape);
+    Manifold.Collection collisionTest(DynamicBody dBody) {
+        Manifold.Collection result = dBody.getBoundingShape().collisionTest(boundingShape);
         result.setFirstBody(this);
         result.setSecondBody(dBody);
         return result;

@@ -24,7 +24,7 @@ public class Line extends Intersector implements Drawable {
     private long timeOfLastCollision;
 
     private VectorF calcSize() {
-        return this.size = new VectorF(Math.abs(start.x-end.x), Math.abs(start.y-end.y));
+        return this.size = new VectorF(end.subtracted(start).magnitude(), 1);
     }
 
     public Line(VectorF start, VectorF end) {
@@ -103,7 +103,7 @@ public class Line extends Intersector implements Drawable {
      * @return A Manifold containing information about the collision.
      */
     @Override
-    public Manifold collisionTest(Intersector shape) {
+    public Manifold.Collection collisionTest(Intersector shape) {
         return collisionNotImplemented(shape);
     }
 
@@ -140,6 +140,11 @@ public class Line extends Intersector implements Drawable {
     public boolean isNear(VectorF point) {
         float distanceSq = distanceSquared(point);
         return distanceSq < 10*10;
+    }
+
+    public float calcRotation() {
+        VectorF sub = end.subtracted(start);
+        return sub.angle();
     }
 
     public Line copy() {
