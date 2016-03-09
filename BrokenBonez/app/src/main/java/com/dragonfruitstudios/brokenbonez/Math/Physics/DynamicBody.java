@@ -80,7 +80,7 @@ public class DynamicBody extends Body {
             // manifolds and have to look at all of them.
             for (Manifold manifold : manifolds) {
                 // Correct position
-                getPos().multAdd(manifold.getNormal(), -(manifold.getPenetration()));
+                getPos().multAdd(manifold.getNormal(), -(manifold.getPenetration()-0.1f));
 
                 // The formula used to calculate the impulse is defined here:
                 // http://gamedevelopment.tutsplus.com/tutorials/how-to-create-a-custom-2d-physics-engine-the-basics-and-impulse-resolution--gamedev-6331
@@ -116,10 +116,10 @@ public class DynamicBody extends Body {
                     // Calculate the magnitude of the new velocity based on the bodies angular
                     // velocity. Use the magnitude to find the new vector velocity based on
                     // the direction of the old velocity.
-                    VectorF newVelocity = velocity.normalised();
-                    newVelocity.mult(Math.abs(angularVelocity) * boundingShape.getRadius());
+                    float frictionalVel = Math.abs(angularVelocity) * boundingShape.getRadius() *
+                        Simulator.angularVelPreserved;
 
-                    velocity = newVelocity;
+                    velocity.multAdd(manifold.getNormal().rotated(-90), frictionalVel);
                 } else {
                     // Calculate the body's angular velocity based on its linear velocity.
                     // i.e. make the wheels spin!
