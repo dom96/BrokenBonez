@@ -1,7 +1,7 @@
 package com.dragonfruitstudios.brokenbonez.Game.Scenes;
 
+import android.hardware.SensorEvent;
 import android.view.MotionEvent;
-
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.GameObject;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
@@ -54,4 +54,6 @@ public abstract class Scene implements GameObject {
      * Called when this Scene is hidden from the user and another Scene takes its place.
      */
     public void deactivate() {}
+
+    public void onSensorChanged(SensorEvent event) {}
 }

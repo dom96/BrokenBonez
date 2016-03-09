@@ -19,20 +19,26 @@ public class BikeSelectionLevel extends Level {
 
     public BikeSelectionLevel(BikeSelectionState state) {
         bikeSelectionState = state;
-        startPoint = new VectorF(getScreenWidth() / 2 - 60, getScreenHeight() / 4 + 60);
+        startPoint = new VectorF(getScreenWidth() / 10 * 7 - 40, getScreenHeight() / 4 + 60);
         bikePos = new VectorF(getScreenWidth() / 2 - 60, getScreenHeight() / 4 + 60);
 
         Simulator physicsSimulator = bikeSelectionState.getPhysicsSimulator();
 
         for (int i = 0; i < 1; i++) {
             float height = 320;
-            Rect rect = new Rect(new VectorF(getScreenWidth() / 2 - 60, height), 130, 20);
+            Rect rect = new Rect(new VectorF(getScreenWidth() / 10 * 6, height), 360, 30);
             physicsSimulator.createStaticBody(rect);
         }
 
         for(int i = 0; i < 1; i++) {
             float height = 300;
-            Rect rect = new Rect(new VectorF(getScreenWidth() / 2, height), 20, 20);
+            Rect rect = new Rect(new VectorF(getScreenWidth() / 10 * 6, getScreenHeight() / 10 * 2), 30, 180);
+            physicsSimulator.createStaticBody(rect);
+        }
+
+        for(int i = 0; i < 1; i++) {
+            float height = 300;
+            Rect rect = new Rect(new VectorF(getScreenWidth() / 10 * 9, getScreenHeight() / 10 * 2), 30, 180);
             physicsSimulator.createStaticBody(rect);
         }
     }

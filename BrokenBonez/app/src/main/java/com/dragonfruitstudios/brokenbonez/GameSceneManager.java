@@ -1,10 +1,9 @@
 package com.dragonfruitstudios.brokenbonez;
 
+import android.hardware.SensorEvent;
 import android.util.Log;
-
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.Scene;
-
 import java.util.HashMap;
 
 /**
@@ -155,4 +154,6 @@ public class GameSceneManager {
         this.getCurrentSceneObject().resume();
     }
 
+    public void onSensorChanged(SensorEvent event) {
+        this.getCurrentSceneObject().onSensorChanged(event);}
 }

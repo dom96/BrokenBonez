@@ -1,5 +1,6 @@
 package com.dragonfruitstudios.brokenbonez.Gameplay;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.util.Log;

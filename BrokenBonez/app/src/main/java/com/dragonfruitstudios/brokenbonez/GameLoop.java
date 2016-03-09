@@ -1,17 +1,17 @@
 package com.dragonfruitstudios.brokenbonez;
 
 import android.graphics.Color;
+import android.hardware.SensorEvent;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
-
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.BikeSelectionScene;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.GameScene;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.HighScoreScene;
+import com.dragonfruitstudios.brokenbonez.Game.Scenes.LevelSelectionScene;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.MenuScene;
-
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -44,12 +44,16 @@ public class GameLoop implements Runnable {
 
         MenuScene menuScene = new MenuScene(assetLoader, gameSceneManager);   //Create the new MenuScene
         GameScene gameScene = new GameScene(assetLoader, gameSceneManager);   //Create the new GameScene
+
         HighScoreScene highScoreScene = new HighScoreScene(assetLoader, gameSceneManager);
-        BikeSelectionScene bikeSelectionScene = new BikeSelectionScene(assetLoader, gameSceneManager); //Create the BikeSelectionScene
+        BikeSelectionScene bikeSelectionScene = new BikeSelectionScene(assetLoader, gameSceneManager);
+        LevelSelectionScene levelSelectionScene = new LevelSelectionScene(assetLoader, gameSceneManager);
         this.gameSceneManager.addScene("menuScene", menuScene, true);  //Add the MenuScene just created to the GameSceneManager, then sets it as the active scene
         this.gameSceneManager.addScene("gameScene", gameScene, false); //Add the Gamescene just created to the GameSceneManager, then makes sure it isn't set as active
         this.gameSceneManager.addScene("bikeSelectionScene", bikeSelectionScene, false);
+        this.gameSceneManager.addScene("levelSelectionScene", levelSelectionScene, false);
         this.gameSceneManager.addScene("highScoreScene", highScoreScene, false);
+
 
         updateLock = new ReentrantLock();
 
@@ -84,6 +88,8 @@ public class GameLoop implements Runnable {
     boolean step = false;
 
     long lastTime;
+
+
 
     @Override
     public void run(){
@@ -183,6 +189,10 @@ public class GameLoop implements Runnable {
 
     public void onGameTouch(MotionEvent event) {
         gameSceneManager.getCurrentSceneObject().onTouchEvent(event);
+    }
+
+    public void onGameSensorChanged(SensorEvent event) {
+        gameSceneManager.getCurrentSceneObject().onSensorChanged(event);
     }
 
     /**

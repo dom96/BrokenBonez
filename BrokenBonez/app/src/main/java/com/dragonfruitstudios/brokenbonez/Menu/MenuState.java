@@ -29,12 +29,12 @@ public class MenuState implements GameObject {
     public MenuState(AssetLoader assetLoader, GameSceneManager gameSceneManager) {
         this.assetLoader = assetLoader;
         this.gameSceneManager = gameSceneManager;
-        startGame = new ImageButton("start.png", assetLoader, getScreenWidth() / 4 - 14, getScreenHeight() / 4 + 60, 612, 180);
-        hiScore = new ImageButton("hiscore.png", assetLoader, getScreenWidth() / 4 - 14, getScreenHeight() / 4 * 2 + 120, 270, 60);
-        credits = new ImageButton("credits.png", assetLoader,  getScreenWidth() / 4 * 2 + 29, getScreenHeight() / 4 * 2 + 120, 270, 60);
-        this.assetLoader.AddAssets(new String[]{"tv.png", "tvnoise.png"});
-        noise = assetLoader.getBitmapByName("tvnoise.png");
-        background = assetLoader.getBitmapByName("tv.png");
+        startGame = new ImageButton("menu/start.png", assetLoader, getScreenWidth() / 4 - 14, getScreenHeight() / 4 + 60, 612, 180);
+        hiScore = new ImageButton("menu/hiscore.png", assetLoader, getScreenWidth() / 4 - 14, getScreenHeight() / 4 * 2 + 120, 270, 60);
+        credits = new ImageButton("menu/credits.png", assetLoader,  getScreenWidth() / 4 * 2 + 29, getScreenHeight() / 4 * 2 + 120, 270, 60);
+        this.assetLoader.AddAssets(new String[]{"menu/tv.png", "menu/tvnoise.png"});
+        noise = assetLoader.getBitmapByName("menu/tvnoise.png");
+        background = assetLoader.getBitmapByName("menu/tv.png");
         scaledNoise = noise.createScaledBitmap(noise, getScreenWidth(), getScreenHeight(), false);
         scaledBackground = background.createScaledBitmap(background, getScreenWidth(), getScreenHeight(), false);
         pos = new VectorF(0, 0);
