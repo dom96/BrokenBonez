@@ -12,7 +12,6 @@ import com.dragonfruitstudios.brokenbonez.Math.Physics.Simulator;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 public class LevelSelectionState implements GameObject {
-    LevelSelectionLevel levelSelectionlevel;
     private AssetLoader assetLoader;
     private GameSceneManager gameSceneManager;
     private Simulator physicsSimulator;
@@ -31,7 +30,6 @@ public class LevelSelectionState implements GameObject {
         this.assetLoader = assetLoader;
         this.physicsSimulator = new Simulator();
         camera = new Camera(0, 0);
-        levelSelectionlevel = new LevelSelectionLevel(this);
         this.assetLoader.AddAssets(new String[]{"selection/levelText.png"});
         background = assetLoader.getBitmapByName("selection/levelText.png");
         scaledBackground = background.createScaledBitmap(background, getScreenWidth(), getScreenHeight(), false);
@@ -52,13 +50,10 @@ public class LevelSelectionState implements GameObject {
     @Override
     public void update(float lastUpdate) {
         physicsSimulator.update(lastUpdate);
-        levelSelectionlevel.update(lastUpdate);
-        levelSelectionlevel.getPhysicsSimulator().update(lastUpdate);
     }
 
     @Override
     public void updateSize(int w, int h) {
-        levelSelectionlevel.updateSize(w, h);
         camera.updateSize(w, h);
     }
 
@@ -66,9 +61,7 @@ public class LevelSelectionState implements GameObject {
     public void draw(GameView view) {
         view.drawImage(scaledBackground, pos, rotation, GameView.ImageOrigin.TopLeft);
         view.setCamera(camera);
-        levelSelectionlevel.draw(view);
         physicsSimulator.draw(view);
-        levelSelectionlevel.draw(view);
         level1.draw(view);
         level2.draw(view);
         level3.draw(view);

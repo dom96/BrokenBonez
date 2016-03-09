@@ -24,7 +24,7 @@ public class ImageButton {
         this.pos = new VectorF(x, y);
         this.rectangle = new Rect(this.pos, width, height);
         this.assetLoader = assetLoader;
-        this.assetLoader.AddAssets(new String[]{"menu/start.png", "menu/hiscore.png", "menu/credits.png", "selection/next.png", "selection/prev.png", "selection/select.png", "selection/level1.png", "selection/level2.png", "selection/level3.png", "selection/level4.png"});
+        this.assetLoader.AddAssets(new String[]{"menu/start.png", "menu/hiscore.png", "menu/credits.png", "selection/next.png", "selection/prev.png", "selection/select.png", "selection/level1.png", "selection/level2.png", "selection/level3.png", "selection/level4.png", "menu/settings.png",});
         this.image = assetLoader.getBitmapByName(imageName);
         this.scaledImage = image.createScaledBitmap(image, (int)width, (int)height, false);
     }

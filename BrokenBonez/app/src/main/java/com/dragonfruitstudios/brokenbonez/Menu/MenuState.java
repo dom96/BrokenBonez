@@ -14,6 +14,7 @@ public class MenuState implements GameObject {
     ImageButton startGame;
     ImageButton hiScore;
     ImageButton credits;
+    ImageButton settings;
     AssetLoader assetLoader;
     Bitmap background;
     boolean noiseOn;
@@ -32,6 +33,7 @@ public class MenuState implements GameObject {
         startGame = new ImageButton("menu/start.png", assetLoader, getScreenWidth() / 4 - 14, getScreenHeight() / 4 + 60, 612, 180);
         hiScore = new ImageButton("menu/hiscore.png", assetLoader, getScreenWidth() / 4 - 14, getScreenHeight() / 4 * 2 + 120, 270, 60);
         credits = new ImageButton("menu/credits.png", assetLoader,  getScreenWidth() / 4 * 2 + 29, getScreenHeight() / 4 * 2 + 120, 270, 60);
+        settings = new ImageButton("menu/settings.png", assetLoader, (getScreenWidth() / 10) * 10 - 80, (getScreenHeight() / 10) * 10 - 55, 60, 50);
         this.assetLoader.AddAssets(new String[]{"menu/tv.png", "menu/tvnoise.png"});
         noise = assetLoader.getBitmapByName("menu/tvnoise.png");
         background = assetLoader.getBitmapByName("menu/tv.png");
@@ -75,6 +77,7 @@ public class MenuState implements GameObject {
         startGame.draw(view);
         hiScore.draw(view);
         credits.draw(view);
+        settings.draw(view);
         if(getNoiseOn() == true){
             view.drawImage(scaledNoise, pos, rotation, GameView.ImageOrigin.TopLeft);
         }
