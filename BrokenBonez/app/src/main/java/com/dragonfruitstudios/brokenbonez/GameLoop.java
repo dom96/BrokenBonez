@@ -5,14 +5,12 @@ import android.hardware.SensorEvent;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
-
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.BikeSelectionScene;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.GameScene;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.LevelSelectionScene;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.MenuScene;
-
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 

@@ -16,10 +16,7 @@ public class LevelSelectionScene extends Scene {
     }
 
     public void draw(GameView view) {state.draw(view);}
-
     public void update(float lastUpdate) {state.update(lastUpdate);}
-
     public void updateSize(int w, int h) {state.updateSize(w, h);}
-
     public void onTouchEvent(MotionEvent event) {state.onTouchEvent(event);}
 }

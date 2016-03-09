@@ -2,24 +2,17 @@ package com.dragonfruitstudios.brokenbonez;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.WindowManager;
-
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
-import com.dragonfruitstudios.brokenbonez.Gameplay.GameState;
-import com.dragonfruitstudios.brokenbonez.Input.Accelerometer;
-import com.plattysoft.leonids.ParticleSystem;
 
 /**
  * Game Activity class used for creating a new game view and game loop instance. Also defines some

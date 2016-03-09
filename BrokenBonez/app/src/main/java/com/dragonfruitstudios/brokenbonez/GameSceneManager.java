@@ -2,10 +2,8 @@ package com.dragonfruitstudios.brokenbonez;
 
 import android.hardware.SensorEvent;
 import android.util.Log;
-
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.Scene;
-
 import java.util.HashMap;
 
 /**

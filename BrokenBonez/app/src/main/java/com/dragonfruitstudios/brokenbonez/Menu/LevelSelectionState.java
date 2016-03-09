@@ -18,9 +18,7 @@ public class LevelSelectionState implements GameObject {
     private Simulator physicsSimulator;
     private Camera camera;
     Bitmap background;
-    Bitmap levelSelectLogo;
     final Bitmap scaledBackground;
-    final Bitmap scaledLevelSelectLogo;
     VectorF pos;
     float rotation;
 
@@ -30,11 +28,9 @@ public class LevelSelectionState implements GameObject {
         this.physicsSimulator = new Simulator();
         camera = new Camera(0, 0);
         levelSelectionlevel = new LevelSelectionLevel(this);
-        this.assetLoader.AddAssets(new String[]{"nightsky.png", "levelselectlogo.png"});
+        this.assetLoader.AddAssets(new String[]{"nightsky.png",});
         background = assetLoader.getBitmapByName("nightsky.png");
         scaledBackground = background.createScaledBitmap(background, getScreenWidth(), getScreenHeight(), false);
-        levelSelectLogo = assetLoader.getBitmapByName("levelselectlogo.png");
-        scaledLevelSelectLogo = levelSelectLogo.createScaledBitmap(levelSelectLogo, getScreenWidth(), getScreenHeight(), false);
         pos = new VectorF(0, 0);
         rotation = 0;
     }
@@ -61,7 +57,6 @@ public class LevelSelectionState implements GameObject {
     @Override
     public void draw(GameView view) {
         view.drawImage(scaledBackground, pos, rotation, GameView.ImageOrigin.TopLeft);
-        view.drawImage(scaledLevelSelectLogo, pos, rotation, GameView.ImageOrigin.TopLeft);
         view.setCamera(camera);
         levelSelectionlevel.draw(view);
         physicsSimulator.draw(view);

@@ -5,9 +5,7 @@ import android.graphics.Color;
 import android.hardware.SensorEvent;
 import android.util.Log;
 import android.view.MotionEvent;
-
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
-import com.dragonfruitstudios.brokenbonez.GameLoop;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
 import com.dragonfruitstudios.brokenbonez.Gameplay.Bike;
 import com.dragonfruitstudios.brokenbonez.Gameplay.GameState;
@@ -15,8 +13,6 @@ import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Input.Acceleration;
 import com.dragonfruitstudios.brokenbonez.Input.Accelerometer;
 import com.dragonfruitstudios.brokenbonez.Input.TouchHandler;
-import com.dragonfruitstudios.brokenbonez.R;
-import com.plattysoft.leonids.ParticleSystem;
 
 /**
  * Implements the game scene in which the bulk of the gameplay occurs.
@@ -25,6 +21,7 @@ public class GameScene extends Scene {
     GameState state;
     Accelerometer accelerometer;
     static Acceleration accel;
+
     public GameScene(AssetLoader assetLoader, GameSceneManager gameSceneManager) {
         super(assetLoader, gameSceneManager);
         accelerometer = new Accelerometer();
@@ -32,18 +29,14 @@ public class GameScene extends Scene {
         newGame(Bike.BodyType.Bike, Color.BLUE);
     }
 
-    public void newGame(Bike.BodyType bikeBodyType, int bikeColor) {
-        this.state.newGame(bikeBodyType, bikeColor);
-    }
-
+    public int getScreenWidth() {return Resources.getSystem().getDisplayMetrics().widthPixels;}
+    public void newGame(Bike.BodyType bikeBodyType, int bikeColor) {this.state.newGame(bikeBodyType, bikeColor);}
     public void draw(GameView view) {
         state.draw(view);
     }
-
     public void update(float lastUpdate) {
         state.update(lastUpdate);
     }
-
     public void updateSize(int w, int h) {
         state.updateSize(w, h);
     }
@@ -71,10 +64,6 @@ public class GameScene extends Scene {
                 state.setBikeAcceleration(accel.getAccel());
                 break;
         }
-    }
-
-    public int getScreenWidth() {
-        return Resources.getSystem().getDisplayMetrics().widthPixels;
     }
 
     @Override

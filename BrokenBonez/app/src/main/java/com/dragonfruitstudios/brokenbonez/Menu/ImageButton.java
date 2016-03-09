@@ -27,14 +27,6 @@ public class ImageButton {
         this.assetLoader.AddAssets(new String[]{"start.png", "hiscore.png", "credits.png", "next.png", "prev.png", "select.png"});
         this.image = assetLoader.getBitmapByName(imageName);
         this.scaledImage = image.createScaledBitmap(image, (int)width, (int)height, false);
-
-        /**startGame = assetLoader.getBitmapByName("start.png");
-        hiScore = assetLoader.getBitmapByName("hiscore.png");
-        credits = assetLoader.getBitmapByName("credits.png");
-        next = assetLoader.getBitmapByName("next.png");
-        prev = assetLoader.getBitmapByName("prev.png");
-        select = assetLoader.getBitmapByName("select.png");**/
-
     }
 
     public void draw(GameView view) {
