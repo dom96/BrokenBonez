@@ -269,13 +269,14 @@ public class LevelInfo {
                         i++; // Skip whitespace.
                     }
                     break;
+                case '-':
                 case '.':
                     if (pathStarted || mStarted) {
                         if (currentCoordIsY) {
-                            coords[1] += '.';
+                            coords[1] += path.charAt(i);
                         }
                         else {
-                            coords[0] += '.';
+                            coords[0] += path.charAt(i);
                         }
                     }
                     break;
