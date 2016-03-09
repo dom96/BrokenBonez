@@ -29,7 +29,7 @@ public class Accelerometer {
 
                 if((currX < 9.50 && currY > 0.4)){
                     mPhoneSide = phoneSide.LEFT;
-                    Log.d("tilted on", "" + mPhoneSide);
+                    //Log.d("tilted on", "" + mPhoneSide);
                     switch ((int) currX){
                         case 1: returnValue = (float) 0.9;
                             break;
@@ -55,7 +55,7 @@ public class Accelerometer {
 
                 else if((currX < 9.50 && currY < 0.0)){
                     mPhoneSide = phoneSide.RIGHT;
-                    Log.d("tilted on", "" + mPhoneSide);
+                    //Log.d("tilted on", "" + mPhoneSide);
                     switch ((int) currX){
                         case 1: returnValue = (float) 0.9;
                             break;
@@ -95,5 +95,9 @@ public class Accelerometer {
         } else {
             return returnValue;
         }
+    }
+
+    public static boolean isLeft() {
+        return mPhoneSide == phoneSide.LEFT;
     }
 }

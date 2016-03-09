@@ -6,9 +6,11 @@ import android.util.Log;
 
 import com.dragonfruitstudios.brokenbonez.Game.Graphics;
 import com.dragonfruitstudios.brokenbonez.Game.Level;
+import com.dragonfruitstudios.brokenbonez.GameLoop;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Circle;
 import com.dragonfruitstudios.brokenbonez.Game.GameObject;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
+import com.dragonfruitstudios.brokenbonez.Math.Collisions.Line;
 import com.dragonfruitstudios.brokenbonez.Math.Physics.DynamicBody;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
@@ -17,6 +19,7 @@ public class Bike implements GameObject {
     final float wheelSeparation = 74f; // TODO: Change this depending on body type.
     final float wheelRadius = 20f;
     final float wheelMass = 200f;
+    final float tiltSensitivity = 5f; // Affects the rate of bike tilting.
 
     // The current level that this bike is on.
     Level currentLevel;
@@ -32,6 +35,9 @@ public class Bike implements GameObject {
     Bitmap body;
     BodyType bodyType;
     int color; // The bike color.
+
+    // Specifies how much the bike should be tilting per update.
+    float currentTiltForce = 0;
 
     public enum BodyType {
         Bike, Bicycle
@@ -121,7 +127,13 @@ public class Bike implements GameObject {
     }
 
     public void update(float lastUpdate) {
-        // TODO
+        float updateFactor = GameLoop.calcUpdateFactor(lastUpdate);
+
+        // This code is a tad magical. The Line constructor does not copy the wheels'
+        // position vectors, so when the Line is rotated the position vectors belonging to the
+        // wheel's are rotated directly.
+        Line leftToRight = new Line(leftWheel.getPos(), rightWheel.getPos());
+        leftToRight.rotate(-tiltSensitivity*currentTiltForce*updateFactor, leftToRight.getCenter());
     }
 
     /**
@@ -145,6 +157,10 @@ public class Bike implements GameObject {
         leftWheel.setTorque(700 * strength);
 
         Log.d("Bike/Trq", "Torque is now " + 5 * strength);
+    }
+
+    public void setTilt(float value) {
+        currentTiltForce = value;
     }
 
     public VectorF getPos() {

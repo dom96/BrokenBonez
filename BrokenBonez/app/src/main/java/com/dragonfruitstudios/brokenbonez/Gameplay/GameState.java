@@ -70,6 +70,16 @@ public class GameState {
     public void setBikeAcceleration(float strength) {
         bike.setTorque(strength);
     }
+
+    /**
+     * Sets the bike's tilting force. Value should be between -1 and 1. Negative values mean
+     * tilt to the left (left wheel down, right wheel up), positive mean tilt to the right (left
+     * wheel up, right wheel down).
+     */
+    public void setBikeTilt(float value) {
+        bike.setTilt(value);
+    }
+
     public AssetLoader getAssetLoader() {
         return assetLoader;
     }
