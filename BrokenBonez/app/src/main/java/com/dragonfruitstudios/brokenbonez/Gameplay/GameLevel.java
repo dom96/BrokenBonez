@@ -58,7 +58,7 @@ public class GameLevel extends Level {
         //        info.getSurfaceKey(), info.getTransparentKey(), info.getTransparentKey(),
         //        info.getTransparentKey(), info.getGroundKey()));
 
-        info.loadSVG(state.getAssetLoader(), "level_dino.svg", new VectorF(0, 410));
+        info.loadSVG(state.getAssetLoader(), "level1.svg", new VectorF(0, 0));
 
         /*ArrayList<Line> lines = new ArrayList<Line>();
         ArrayList<String> keys = new ArrayList<String>();
@@ -221,7 +221,13 @@ public class GameLevel extends Level {
     }
 
     private void drawSolidLayer(LevelInfo.SolidLayer sl, GameView gameView) {
+
+        // Draw the SolidLayer's fill image.
+        gameView.fillPolygon(getAssetLoader().getBitmapByName(sl.getFillKey()), sl);
+
+
         int surfaceOffset = 0;
+        // Draw the image beneath each line.
         for (int i = 0; i < sl.getLines().size(); i++) {
             String assetKey = sl.getAssetKey(i);
             // Don't draw if key is transparent.
@@ -253,6 +259,7 @@ public class GameLevel extends Level {
                 surfaceOffset += width;
             }
         }
+
 
     }
 

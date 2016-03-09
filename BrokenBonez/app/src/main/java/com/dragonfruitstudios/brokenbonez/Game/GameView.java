@@ -2,13 +2,21 @@ package com.dragonfruitstudios.brokenbonez.Game;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapShader;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Shader;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.PathShape;
 import android.util.Log;
 import android.view.View;
 
+import com.dragonfruitstudios.brokenbonez.Math.Collisions.Line;
+import com.dragonfruitstudios.brokenbonez.Math.Collisions.Polygon;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 import java.security.InvalidParameterException;
@@ -265,5 +273,30 @@ public class GameView extends View {
         canvas.rotate((float) Math.toDegrees(rotation), dest.left, dest.top);
         canvas.drawBitmap(image, src, dest, paint);
         canvas.restore();
+    }
+
+    public void fillPolygon(Bitmap image, Polygon polygon) {
+        checkCanvas();
+        Path path = new Path();
+        for (int i = 0; i < polygon.getLines().size(); i++) {
+            Line line = polygon.getLines().get(i);
+            if (i == 0) {
+                path.moveTo(line.getStart().x, line.getStart().y);
+            }
+            else {
+                path.lineTo(line.getFinish().x, line.getFinish().y);
+            }
+        }
+        path.close();
+
+        PathShape shape = new PathShape(path, canvas.getWidth(), canvas.getHeight());
+        BitmapShader bs = new BitmapShader(image, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
+
+        ShapeDrawable sd = new ShapeDrawable(shape);
+        sd.getPaint().setShader(bs);
+        sd.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+
+        sd.draw(canvas);
+
     }
 }

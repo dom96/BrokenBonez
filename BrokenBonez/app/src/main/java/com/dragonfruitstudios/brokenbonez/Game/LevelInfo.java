@@ -321,9 +321,9 @@ public class LevelInfo {
                 Line right = new Line(lines.get(lines.size()-1).getFinish().copy(),
                         lines.get(lines.size()-1).getFinish().added(new VectorF(0, 400)));
                 Line bottom = new Line(left.getFinish().copy(), right.getFinish().copy());
-                lines.add(left);
                 lines.add(right);
                 lines.add(bottom);
+                lines.add(left);
                 SolidLayer.AssetKey[] keys = new SolidLayer.AssetKey[] {
                         surfaceKey,
                         new SolidLayer.AssetKey(getTransparentKey(), surfaceKey.indexEnd+1,
