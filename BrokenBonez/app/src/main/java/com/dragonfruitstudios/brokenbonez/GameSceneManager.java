@@ -32,7 +32,7 @@ import java.util.HashMap;
  */
 
 public class GameSceneManager {
-    protected GameView gameView;
+    public GameView gameView;
     private HashMap<String, Scene> gameScenes=new HashMap<String, Scene>();
     private String currentScene = null;
 

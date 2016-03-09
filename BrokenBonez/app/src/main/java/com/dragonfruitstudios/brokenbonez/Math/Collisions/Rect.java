@@ -7,6 +7,8 @@ import com.dragonfruitstudios.brokenbonez.Math.VectorF;
  * VectorF collides with the rectangle: `collidesWith` and `collisionTest`.
  */
 public class Rect extends Polygon {
+    // TODO: Use the Android Rect as an optimisation. Override intersect methods.
+
     public Rect(VectorF pos, float width, float height) {
         super();
         VectorF topLeft = pos.copy();

@@ -7,10 +7,12 @@ import android.util.Log;
 
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.Camera;
+import com.dragonfruitstudios.brokenbonez.Game.Graphics;
 import com.dragonfruitstudios.brokenbonez.Game.Level;
 import com.dragonfruitstudios.brokenbonez.Game.LevelInfo;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Circle;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Intersector;
+import com.dragonfruitstudios.brokenbonez.Math.Collisions.Line;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Manifold;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Rect;
 import com.dragonfruitstudios.brokenbonez.Game.Drawable;
@@ -41,7 +43,7 @@ public class GameLevel extends Level {
         bikePos = new VectorF(0, 0);
 
         // Create a default level info object (TODO: This should be loaded from LevelInfo text file).
-        info = new LevelInfo("level1");
+        info = new LevelInfo("level1", "surface.png", "ground.png");
         info.layers.add(new LevelInfo.ColorLayer("sky.png", 0.2f, 0.01f, 0f,
                 GameView.ImageOrigin.MiddleLeft, 40f, "#1e3973", "#466ab9"));
         info.layers.add(new LevelInfo.Layer("buildings1.png", 0.5f, 0.09f, 0f,
@@ -53,11 +55,33 @@ public class GameLevel extends Level {
         info.layers.add(new LevelInfo.Layer("ground.png", 1f, 1f, 0f,
                 GameView.ImageOrigin.BottomLeft));
 
+        //info.solids.add(LevelInfo.SolidLayer.createRect(new VectorF(0, 410), 200, 1000,
+        //        info.getSurfaceKey(), info.getTransparentKey(), info.getTransparentKey(),
+        //        info.getTransparentKey(), info.getGroundKey()));
+
+        info.loadSVG(state.getAssetLoader(), "level1.svg", new VectorF(0, 0));
+
+        /*ArrayList<Line> lines = new ArrayList<Line>();
+        ArrayList<String> keys = new ArrayList<String>();
+        lines.add(new Line(200, 410, 215, 440));
+        keys.add(info.getSurfaceKey());
+        lines.add(new Line(215, 440, 250, 460));
+        keys.add(info.getSurfaceKey());
+        lines.add(new Line(250, 460, 295, 475));
+        keys.add(info.getSurfaceKey());
+        lines.add(new Line(295, 475, 300, 480));
+        keys.add(info.getSurfaceKey());
+        info.solids.add(LevelInfo.SolidLayer.createPolygon(lines, keys, info.getGroundKey()));*/
+
         // Load bitmaps defined in LevelInfo.
         info.loadAssets(state.getAssetLoader());
 
         Simulator physicsSimulator = gameState.getPhysicsSimulator();
+        for (LevelInfo.SolidLayer sl : info.solids) {
+            physicsSimulator.createStaticBody(sl);
+        }
 
+        /*
         // TODO: Hardcoded for now.
         // Define some test Polygons.
         for (int i = 0; i < 20; i++) {
@@ -74,11 +98,7 @@ public class GameLevel extends Level {
             Rect rect = new Rect(new VectorF(20*3000, info.calcGroundHeight(getAssetLoader(), 720)- 200), 200, 700);
             physicsSimulator.createStaticBody(rect);
         }
-    }
-
-    // TODO: Remove
-    public GameLevel() {
-
+        */
     }
 
     public void updateSize(int w, int h) {
@@ -149,10 +169,98 @@ public class GameLevel extends Level {
             }
         }
 
+
+        // Draw solid layers.
+        gameView.enableCamera();
+        for (LevelInfo.SolidLayer sl : info.solids) {
+            drawSolidLayer(sl, gameView);
+        }
+        gameView.disableCamera();
+
         // Draw debug info.
         String debugInfo = String.format("Level[grndY: %.1f, totalY: %d]",
                 currHeight, gameView.getHeight());
         gameView.drawText(debugInfo, 100, 30, Color.WHITE);
+
+    }
+
+    /**
+     * Calculates the angle to draw gap between solid layers.
+     */
+    private float calcFillAngle(LevelInfo.SolidLayer sl, int index) {
+        ArrayList<Line> lines = sl.getLines();
+        Line currentLine = lines.get(index);
+        float currentAngle = currentLine.calcRotation();
+        if (index+1 < lines.size()) {
+            Line nextLine = lines.get(index+1);
+            float nextAngle = nextLine.calcRotation();
+            // Calculate the midpoint between the two angles.
+            float midpoint = (currentAngle - nextAngle) / 2;
+            return currentAngle - midpoint;
+        }
+        else {
+            return 0;
+        }
+    }
+
+    /**
+     * Calculates the difference in angle between the current solid layer and the next.
+     * Can be used to determine whether there is a gap between the two layers.
+     */
+    private float calcAngleDiff(LevelInfo.SolidLayer sl, int index) {
+        ArrayList<Line> lines = sl.getLines();
+        Line currentLine = lines.get(index);
+        float currentAngle = currentLine.calcRotation();
+        if (index+1 < lines.size()) {
+            Line nextLine = lines.get(index+1);
+            float nextAngle = nextLine.calcRotation();
+            return currentAngle-nextAngle;
+        }
+        else {
+            return 0;
+        }
+    }
+
+    private void drawSolidLayer(LevelInfo.SolidLayer sl, GameView gameView) {
+
+        // Draw the SolidLayer's fill image.
+        gameView.fillPolygon(getAssetLoader().getBitmapByName(sl.getFillKey()), sl);
+
+
+        int surfaceOffset = 0;
+        // Draw the image beneath each line.
+        for (int i = 0; i < sl.getLines().size(); i++) {
+            String assetKey = sl.getAssetKey(i);
+            // Don't draw if key is transparent.
+            if (!assetKey.equals(info.getTransparentKey())) {
+                Bitmap asset = getAssetLoader().getBitmapByName(assetKey);
+                Line line = sl.getLines().get(i);
+
+                // Determine whether a gap needs to be filled between solid surface layers.
+                float angleDiff = calcAngleDiff(sl, i);
+                if (angleDiff > 0) {
+                    // Calculate the angle to draw the fill layer at.
+                    float fillAngle = calcFillAngle(sl, i);
+                    // Calculate the width of the fill layer to draw.
+                    float fillWidth = 40*angleDiff;
+                    VectorF pos = line.getFinish().copy();
+                    // Move the fill layer closer to the current solid layer.
+                    pos.multAdd(new VectorF(fillAngle), -fillWidth/2);
+                    // TODO: Change the fill layer's height a bit?
+                    Graphics.drawRepeated(gameView, asset, surfaceOffset,
+                            pos, fillWidth, fillAngle);
+                    surfaceOffset += fillWidth;
+                }
+
+                // Use the length of the line as the solid layer's width.
+                int width = (int)line.getSize().x;
+                // Draw the solid layer.
+                Graphics.drawRepeated(gameView, asset, surfaceOffset, line.getStart(), width,
+                        line.calcRotation());
+                surfaceOffset += width;
+            }
+        }
+
 
     }
 

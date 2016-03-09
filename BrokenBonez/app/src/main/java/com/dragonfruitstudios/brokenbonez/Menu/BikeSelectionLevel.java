@@ -4,13 +4,14 @@ import android.content.res.Resources;
 import android.graphics.Color;
 
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
+import com.dragonfruitstudios.brokenbonez.Game.Level;
 import com.dragonfruitstudios.brokenbonez.Gameplay.GameLevel;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Rect;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Math.Physics.Simulator;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
-public class BikeSelectionLevel extends GameLevel {
+public class BikeSelectionLevel extends Level {
 
     BikeSelectionState bikeSelectionState;
     VectorF startPoint;

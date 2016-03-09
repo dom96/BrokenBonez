@@ -34,6 +34,9 @@ public class Simulator {
         // Use a fixed update factor to make the physics simulation deterministic.
         float updateFactor = 1.0f/GameLoop.targetFPS;
 
+        // TODO: Use Manifold.Collection to hold collection of Manifolds instead of custom
+        // ArrayList?
+
         // Go through each dynamic body and determine if it collides with any static bodies.
         // TODO: This is O(n*m) which isn't terribly efficient. Only simulate what is on screen.
         for (DynamicBody dBody : dynamicBodies) {
@@ -44,9 +47,12 @@ public class Simulator {
                     // Don't test for collision if sufficiently far enough.
                     continue;
                 }
-                Manifold collision = sBody.collisionTest(dBody);
-                if (collision.hasCollided()) {
-                    collisions.add(collision);
+                Manifold.Collection collision = sBody.collisionTest(dBody);
+                if (collision.hasCollisions()) {
+                    for (Manifold m : collision) {
+                        collisions.add(m);
+                    }
+
                 }
             }
 

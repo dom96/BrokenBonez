@@ -3,6 +3,11 @@ package com.dragonfruitstudios.brokenbonez.Math.Collisions;
 import com.dragonfruitstudios.brokenbonez.Math.Physics.Body;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
+import junit.framework.Assert;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+
 /**
  * Inspired by Randy Gaul's impulse engine. The manifold contains information about a collision.
  * Including penetration depth, the shapes involved and the collision normal.
@@ -97,4 +102,57 @@ public class Manifold {
     }
 
     // </editor-fold>
+
+    public static class Collection implements Iterable<Manifold> {
+        private ArrayList<Manifold> manifolds;
+
+        public Collection() {
+            manifolds = new ArrayList<>();
+        }
+
+        public Collection(Manifold manifold) {
+            manifolds = new ArrayList<>();
+            manifolds.add(manifold);
+        }
+
+        public boolean hasCollisions() {
+            return manifolds.size() != 0;
+        }
+
+        public void add(Manifold manifold) {
+            Assert.assertTrue("Only Manifold's that collided should be added.",
+                    manifold.hasCollided());
+            manifolds.add(manifold);
+        }
+
+        public Manifold get(int index) {
+            return manifolds.get(index);
+        }
+
+        public Iterator<Manifold> iterator() {
+            return manifolds.iterator();
+        }
+
+        // <editor-fold desc="Methods applied to all Manifolds in collection">
+
+        public void addPenetration(float penetration) {
+            for (Manifold m : manifolds) {
+                m.setPenetration(m.getPenetration() + penetration);
+            }
+        }
+
+        public void setFirstBody(Body body) {
+            for (Manifold m : manifolds) {
+                m.setFirstBody(body);
+            }
+        }
+
+        public void setSecondBody(Body body) {
+            for (Manifold m : manifolds) {
+                m.setSecondBody(body);
+            }
+        }
+
+        // </editor-fold>
+    }
 }

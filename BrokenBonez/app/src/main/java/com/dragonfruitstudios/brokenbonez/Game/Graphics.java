@@ -1,6 +1,13 @@
 package com.dragonfruitstudios.brokenbonez.Game;
 
 import android.graphics.Bitmap;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.util.Log;
+
+import com.dragonfruitstudios.brokenbonez.Math.VectorF;
+
+import junit.framework.Assert;
 
 public class Graphics {
     /**
@@ -22,4 +29,33 @@ public class Graphics {
 
         img.setPixels(pixels, 0, img.getWidth(), 0, 0, img.getWidth(), img.getHeight());
     }
+
+    /**
+     * Draws the specified Bitmap, but only draws portion specified by `width`. If the Bitmap
+     * is smaller than `width` then it is repeated, if it is bigger then it is cropped.
+     *
+     * The `offset` parameter specifies at which point in the image the drawing should start.
+     * For convenience the `offset` will wrap around.
+     */
+    public static void drawRepeated(GameView view, Bitmap img, int offset, VectorF pos,
+                                    float width, float rotation) {
+        int drawnWidth = 0;
+        int wrappedOffset = offset;
+        // Wrap the offset around if it's larger than image width.
+        if (wrappedOffset >= img.getWidth()) {
+            wrappedOffset = img.getWidth() - wrappedOffset;
+        }
+        // Keep drawing until the specified width is drawn.
+        while (drawnWidth < Math.floor(width)) {
+            // Calculate the maximum width that can be drawn
+            int maxWidth = Math.min((int)Math.floor(width-drawnWidth), img.getWidth()-wrappedOffset);
+            RectF dest = new RectF(pos.x + drawnWidth, pos.y,
+                    pos.x + drawnWidth + maxWidth, pos.y + img.getHeight());
+            view.drawImage(img, new Rect(wrappedOffset, 0, wrappedOffset+maxWidth, img.getHeight()),
+                    dest, rotation);
+            // Increment `drawnWidth` by the width that was drawn.
+            drawnWidth += maxWidth;
+        }
+    }
+
 }

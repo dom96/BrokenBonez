@@ -29,6 +29,14 @@ public class VectorF {
     }
 
     /**
+     * Constructs a unit vector based on the angle (in radians) specified.
+     */
+    public VectorF(float angle) {
+        this.x = (float)Math.cos(angle);
+        this.y = (float)Math.sin(angle);
+    }
+
+    /**
      * Creates a new copy of this VectorF.
      *
      * Handy shortcut to an otherwise verbose expression:

@@ -10,6 +10,8 @@ import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -60,39 +62,54 @@ public class CollisionTests {
         // Ensure that the computed normals are correct.
         Triangle triangle = new Triangle(new VectorF(200, 190), 300, 110);
         Circle wheel = new Circle(336.8f, 218.9f, 20f);
-        Manifold collisionTest = wheel.collisionTest(triangle);
-        assertTrue(collisionTest.hasCollided());
-        assertEquals(-0.34425464, collisionTest.getNormal().getX(), 0.0001);
-        assertEquals(0.9388763, collisionTest.getNormal().getY(), 0.0001);
-        assertTrue(collisionTest.getPenetration() < 0.1);
+        Manifold.Collection collisionTest = wheel.collisionTest(triangle);
+        assertTrue(collisionTest.hasCollisions());
+        assertEquals(-0.34425464, collisionTest.get(0).getNormal().getX(), 0.0001);
+        assertEquals(0.9388763, collisionTest.get(0).getNormal().getY(), 0.0001);
+        assertTrue(collisionTest.get(0).getPenetration() < 0.1);
 
         wheel.setCenter(719.3f, 196.6f);
 
         // Just a simple sanity check.
         collisionTest = wheel.collisionTest(triangle);
-        assertFalse(collisionTest.hasCollided());
+        assertFalse(collisionTest.hasCollisions());
 
         triangle = new Triangle(new VectorF(900, 150), -400, 150);
         collisionTest = wheel.collisionTest(triangle);
-        assertTrue(collisionTest.hasCollided());
-        assertEquals(0.3511226, collisionTest.getNormal().getX(), 0.0001);
-        assertEquals(0.9363294, collisionTest.getNormal().getY(), 0.0001);
+        assertTrue(collisionTest.hasCollisions());
+        assertEquals(0.3511226, collisionTest.get(0).getNormal().getX(), 0.0001);
+        assertEquals(0.9363294, collisionTest.get(0).getNormal().getY(), 0.0001);
 
         wheel.setCenter(625.5f, 231.9f);
         collisionTest = wheel.collisionTest(triangle);
-        assertTrue(collisionTest.hasCollided());
-        assertEquals(0.35112345, collisionTest.getNormal().getX(), 0.0001);
-        assertEquals(0.9363292, collisionTest.getNormal().getY(), 0.0001);
+        assertTrue(collisionTest.hasCollisions());
+        assertEquals(0.35112345, collisionTest.get(0).getNormal().getX(), 0.0001);
+        assertEquals(0.9363292, collisionTest.get(0).getNormal().getY(), 0.0001);
 
         // Ensure that when the circle is inside the polygon that it can
         // be detected.
         Rect rect = new Rect(new VectorF(0, 0), 1000, 1000);
         wheel.setCenter(500, 500);
         collisionTest = wheel.collisionTest(rect);
-        assertTrue(collisionTest.hasCollided());
+        assertTrue(collisionTest.hasCollisions());
         wheel.setCenter(1500, 500);
         collisionTest = wheel.collisionTest(rect);
-        assertFalse(collisionTest.hasCollided());
+        assertFalse(collisionTest.hasCollisions());
+
+        // Some test cases taken from game.
+        wheel.setCenter(258.7f, 176.0f);
+        ArrayList<Line> lines = new ArrayList<>();
+        lines.add(new Line(new VectorF(250f, 194f), new VectorF(322, 169)));
+        Polygon polygon = new Polygon(lines);
+        collisionTest = wheel.collisionTest(polygon);
+        assertTrue(collisionTest.hasCollisions());
+
+        wheel.setCenter(190.7f, 177.4f);
+        lines = new ArrayList<>();
+        lines.add(new Line(new VectorF(177.00f, 192.00f), new VectorF(250.00f, 194.00f)));
+        polygon = new Polygon(lines);
+        collisionTest = wheel.collisionTest(polygon);
+        assertTrue(collisionTest.hasCollisions());
     }
 
 
