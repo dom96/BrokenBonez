@@ -28,8 +28,8 @@ public class LevelSelectionState implements GameObject {
         this.physicsSimulator = new Simulator();
         camera = new Camera(0, 0);
         levelSelectionlevel = new LevelSelectionLevel(this);
-        this.assetLoader.AddAssets(new String[]{"nightsky.png",});
-        background = assetLoader.getBitmapByName("nightsky.png");
+        this.assetLoader.AddAssets(new String[]{"selection/nightsky.png",});
+        background = assetLoader.getBitmapByName("selection/nightsky.png");
         scaledBackground = background.createScaledBitmap(background, getScreenWidth(), getScreenHeight(), false);
         pos = new VectorF(0, 0);
         rotation = 0;
