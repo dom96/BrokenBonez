@@ -58,7 +58,7 @@ public class GameLevel extends Level {
         //        info.getSurfaceKey(), info.getTransparentKey(), info.getTransparentKey(),
         //        info.getTransparentKey(), info.getGroundKey()));
 
-        info.loadSVG(state.getAssetLoader(), "level_dino.svg", new VectorF(0, 410));
+        info.loadSVG(state.getAssetLoader(), "level2.svg", new VectorF(0, 410));
 
         /*ArrayList<Line> lines = new ArrayList<Line>();
         ArrayList<String> keys = new ArrayList<String>();
@@ -183,6 +183,43 @@ public class GameLevel extends Level {
 
     }
 
+    /**
+     * Calculates the angle to draw gap between solid layers.
+     */
+    private float calcFillAngle(LevelInfo.SolidLayer sl, int index) {
+        ArrayList<Line> lines = sl.getLines();
+        Line currentLine = lines.get(index);
+        float currentAngle = currentLine.calcRotation();
+        if (index+1 < lines.size()) {
+            Line nextLine = lines.get(index+1);
+            float nextAngle = nextLine.calcRotation();
+            // Calculate the midpoint between the two angles.
+            float midpoint = (currentAngle - nextAngle) / 2;
+            return currentAngle - midpoint;
+        }
+        else {
+            return 0;
+        }
+    }
+
+    /**
+     * Calculates the difference in angle between the current solid layer and the next.
+     * Can be used to determine whether there is a gap between the two layers.
+     */
+    private float calcAngleDiff(LevelInfo.SolidLayer sl, int index) {
+        ArrayList<Line> lines = sl.getLines();
+        Line currentLine = lines.get(index);
+        float currentAngle = currentLine.calcRotation();
+        if (index+1 < lines.size()) {
+            Line nextLine = lines.get(index+1);
+            float nextAngle = nextLine.calcRotation();
+            return currentAngle-nextAngle;
+        }
+        else {
+            return 0;
+        }
+    }
+
     private void drawSolidLayer(LevelInfo.SolidLayer sl, GameView gameView) {
         for (int i = 0; i < sl.getLines().size(); i++) {
             String assetKey = sl.getAssetKey(i);
@@ -190,11 +227,29 @@ public class GameLevel extends Level {
             if (!assetKey.equals(info.getTransparentKey())) {
                 Bitmap asset = getAssetLoader().getBitmapByName(assetKey);
                 Line line = sl.getLines().get(i);
-                Graphics.drawRepeated(gameView, asset, line.getStart(), (int)line.getSize().x,
+
+                // Determine whether a gap needs to be filled between solid surface layers.
+                float angleDiff = calcAngleDiff(sl, i);
+                if (angleDiff > 0) {
+                    // Calculate the angle to draw the fill layer at.
+                    float fillAngle = calcFillAngle(sl, i);
+                    // Calculate the width of the fill layer to draw.
+                    float fillWidth = 40*angleDiff;
+                    VectorF pos = line.getFinish().copy();
+                    // Move the fill layer closer to the current solid layer.
+                    pos.multAdd(new VectorF(fillAngle), -fillWidth/2);
+                    // TODO: Change the fill layer's height a bit?
+                    Graphics.drawRepeated(gameView, asset,
+                            pos, fillWidth, fillAngle);
+                }
+
+                // Use the length of the line as the solid layer's width.
+                int width = (int)line.getSize().x;
+                // Draw the solid layer.
+                Graphics.drawRepeated(gameView, asset, line.getStart(), width,
                         line.calcRotation());
             }
         }
-        //Log.w("GameLeve", "----");
 
     }
 

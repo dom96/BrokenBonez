@@ -46,8 +46,7 @@ public class LevelInfo {
     public static class SolidLayer extends Polygon {
         // This maps directly to Polygon.lines and determines what image should be drawn over each
         // line.
-        // TODO: This leads to lots of repetition when the surface has many lines.
-        private ArrayList<String> assetKeys;
+        private ArrayList<AssetKey> assetKeys;
         private String fillKey; // The key of the image used to fill the layer.
 
         private SolidLayer(Polygon polygon) {
@@ -58,29 +57,46 @@ public class LevelInfo {
                                             String top, String left, String right, String bottom,
                                             String fill) {
             SolidLayer result = new SolidLayer(new Rect(pos, width, height));
-            result.assetKeys = new ArrayList<String>();
-            result.assetKeys.add(top);
-            result.assetKeys.add(right);
-            result.assetKeys.add(bottom);
-            result.assetKeys.add(left);
+            result.assetKeys = new ArrayList<AssetKey>();
+            result.assetKeys.add(new AssetKey(top, 0, 0));
+            result.assetKeys.add(new AssetKey(left, 3, 3));
+            result.assetKeys.add(new AssetKey(right, 1, 1));
+            result.assetKeys.add(new AssetKey(bottom, 2, 2));
             result.fillKey = fill;
             return result;
         }
 
-        public static SolidLayer createPolygon(ArrayList<Line> lines, ArrayList<String> assetKeys,
+        public static SolidLayer createPolygon(ArrayList<Line> lines, AssetKey[] assetKeys,
                                                String fillKey) {
             SolidLayer result = new SolidLayer(new Polygon(lines));
-            result.assetKeys = assetKeys;
+            result.assetKeys = new ArrayList<AssetKey>();
+            for (AssetKey ak : assetKeys) {
+                for (int i = ak.indexStart; i <= ak.indexEnd; i++) {
+                    result.assetKeys.add(ak);
+                }
+            }
             result.fillKey = fillKey;
             return result;
         }
 
         public String getAssetKey(int i) {
-            return assetKeys.get(i);
+            return assetKeys.get(i).key;
         }
 
         public String getFillKey() {
             return fillKey;
+        }
+
+        static class AssetKey {
+            String key;
+            int indexStart;
+            int indexEnd;
+
+            AssetKey(String key, int indexStart, int indexEnd) {
+                this.key = key;
+                this.indexStart = indexStart;
+                this.indexEnd = indexEnd;
+            }
         }
     }
 
@@ -146,9 +162,9 @@ public class LevelInfo {
         // Add the Solid layers' assets.
         for (SolidLayer sl : solids) {
             // TODO: UGH. An `addAsset` method is desperately needed.
-            for (String key : sl.assetKeys) {
-                if (!key.equals(getTransparentKey())) {
-                    loader.AddAssets(new String[]{key});
+            for (SolidLayer.AssetKey ak : sl.assetKeys) {
+                if (!ak.key.equals(getTransparentKey())) {
+                    loader.AddAssets(new String[]{ak.key});
                 }
             }
         }
@@ -295,11 +311,9 @@ public class LevelInfo {
             for (int i = 0; i < elements.getLength(); i++) {
                 Node d = elements.item(i).getAttributes().getNamedItem("d");
                 ArrayList<Line> lines = parsePath(d.getNodeValue(), pos);
-                ArrayList<String> keys = new ArrayList<>();
                 // Assume all the lines in path are surface paths.
-                for (Line l : lines) {
-                    keys.add(getSurfaceKey());
-                }
+                SolidLayer.AssetKey surfaceKey = new SolidLayer.AssetKey(getSurfaceKey(), 0,
+                        lines.size()-1);
 
                 // TODO: Quick way to close the Polygon.
                 Line left = new Line(lines.get(0).getStart().copy(),
@@ -310,10 +324,11 @@ public class LevelInfo {
                 lines.add(left);
                 lines.add(right);
                 lines.add(bottom);
-
-                keys.add(getTransparentKey());
-                keys.add(getTransparentKey());
-                keys.add(getTransparentKey());
+                SolidLayer.AssetKey[] keys = new SolidLayer.AssetKey[] {
+                        surfaceKey,
+                        new SolidLayer.AssetKey(getTransparentKey(), surfaceKey.indexEnd+1,
+                                surfaceKey.indexEnd+4)
+                };
                 solids.add(SolidLayer.createPolygon(lines, keys, getGroundKey()));
             }
         }

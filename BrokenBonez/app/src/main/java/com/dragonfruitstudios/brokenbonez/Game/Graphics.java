@@ -32,14 +32,15 @@ public class Graphics {
      * Draws the specified Bitmap, but only draws portion specified by `width`. If the Bitmap
      * is smaller than `width` then it is repeated, if it is bigger then it is cropped.
      */
-    public static void drawRepeated(GameView view, Bitmap img, VectorF pos, int width,
+    public static void drawRepeated(GameView view, Bitmap img, VectorF pos, float width,
                                     float rotation) {
         int drawnWidth = 0;
-        while (drawnWidth < width) {
-            int minWidth = Math.min(width-drawnWidth, img.getWidth());
+        while (drawnWidth < Math.floor(width)) {
+            int minWidth = Math.min((int)Math.floor(width-drawnWidth), img.getWidth());
             RectF dest = new RectF(pos.x + drawnWidth, pos.y,
                     pos.x + drawnWidth + minWidth, pos.y + img.getHeight());
-            view.drawImage(img, new Rect(0, 0, minWidth, img.getHeight()), dest, rotation);
+            view.drawImage(img, new Rect(0, 0, minWidth, img.getHeight()),
+                    dest, rotation);
             drawnWidth += minWidth;
         }
     }
