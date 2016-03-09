@@ -60,8 +60,8 @@ public class BikeSelectionState implements GameObject {
         this.physicsSimulator = new Simulator();
         camera = new Camera(0, 0);
         bikeSelectionLevel = new BikeSelectionLevel(this);
-        this.assetLoader.AddAssets(new String[]{"selection/nightsky.png", "selection/dirtbike.png", "selection/bmx.png", "selection/bikeselect.png", "selection/deedeetext.png", "selection/jennytext.png", "selection/leslietext.png", "selection/wanitatext.png", "selection/deedee.png", "selection/jenny.png", "selection/leslie.png", "selection/wanita.png"});
-        background = assetLoader.getBitmapByName("selection/nightsky.png");
+        this.assetLoader.AddAssets(new String[]{"selection/selectiontext.png", "selection/dirtbike.png", "selection/bmx.png", "selection/bikeselect.png", "selection/deedeetext.png", "selection/jennytext.png", "selection/leslietext.png", "selection/wanitatext.png", "selection/deedee.png", "selection/jenny.png", "selection/leslie.png", "selection/wanita.png", "selection/selectionText.png"});
+        background = assetLoader.getBitmapByName("selection/selectiontext.png");
         blue = Color.BLUE;
         purple = Color.parseColor("#7b2b80");
         green = Color.parseColor("#008000");
@@ -161,7 +161,6 @@ public class BikeSelectionState implements GameObject {
             select.isTouched = false;
             GameScene gameScene = (GameScene)this.gameSceneManager.getGameSceneByName("gameScene");
             gameScene.newGame(bike.getBodyType(), bike.getColor());
-            //this.gameSceneManager.setScene("gameScene");
             this.gameSceneManager.setScene("levelSelectionScene");
         }
         // bike model
