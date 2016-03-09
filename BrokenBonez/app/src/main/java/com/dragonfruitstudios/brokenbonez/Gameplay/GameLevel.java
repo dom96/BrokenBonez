@@ -58,7 +58,7 @@ public class GameLevel extends Level {
         //        info.getSurfaceKey(), info.getTransparentKey(), info.getTransparentKey(),
         //        info.getTransparentKey(), info.getGroundKey()));
 
-        info.loadSVG(state.getAssetLoader(), "level2.svg", new VectorF(0, 410));
+        info.loadSVG(state.getAssetLoader(), "level_dino.svg", new VectorF(0, 410));
 
         /*ArrayList<Line> lines = new ArrayList<Line>();
         ArrayList<String> keys = new ArrayList<String>();
@@ -221,6 +221,7 @@ public class GameLevel extends Level {
     }
 
     private void drawSolidLayer(LevelInfo.SolidLayer sl, GameView gameView) {
+        int surfaceOffset = 0;
         for (int i = 0; i < sl.getLines().size(); i++) {
             String assetKey = sl.getAssetKey(i);
             // Don't draw if key is transparent.
@@ -239,15 +240,17 @@ public class GameLevel extends Level {
                     // Move the fill layer closer to the current solid layer.
                     pos.multAdd(new VectorF(fillAngle), -fillWidth/2);
                     // TODO: Change the fill layer's height a bit?
-                    Graphics.drawRepeated(gameView, asset,
+                    Graphics.drawRepeated(gameView, asset, surfaceOffset,
                             pos, fillWidth, fillAngle);
+                    surfaceOffset += fillWidth;
                 }
 
                 // Use the length of the line as the solid layer's width.
                 int width = (int)line.getSize().x;
                 // Draw the solid layer.
-                Graphics.drawRepeated(gameView, asset, line.getStart(), width,
+                Graphics.drawRepeated(gameView, asset, surfaceOffset, line.getStart(), width,
                         line.calcRotation());
+                surfaceOffset += width;
             }
         }
 
