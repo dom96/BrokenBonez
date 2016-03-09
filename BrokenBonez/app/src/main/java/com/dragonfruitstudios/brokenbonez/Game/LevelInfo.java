@@ -192,7 +192,7 @@ public class LevelInfo {
 
     public float calcGroundHeight(AssetLoader loader, int height) {
         // For now we assume that the last layer is the ground.
-        Layer groundLayer = layers.get(layers.size()-1);
+        Layer groundLayer = layers.get(layers.size() - 1);
         Bitmap groundBitmap = loader.getBitmapByName(getLayerKey(groundLayer));
         switch (groundLayer.origin) {
             case BottomLeft:
@@ -204,7 +204,8 @@ public class LevelInfo {
     }
 
     /**
-     * Takes a String containing `<path>` data. Parses that String into a list of Lines.
+     * Takes a String containing `<path>` data. Parses that String into a list of Lines. The
+     * `pos` parameter specifies where the lines will begin.
      * For example:
      *
      * M 0,0
@@ -218,9 +219,10 @@ public class LevelInfo {
         ArrayList<Line> result = new ArrayList<>();
         int i = 0;
 
+        boolean mStarted = false;
         boolean pathStarted = false;
 
-        // Params are `x1,y1 x2,y2 x,y`, we only care about the last param.
+        // C Params are `x1,y1 x2,y2 x,y`, we only care about the last param.
         int currentParam = 0;
         boolean currentCoordIsY = false;
         VectorF currentPoint = pos.copy();
@@ -228,6 +230,10 @@ public class LevelInfo {
         while (i < path.length()) {
             switch (path.charAt(i)) {
                 case 'M':
+                    mStarted = true;
+                    if (path.charAt(i+1) == ' ') {
+                        i++; // Skip whitespace.
+                    }
                     break;
                 case ' ':
                 case '\n':
@@ -248,6 +254,14 @@ public class LevelInfo {
                         currentCoordIsY = false;
                         coords = new String[]{"", ""};
                     }
+
+                    if (mStarted) {
+                        currentPoint = new VectorF(Float.valueOf(coords[0]) + pos.x,
+                                Float.valueOf(coords[1]) + pos.y);
+                        mStarted = false;
+                        currentCoordIsY = false;
+                        coords = new String[]{"", ""};
+                    }
                     break;
                 case 'C':
                     pathStarted = true;
@@ -256,7 +270,7 @@ public class LevelInfo {
                     }
                     break;
                 case '.':
-                    if (pathStarted) {
+                    if (pathStarted || mStarted) {
                         if (currentCoordIsY) {
                             coords[1] += '.';
                         }
@@ -266,7 +280,7 @@ public class LevelInfo {
                     }
                     break;
                 case ',':
-                    if (pathStarted) {
+                    if (pathStarted || mStarted) {
                         Assert.assertTrue(!currentCoordIsY);
                         currentCoordIsY = true;
                     }
@@ -274,7 +288,7 @@ public class LevelInfo {
                 default:
                     Assert.assertTrue("Unknown char: " + path.charAt(i),
                             Character.isDigit(path.charAt(i)));
-                    if (pathStarted) {
+                    if (pathStarted || mStarted) {
                         // We have a number.
                         if (currentCoordIsY) {
                             coords[1] += path.charAt(i);
