@@ -277,11 +277,15 @@ public class GameView extends View {
 
     public void fillPolygon(Bitmap image, Polygon polygon) {
         checkCanvas();
+        // Code below adapted from: http://stackoverflow.com/a/3721521/492186
+        // Customised it a great deal, pretty much only used it to learn how to draw an image filled
+        // Polygon in Android.
         Path path = new Path();
         for (int i = 0; i < polygon.getLines().size(); i++) {
             Line line = polygon.getLines().get(i);
             if (i == 0) {
                 path.moveTo(line.getStart().x, line.getStart().y);
+                path.lineTo(line.getFinish().x, line.getFinish().y);
             }
             else {
                 path.lineTo(line.getFinish().x, line.getFinish().y);
