@@ -27,6 +27,8 @@ public class DynamicBody extends Body {
     boolean wasInAir; // Determines whether the body was in air.
     float torque; // Determines what engine power to apply to the body about its center.
 
+    boolean hasGravity = true;
+
     ArrayList<Manifold> lastManifolds;
 
     /**
@@ -142,7 +144,13 @@ public class DynamicBody extends Body {
             // Resolve forces when body is in air.
 
             // Acceleration due to gravity.
-            acceleration.setY(Simulator.gravityScaled);
+            // TODO: This probably shouldn't set accel, but add/sub to/from it.
+            if (hasGravity) {
+                acceleration.setY(Simulator.gravityScaled);
+            }
+            else {
+                acceleration.setY(0);
+            }
         }
 
         // Calculate the air resistance.
@@ -196,6 +204,22 @@ public class DynamicBody extends Body {
 
     public VectorF getSize() {
         return boundingShape.getSize();
+    }
+
+    public void setVelocity(VectorF vel) {
+        this.velocity = vel;
+    }
+
+    public void setAcceleration(VectorF acc) {
+        this.acceleration = acc;
+    }
+
+    public void setHasGravity(boolean value) {
+        this.hasGravity = value;
+    }
+
+    public boolean isOnGround() {
+        return !wasInAir;
     }
 
     /**
