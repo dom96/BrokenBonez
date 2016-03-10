@@ -50,10 +50,10 @@ public class GameLevel extends Level {
                 GameView.ImageOrigin.BottomLeft));
         info.layers.add(new LevelInfo.ColorLayer("buildings2.png", 0.5f, 0.15f, 25f,
                 GameView.ImageOrigin.BottomLeft, 20f, Color.TRANSPARENT, Color.BLACK));
-        info.layers.add(new LevelInfo.Layer("bushes.png", 1f, 0.8f, -250f,
-                GameView.ImageOrigin.BottomLeft));
-        info.layers.add(new LevelInfo.Layer("ground.png", 1f, 1f, 0f,
-                GameView.ImageOrigin.BottomLeft));
+        //info.layers.add(new LevelInfo.Layer("bushes.png", 1f, 0.8f, -250f,
+        //        GameView.ImageOrigin.BottomLeft));
+        //info.layers.add(new LevelInfo.Layer("ground.png", 1f, 1f, 0f,
+        //        GameView.ImageOrigin.BottomLeft));
 
         //info.solids.add(LevelInfo.SolidLayer.createRect(new VectorF(0, 410), 200, 1000,
         //        info.getSurfaceKey(), info.getTransparentKey(), info.getTransparentKey(),
