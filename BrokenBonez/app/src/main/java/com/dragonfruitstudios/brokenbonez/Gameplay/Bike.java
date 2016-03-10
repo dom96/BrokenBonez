@@ -122,10 +122,8 @@ public class Bike implements GameObject {
         this.startPos = startPos;
         Log.d("Bike", "Updated start pos: " + startPos.toString());
         // Calculate positions of the left and right wheels.
-        // TODO: This is currently hardcoded.
-        leftWheel.setPos(startPos.x + 25, startPos.y);
-        //rightWheel.setPos(startPos.x + 200, startPos.y);
-        rightWheel.setPos(leftWheel.getPos().x + wheelSeparation, 100);
+        leftWheel.setPos(startPos.x, startPos.y);
+        rightWheel.setPos(leftWheel.getPos().x + wheelSeparation, startPos.y);
     }
 
     public void update(float lastUpdate) {

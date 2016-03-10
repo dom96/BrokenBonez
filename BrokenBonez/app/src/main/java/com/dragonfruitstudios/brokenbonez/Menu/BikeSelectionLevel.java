@@ -19,7 +19,7 @@ public class BikeSelectionLevel extends Level {
 
     public BikeSelectionLevel(BikeSelectionState state) {
         bikeSelectionState = state;
-        startPoint = new VectorF(getScreenWidth() / 10 * 7 - 40, getScreenHeight() / 4 + 60);
+        startPoint = new VectorF(getScreenWidth() / 10 * 7 + 20, getScreenHeight() / 4 - 20);
         bikePos = new VectorF(getScreenWidth() / 2 - 60, getScreenHeight() / 4 + 60);
 
         Simulator physicsSimulator = bikeSelectionState.getPhysicsSimulator();
