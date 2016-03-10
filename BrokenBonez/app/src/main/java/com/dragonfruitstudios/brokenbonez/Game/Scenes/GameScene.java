@@ -10,7 +10,6 @@ import com.dragonfruitstudios.brokenbonez.GameSceneManager;
 import com.dragonfruitstudios.brokenbonez.Gameplay.Bike;
 import com.dragonfruitstudios.brokenbonez.Gameplay.GameState;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
-import com.dragonfruitstudios.brokenbonez.Input.Acceleration;
 import com.dragonfruitstudios.brokenbonez.Input.Accelerometer;
 import com.dragonfruitstudios.brokenbonez.Input.TouchHandler;
 
@@ -20,7 +19,6 @@ import com.dragonfruitstudios.brokenbonez.Input.TouchHandler;
 public class GameScene extends Scene {
     GameState state;
     Accelerometer accelerometer;
-    static Acceleration accel;
 
     public GameScene(AssetLoader assetLoader, GameSceneManager gameSceneManager) {
         super(assetLoader, gameSceneManager);
@@ -47,21 +45,21 @@ public class GameScene extends Scene {
         Log.d("GameActivity/Touch", action.toString());
         switch (action) {
             case ACTION_NONE:
-                state.setBikeAcceleration(accel.getAccel());
+                state.setBikeAcceleration(TouchHandler.getAccel());
                 break;
             case ACTION_GAS_DOWN:
-                state.setBikeAcceleration(accel.getAccel());
+                state.setBikeAcceleration(TouchHandler.getAccel());
                 state.getAssetLoader().getSoundByName("bikeEngineRev.mp3").play(false);   //Nearly ready, still little more test
                 break;
             case ACTION_GAS_UP:
-                state.setBikeAcceleration(accel.getAccel());
+                state.setBikeAcceleration(TouchHandler.getAccel());
                 break;
             case ACTION_BRAKE_DOWN:
                 // TODO: This should brake not move the wheel backward.
-                state.setBikeAcceleration(accel.getAccel());
+                state.setBikeAcceleration(TouchHandler.getAccel());
                 break;
             case ACTION_BRAKE_UP:
-                state.setBikeAcceleration(accel.getAccel());
+                state.setBikeAcceleration(TouchHandler.getAccel());
                 break;
         }
     }
@@ -78,16 +76,19 @@ public class GameScene extends Scene {
     public void onSensorChanged(SensorEvent event) {
             accelerometer.onSensorChanged(event);
             //Log.d("RETURN VALUE", "" + Accelerometer.getReturnValue());
-<<<<<<< HEAD
             // TODO: Test this when bike method is created.
             Accelerometer.getReturnValue();
-=======
             if (Accelerometer.isLeft()) {
                 state.setBikeTilt(Accelerometer.getReturnValue());
             }
             else {
                 state.setBikeTilt(-Accelerometer.getReturnValue());
             }
->>>>>>> master
+            if(Accelerometer.isFlat()){
+                state.setBikeTilt(Accelerometer.bikeStill());
+            }
+            if(Accelerometer.isDown()){
+                state.setBikeTilt(Accelerometer.bikeStill());
+            }
     }
 }

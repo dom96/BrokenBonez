@@ -5,16 +5,16 @@ import android.view.MotionEvent;
 
 /** Touch-Handler**/
 public class TouchHandler {
+    static float accel;
     public enum ControlIsActive {ACTION_GAS_DOWN, ACTION_GAS_UP, ACTION_BRAKE_DOWN, ACTION_BRAKE_UP, ACTION_NONE}
     static ControlIsActive cIA = ControlIsActive.ACTION_NONE;
-    static Acceleration acceleration;
     static boolean gasIsDown;
     static boolean gasIsUp;
     static boolean brakeIsDown;
     static boolean brakeIsUp;
 
     public TouchHandler() {
-
+        accel = 0.0f;
     }
 
     public static ControlIsActive determineAction(MotionEvent event, float midPoint) {
@@ -33,30 +33,30 @@ public class TouchHandler {
                     if(brakeIsDown = true) {
                         gasIsDown = false;
                         cIA = ControlIsActive.ACTION_BRAKE_DOWN;
-                        acceleration.setAccel(-0.5f);
+                        setAccel(-0.5f);
                     }
                 }
                 if(f.x > midPoint && f.x < midPoint + quarterMidPoint * 4){
                     gasIsDown = true;
                     if(f.x > midPoint && f.x < midPoint + quarterMidPoint / 2) {
                         cIA = ControlIsActive.ACTION_GAS_DOWN;
-                        acceleration.setAccel(0.1f);
+                        setAccel(0.1f);
                     }
                     if(f.x > midPoint + quarterMidPoint / 2 && f.x < midPoint + quarterMidPoint) {
                         cIA = ControlIsActive.ACTION_GAS_DOWN;
-                        acceleration.setAccel(0.2f);
+                        setAccel(0.2f);
                     }
                     if(f.x > midPoint + quarterMidPoint && f.x < midPoint + quarterMidPoint + quarterMidPoint / 2) {
                         cIA = ControlIsActive.ACTION_GAS_DOWN;
-                        acceleration.setAccel(0.3f);
+                        setAccel(0.3f);
                     }
                     if(f.x > midPoint + quarterMidPoint + quarterMidPoint / 2 && f.x < midPoint + quarterMidPoint + quarterMidPoint) {
                         cIA = ControlIsActive.ACTION_GAS_DOWN;
-                        acceleration.setAccel(0.4f);
+                        setAccel(0.4f);
                     }
                     if(f.x >midPoint + quarterMidPoint + quarterMidPoint && f.x < midPoint + quarterMidPoint + quarterMidPoint + quarterMidPoint / 2) {
                         cIA = ControlIsActive.ACTION_GAS_DOWN;
-                        acceleration.setAccel(0.5f);
+                        setAccel(0.5f);
                     }
                     if(gasIsDown = true) {
                         brakeIsDown = false;
@@ -75,7 +75,7 @@ public class TouchHandler {
                     if(brakeIsUp = true) {
                         gasIsUp = false;
                         cIA = ControlIsActive.ACTION_BRAKE_UP;
-                        acceleration.setAccel(0.0f);
+                        setAccel(0.0f);
                     }
                 }
                 if(f.x > midPoint){
@@ -83,16 +83,22 @@ public class TouchHandler {
                     if(gasIsUp = true) {
                         brakeIsUp = false;
                         cIA = ControlIsActive.ACTION_GAS_UP;
-                        acceleration.setAccel(0.0f);
+                        setAccel(0.0f);
                     }
                 }
                 break;
             }
             default:
                 cIA = ControlIsActive.ACTION_NONE;
-                acceleration.setAccel(0.0f);
+                setAccel(0.0f);
                 break;
         }
         return cIA;
+    }
+    public static void setAccel(float newAccel){
+        accel = newAccel;
+    }
+    public static float getAccel(){
+        return accel;
     }
 }
