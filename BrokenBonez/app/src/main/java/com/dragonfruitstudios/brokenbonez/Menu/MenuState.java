@@ -95,6 +95,7 @@ public class MenuState implements GameObject {
         startGame.onTouchEvent(event, (getScreenWidth() / 4 - 14), (getScreenHeight() / 4 + 60), ((getScreenWidth() / 4 - 14) + 611), ((getScreenHeight() / 4 + 60) + 179));
         hiScore.onTouchEvent(event, (getScreenWidth() / 4 - 14), (getScreenHeight() / 4 * 2 + 120), ((getScreenWidth() / 4 - 14) + 269), ((getScreenHeight() / 4 * 2 + 120) + 59));
         credits.onTouchEvent(event, (getScreenWidth() / 4 * 2 + 29), (getScreenHeight() / 4 * 2 + 120), ((getScreenWidth() / 4 * 2 + 29) + 269), ((getScreenHeight() / 4 * 2 + 120) + 59));
+        settings.onTouchEvent(event, (getScreenWidth() / 10) * 10 - 80, (getScreenHeight() / 10) * 10 - 55, (((getScreenWidth() / 10) * 10 - 80) + 269), (((getScreenHeight() / 10) * 10 - 55) + 59));
 
         if(startGame.isTouched() == true){
             startGame.isTouched = false;
@@ -109,6 +110,11 @@ public class MenuState implements GameObject {
             credits.isTouched = false;
             Log.d("CREDITS", "isTouched");
         }
+        if(settings.isTouched == true){
+            settings.isTouched = false;
+            gameSceneManager.setScene("settingsScene");
+        }
+
     }
 
     public void startBikeSelectionScreen(){this.gameSceneManager.setScene("bikeSelectionScene");}

@@ -2,6 +2,7 @@ package com.dragonfruitstudios.brokenbonez;
 
 import android.graphics.Color;
 import android.hardware.SensorEvent;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -12,6 +13,8 @@ import com.dragonfruitstudios.brokenbonez.Game.Scenes.GameScene;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.HighScoreScene;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.LevelSelectionScene;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.MenuScene;
+import com.dragonfruitstudios.brokenbonez.Game.Scenes.SettingsScene;
+
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -48,12 +51,13 @@ public class GameLoop implements Runnable {
         HighScoreScene highScoreScene = new HighScoreScene(assetLoader, gameSceneManager);
         BikeSelectionScene bikeSelectionScene = new BikeSelectionScene(assetLoader, gameSceneManager);
         LevelSelectionScene levelSelectionScene = new LevelSelectionScene(assetLoader, gameSceneManager);
+        SettingsScene settingsScene = new SettingsScene(assetLoader, gameSceneManager);
         this.gameSceneManager.addScene("menuScene", menuScene, true);  //Add the MenuScene just created to the GameSceneManager, then sets it as the active scene
         this.gameSceneManager.addScene("gameScene", gameScene, false); //Add the Gamescene just created to the GameSceneManager, then makes sure it isn't set as active
         this.gameSceneManager.addScene("bikeSelectionScene", bikeSelectionScene, false);
         this.gameSceneManager.addScene("levelSelectionScene", levelSelectionScene, false);
         this.gameSceneManager.addScene("highScoreScene", highScoreScene, false);
-
+        this.gameSceneManager.addScene("settingsScene", settingsScene, false);
 
         updateLock = new ReentrantLock();
 

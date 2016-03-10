@@ -77,7 +77,7 @@ public class GameScene extends Scene {
     @Override
     public void onSensorChanged(SensorEvent event) {
             accelerometer.onSensorChanged(event);
-            Log.d("RETURN VALUE", "" + Accelerometer.getReturnValue());
+            //Log.d("RETURN VALUE", "" + Accelerometer.getReturnValue());
             // TODO: Test this when bike method is created.
             Accelerometer.getReturnValue();
     }
