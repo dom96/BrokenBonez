@@ -16,6 +16,7 @@ import junit.framework.Assert;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -23,8 +24,10 @@ import org.xml.sax.SAXException;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -39,6 +42,11 @@ public class LevelInfo {
     public String surfacePath; // Path to the image which is drawn for the bike to ride on.
     public String groundPath; // Path to the image which can be drawn below surface.
     public ArrayList<SolidLayer> solids;
+    // Specifies the assets to use for a specific solidLayer class.
+    private HashMap<String,SolidLayer.Info> slAssets;
+
+
+    public enum AssetType {Surface, Fill, Transparent}
 
     /**
      * This is a layer that the Bike will collide with (and ride over).
@@ -47,27 +55,13 @@ public class LevelInfo {
         // This maps directly to Polygon.lines and determines what image should be drawn over each
         // line.
         private ArrayList<AssetKey> assetKeys;
-        private String fillKey; // The key of the image used to fill the layer.
+        private String theClass;
 
         private SolidLayer(Polygon polygon) {
             super(polygon.getLines());
         }
 
-        public static SolidLayer createRect(VectorF pos, float width, float height,
-                                            String top, String left, String right, String bottom,
-                                            String fill) {
-            SolidLayer result = new SolidLayer(new Rect(pos, width, height));
-            result.assetKeys = new ArrayList<AssetKey>();
-            result.assetKeys.add(new AssetKey(top, 0, 0));
-            result.assetKeys.add(new AssetKey(left, 3, 3));
-            result.assetKeys.add(new AssetKey(right, 1, 1));
-            result.assetKeys.add(new AssetKey(bottom, 2, 2));
-            result.fillKey = fill;
-            return result;
-        }
-
-        public static SolidLayer createPolygon(ArrayList<Line> lines, AssetKey[] assetKeys,
-                                               String fillKey) {
+        public static SolidLayer createPolygon(ArrayList<Line> lines, AssetKey[] assetKeys) {
             SolidLayer result = new SolidLayer(new Polygon(lines));
             result.assetKeys = new ArrayList<AssetKey>();
             for (AssetKey ak : assetKeys) {
@@ -75,27 +69,43 @@ public class LevelInfo {
                     result.assetKeys.add(ak);
                 }
             }
-            result.fillKey = fillKey;
             return result;
         }
 
-        public String getAssetKey(int i) {
-            return assetKeys.get(i).key;
-        }
-
-        public String getFillKey() {
-            return fillKey;
+        public AssetType getAssetType(int i) {
+            return assetKeys.get(i).assetType;
         }
 
         static class AssetKey {
-            String key;
+            AssetType assetType;
             int indexStart;
             int indexEnd;
 
-            AssetKey(String key, int indexStart, int indexEnd) {
-                this.key = key;
+            AssetKey(AssetType assetType, int indexStart, int indexEnd) {
+                this.assetType = assetType;
                 this.indexStart = indexStart;
                 this.indexEnd = indexEnd;
+            }
+        }
+
+        /**
+         * Stores information about a specific SolidLayer class' asset keys.
+         *
+         * Note: This is just a simple class that stores some information about asset keys,
+         * hence its fields are public.
+         */
+        public static class Info {
+            public String theClass;
+            public String surfaceKey;
+            public String fillKey;
+
+            public VectorF surfaceOffset;
+
+            Info(String theClass, String surfaceKey, String fillKey) {
+                this.theClass = theClass;
+                this.surfaceKey = surfaceKey;
+                this.fillKey = fillKey;
+                surfaceOffset = new VectorF(0, 0);
             }
         }
     }
@@ -150,10 +160,11 @@ public class LevelInfo {
         this.groundPath = groundPath;
         this.layers = new ArrayList<Layer>();
         this.solids = new ArrayList<SolidLayer>();
+        this.slAssets = new HashMap<String,SolidLayer.Info>();
     }
 
     public void loadAssets(AssetLoader loader) {
-        loader.AddAssets(new String[] {getSurfaceKey()});
+        loader.AddAssets(new String[]{getSurfaceKey()});
         loader.AddAssets(new String[] {getGroundKey()});
         // Add the background layer's assets.
         for (Layer l : layers) {
@@ -163,15 +174,30 @@ public class LevelInfo {
         for (SolidLayer sl : solids) {
             // TODO: UGH. An `addAsset` method is desperately needed.
             for (SolidLayer.AssetKey ak : sl.assetKeys) {
-                if (!ak.key.equals(getTransparentKey())) {
-                    loader.AddAssets(new String[]{ak.key});
+                if (ak.assetType != AssetType.Transparent) {
+                    loader.AddAssets(new String[]{getSolidLayerKey(sl, ak.assetType)});
                 }
             }
         }
     }
 
+    public void addInfo(String theClass, String surfaceKey, String fillKey) {
+        slAssets.put(theClass, new SolidLayer.Info(theClass, surfaceKey, fillKey));
+    }
+
+    public void addInfo(String theClass, String surfaceKey, String fillKey,
+                        VectorF surfaceOffset) {
+        addInfo(theClass, surfaceKey, fillKey);
+        slAssets.get(theClass).surfaceOffset = surfaceOffset;
+    }
+
+
     private String getLevelPath() {
         return "levels/" + name + "/";
+    }
+
+    public String getImagePath(String name) {
+        return getLevelPath() + name;
     }
 
     public String getLayerKey(Layer layer) {
@@ -188,6 +214,27 @@ public class LevelInfo {
 
     public String getTransparentKey() {
         return "";
+    }
+
+    public String getSolidLayerKey(SolidLayer sl, AssetType assetType) {
+        if (!slAssets.containsKey(sl.theClass)) {
+            throw new RuntimeException("Couldn't find SL's class in LevelInfo's assets: " +
+                    sl.theClass);
+        }
+        switch (assetType) {
+            case Fill:
+                return slAssets.get(sl.theClass).fillKey;
+            case Surface:
+                return slAssets.get(sl.theClass).surfaceKey;
+            case Transparent:
+                return getTransparentKey();
+            default:
+                throw new InvalidParameterException("AssetType not implemented: " + assetType);
+        }
+    }
+
+    public SolidLayer.Info getSolidLayerInfo(SolidLayer sl) {
+        return slAssets.get(sl.theClass);
     }
 
     public float calcGroundHeight(AssetLoader loader, int height) {
@@ -215,7 +262,8 @@ public class LevelInfo {
     private ArrayList<Line> parsePath(String path, VectorF pos) {
         // Spec for 'C' here: https://www.w3.org/TR/SVG/paths.html#PathDataCubicBezierCommands
         // Only `curveto` is supported as that's all that GIMP generates.
-        // Yep, I wrote a custom parser for this.
+        // Yep, I know I probably could have found some library to parse the SVG for me, but
+        // parsing manually is more fun.
         ArrayList<Line> result = new ArrayList<>();
         int i = 0;
 
@@ -303,6 +351,14 @@ public class LevelInfo {
             i++;
         }
 
+        // Add the last line.
+        if (coords[0].length() > 0) {
+            VectorF end = new VectorF(Float.valueOf(coords[0]) + pos.x,
+                    Float.valueOf(coords[1]) + pos.y);
+            Assert.assertTrue("Found line which starts and ends in the same place.",
+                    end.subtracted(currentPoint).magnitude() != 0);
+            result.add(new Line(currentPoint.copy(), end));
+        }
         return result;
     }
 
@@ -324,11 +380,12 @@ public class LevelInfo {
             Element doc = dom.getDocumentElement();
             NodeList elements = doc.getElementsByTagName("path");
             for (int i = 0; i < elements.getLength(); i++) {
-                Node d = elements.item(i).getAttributes().getNamedItem("d");
+                NamedNodeMap attrs = elements.item(i).getAttributes();
+                Node d = attrs.getNamedItem("d");
                 ArrayList<Line> lines = parsePath(d.getNodeValue(), pos);
                 // Assume all the lines in path are surface paths.
-                SolidLayer.AssetKey surfaceKey = new SolidLayer.AssetKey(getSurfaceKey(), 0,
-                        lines.size()-1);
+                SolidLayer.AssetKey surfaceKey = new SolidLayer.AssetKey(
+                        AssetType.Surface, 0, lines.size()-1);
 
                 // TODO: Quick way to close the Polygon.
                 Line left = new Line(lines.get(0).getStart().copy(),
@@ -341,10 +398,14 @@ public class LevelInfo {
                 lines.add(left);
                 SolidLayer.AssetKey[] keys = new SolidLayer.AssetKey[] {
                         surfaceKey,
-                        new SolidLayer.AssetKey(getTransparentKey(), surfaceKey.indexEnd+1,
-                                surfaceKey.indexEnd+4)
+                        new SolidLayer.AssetKey(AssetType.Transparent,
+                                surfaceKey.indexEnd+1, surfaceKey.indexEnd+4)
                 };
-                solids.add(SolidLayer.createPolygon(lines, keys, getGroundKey()));
+                SolidLayer newLayer = SolidLayer.createPolygon(lines, keys);
+                solids.add(newLayer);
+
+                // Set the SolidLayer's id.
+                newLayer.theClass = attrs.getNamedItem("class").getNodeValue();
             }
         }
         catch (ParserConfigurationException | IOException | SAXException exc) {

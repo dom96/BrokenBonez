@@ -148,7 +148,7 @@ public class Line extends Intersector implements Drawable {
     }
 
     public Line copy() {
-        return new Line(start, end);
+        return new Line(start.copy(), end.copy());
     }
 
     private void rotateCoord(VectorF coord, float ang, VectorF pos) {
