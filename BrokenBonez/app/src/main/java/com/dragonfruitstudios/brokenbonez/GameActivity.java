@@ -14,6 +14,7 @@ import android.view.MotionEvent;
 import android.view.WindowManager;
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
+import com.dragonfruitstudios.brokenbonez.Menu.SplashState;
 
 /**
  * Game Activity class used for creating a new game view and game loop instance. Also defines some

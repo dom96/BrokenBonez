@@ -14,6 +14,7 @@ import com.dragonfruitstudios.brokenbonez.Game.Scenes.HighScoreScene;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.LevelSelectionScene;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.MenuScene;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.SettingsScene;
+import com.dragonfruitstudios.brokenbonez.Game.Scenes.SplashScene;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -44,15 +45,15 @@ public class GameLoop implements Runnable {
         this.assetLoader = assetLoader;
 
         this.gameSceneManager = new GameSceneManager(gameView); //Setup the GameSceneManager
-
         MenuScene menuScene = new MenuScene(assetLoader, gameSceneManager);   //Create the new MenuScene
         GameScene gameScene = new GameScene(assetLoader, gameSceneManager);   //Create the new GameScene
-
         HighScoreScene highScoreScene = new HighScoreScene(assetLoader, gameSceneManager);
         BikeSelectionScene bikeSelectionScene = new BikeSelectionScene(assetLoader, gameSceneManager);
         LevelSelectionScene levelSelectionScene = new LevelSelectionScene(assetLoader, gameSceneManager);
         SettingsScene settingsScene = new SettingsScene(assetLoader, gameSceneManager);
-        this.gameSceneManager.addScene("menuScene", menuScene, true);  //Add the MenuScene just created to the GameSceneManager, then sets it as the active scene
+        SplashScene splashScene = new SplashScene(assetLoader, gameSceneManager);
+        this.gameSceneManager.addScene("splashScene", splashScene, true);
+        this.gameSceneManager.addScene("menuScene", menuScene, false);  //Add the MenuScene just created to the GameSceneManager, then sets it as the active scene
         this.gameSceneManager.addScene("gameScene", gameScene, false); //Add the Gamescene just created to the GameSceneManager, then makes sure it isn't set as active
         this.gameSceneManager.addScene("bikeSelectionScene", bikeSelectionScene, false);
         this.gameSceneManager.addScene("levelSelectionScene", levelSelectionScene, false);
