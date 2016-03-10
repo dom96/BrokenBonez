@@ -245,4 +245,8 @@ public class GameLoop implements Runnable {
         this.assetLoader.resume();
         gameSceneManager.resume();
     }
+
+    public static float calcUpdateFactor(float lastUpdate) {
+        return 1f/targetFPS;
+    }
 }

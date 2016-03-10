@@ -23,6 +23,7 @@ public class Simulator {
     public final static float gravity = 9.81f;
     public final static float gravityScaled = 10*gravity;
     public final static float airResistance = 0.1f; // Percentage of velocity lost due to air resistance.
+    public final static float angularVelPreserved = 0.01f; // Percentage of angular velocity preserved when bike hits ground.
 
     public Simulator() {
         dynamicBodies = new ArrayList<DynamicBody>();
@@ -32,7 +33,7 @@ public class Simulator {
 
     public void update(float lastUpdate) {
         // Use a fixed update factor to make the physics simulation deterministic.
-        float updateFactor = 1.0f/GameLoop.targetFPS;
+        float updateFactor = GameLoop.calcUpdateFactor(lastUpdate);
 
         // TODO: Use Manifold.Collection to hold collection of Manifolds instead of custom
         // ArrayList?

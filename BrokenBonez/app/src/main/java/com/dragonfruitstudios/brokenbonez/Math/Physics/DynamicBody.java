@@ -27,6 +27,8 @@ public class DynamicBody extends Body {
     boolean wasInAir; // Determines whether the body was in air.
     float torque; // Determines what engine power to apply to the body about its center.
 
+    boolean hasGravity = true;
+
     ArrayList<Manifold> lastManifolds;
 
     /**
@@ -80,7 +82,7 @@ public class DynamicBody extends Body {
             // manifolds and have to look at all of them.
             for (Manifold manifold : manifolds) {
                 // Correct position
-                getPos().multAdd(manifold.getNormal(), -(manifold.getPenetration()));
+                getPos().multAdd(manifold.getNormal(), -(manifold.getPenetration()-0.1f));
 
                 // The formula used to calculate the impulse is defined here:
                 // http://gamedevelopment.tutsplus.com/tutorials/how-to-create-a-custom-2d-physics-engine-the-basics-and-impulse-resolution--gamedev-6331
@@ -116,10 +118,10 @@ public class DynamicBody extends Body {
                     // Calculate the magnitude of the new velocity based on the bodies angular
                     // velocity. Use the magnitude to find the new vector velocity based on
                     // the direction of the old velocity.
-                    VectorF newVelocity = velocity.normalised();
-                    newVelocity.mult(Math.abs(angularVelocity) * boundingShape.getRadius());
+                    float frictionalVel = Math.abs(angularVelocity) * boundingShape.getRadius() *
+                        Simulator.angularVelPreserved;
 
-                    velocity = newVelocity;
+                    velocity.multAdd(manifold.getNormal().rotated(-90), frictionalVel);
                 } else {
                     // Calculate the body's angular velocity based on its linear velocity.
                     // i.e. make the wheels spin!
@@ -142,7 +144,13 @@ public class DynamicBody extends Body {
             // Resolve forces when body is in air.
 
             // Acceleration due to gravity.
-            acceleration.setY(Simulator.gravityScaled);
+            // TODO: This probably shouldn't set accel, but add/sub to/from it.
+            if (hasGravity) {
+                acceleration.setY(Simulator.gravityScaled);
+            }
+            else {
+                acceleration.setY(0);
+            }
         }
 
         // Calculate the air resistance.
@@ -196,6 +204,22 @@ public class DynamicBody extends Body {
 
     public VectorF getSize() {
         return boundingShape.getSize();
+    }
+
+    public void setVelocity(VectorF vel) {
+        this.velocity = vel;
+    }
+
+    public void setAcceleration(VectorF acc) {
+        this.acceleration = acc;
+    }
+
+    public void setHasGravity(boolean value) {
+        this.hasGravity = value;
+    }
+
+    public boolean isOnGround() {
+        return !wasInAir;
     }
 
     /**

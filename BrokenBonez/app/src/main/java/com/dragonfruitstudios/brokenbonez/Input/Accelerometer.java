@@ -96,4 +96,8 @@ public class Accelerometer {
             return returnValue;
         }
     }
+
+    public static boolean isLeft() {
+        return mPhoneSide == phoneSide.LEFT;
+    }
 }

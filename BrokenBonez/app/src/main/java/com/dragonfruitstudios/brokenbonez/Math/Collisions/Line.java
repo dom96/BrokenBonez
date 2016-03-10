@@ -151,6 +151,28 @@ public class Line extends Intersector implements Drawable {
         return new Line(start, end);
     }
 
+    private void rotateCoord(VectorF coord, float ang, VectorF pos) {
+        float diffX = coord.x - pos.x;
+        float diffY = coord.y - pos.y;
+
+        coord.x = (float)((diffX)*Math.cos(ang) + diffY*Math.sin(ang)) + pos.x;
+        coord.y = (float)(-(diffX)*Math.sin(ang) + diffY*Math.cos(ang)) + pos.y;
+    }
+
+    /**
+     * Rotates line segment around `pos`.
+     * @param ang Angle in radians
+     */
+    public void rotate(float ang, VectorF pos) {
+        // Based on: http://stackoverflow.com/a/14842362/492186
+        rotateCoord(this.start, ang, pos);
+        rotateCoord(this.end, ang, pos);
+    }
+
+    public VectorF getCenter() {
+        return new VectorF((this.start.x + this.end.x) / 2, (this.start.y + this.end.y) / 2);
+    }
+
     // <editor-fold desc="Getters/Setters">
 
     public ArrayList<Line> getLines() {
