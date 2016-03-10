@@ -108,7 +108,7 @@ public class MenuState implements GameObject {
         }
         if(credits.isTouched == true){
             credits.isTouched = false;
-            Log.d("CREDITS", "isTouched");
+            gameSceneManager.setScene("creditsScene");
         }
         if(settings.isTouched == true){
             settings.isTouched = false;

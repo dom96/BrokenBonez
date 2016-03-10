@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.BikeSelectionScene;
+import com.dragonfruitstudios.brokenbonez.Game.Scenes.CreditsScene;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.GameScene;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.HighScoreScene;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.LevelSelectionScene;
@@ -52,6 +53,7 @@ public class GameLoop implements Runnable {
         LevelSelectionScene levelSelectionScene = new LevelSelectionScene(assetLoader, gameSceneManager);
         SettingsScene settingsScene = new SettingsScene(assetLoader, gameSceneManager);
         SplashScene splashScene = new SplashScene(assetLoader, gameSceneManager);
+        CreditsScene creditsScene = new CreditsScene(assetLoader, gameSceneManager);
         this.gameSceneManager.addScene("splashScene", splashScene, true);
         this.gameSceneManager.addScene("menuScene", menuScene, false);  //Add the MenuScene just created to the GameSceneManager, then sets it as the active scene
         this.gameSceneManager.addScene("gameScene", gameScene, false); //Add the Gamescene just created to the GameSceneManager, then makes sure it isn't set as active
@@ -59,7 +61,7 @@ public class GameLoop implements Runnable {
         this.gameSceneManager.addScene("levelSelectionScene", levelSelectionScene, false);
         this.gameSceneManager.addScene("highScoreScene", highScoreScene, false);
         this.gameSceneManager.addScene("settingsScene", settingsScene, false);
-
+        this.gameSceneManager.addScene("creditsScene", creditsScene, false);
         updateLock = new ReentrantLock();
 
         // Set the methods which should be called when certain events occur in the GameView.

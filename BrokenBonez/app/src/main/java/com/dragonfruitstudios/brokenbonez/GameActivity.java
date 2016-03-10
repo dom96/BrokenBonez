@@ -80,9 +80,6 @@ public class GameActivity extends Activity implements SensorEventListener {
     public boolean onTouchEvent(MotionEvent event) {
         gameLoop.onGameTouch(event);
         return super.onTouchEvent(event);
-        /**new ParticleSystem(this, 400, R.drawable.smoke, 400)
-                .setSpeedModuleAndAngleRange(0.2f, 0.4f, 180, 200)
-                .emit(gameView, 400);**/
     }
 
     @Override
