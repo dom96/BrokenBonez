@@ -33,10 +33,10 @@ public class LevelSelectionState implements GameObject {
         this.assetLoader.AddAssets(new String[]{"selection/levelText.png"});
         background = assetLoader.getBitmapByName("selection/levelText.png");
         scaledBackground = background.createScaledBitmap(background, getScreenWidth(), getScreenHeight(), false);
-        level1 = new ImageButton("selection/level1.png", assetLoader, (getScreenWidth() / 4 - 200), (getScreenHeight() / 4 - 100), 420, 260);
-        level2 = new ImageButton("selection/level2.png", assetLoader, (getScreenWidth() / 4) * 2 + 100, (getScreenHeight() / 4 - 100), 420, 260);
-        level3 = new ImageButton("selection/level3.png", assetLoader, (getScreenWidth() / 4) - 200, (getScreenHeight() / 4) * 2 + 40, 420, 260);
-        level4 = new ImageButton("selection/level4.png", assetLoader, (getScreenWidth() / 4) * 2 + 100, (getScreenHeight() / 4) * 2 + 40, 420, 260);
+        level1 = new ImageButton("selection/level1.png", assetLoader, (getScreenWidth() / 4 - 320), (getScreenHeight() / 4 - 200), 620, 460);
+        level2 = new ImageButton("selection/level2.png", assetLoader, (getScreenWidth() / 4) * 2 + 200, (getScreenHeight() / 4 - 200), 620, 460);
+        level3 = new ImageButton("selection/level3.png", assetLoader, (getScreenWidth() / 4) - 320, (getScreenHeight() / 4) * 2 + 60, 620, 460);
+        level4 = new ImageButton("selection/level4.png", assetLoader, (getScreenWidth() / 4) * 2 + 200, (getScreenHeight() / 4) * 2 + 60, 620, 460);
         pos = new VectorF(0, 0);
         rotation = 0;
     }
@@ -69,10 +69,10 @@ public class LevelSelectionState implements GameObject {
     }
 
     public void onTouchEvent(MotionEvent event) {
-        level1.onTouchEvent(event, ((getScreenWidth() / 4 - 200)), ((getScreenHeight() / 4 - 100)), (((getScreenWidth() / 4 - 200)) + 419), (((getScreenHeight() / 4) - 100) + 259));
-        level2.onTouchEvent(event, ((getScreenWidth() / 4) * 2 + 100), ((getScreenHeight() / 4 - 100)), (((getScreenWidth() / 4) * 2 + 100) + 419), (((getScreenHeight() / 4) - 100) + 259));
-        level3.onTouchEvent(event, ((getScreenWidth() / 4) - 200), ((getScreenHeight() / 4) * 2 + 40), (((getScreenWidth() / 4) - 200) + 419), (((getScreenHeight() / 4) * 2 + 40) + 259));
-        level4.onTouchEvent(event, ((getScreenWidth() / 4) * 2 + 100), ((getScreenHeight() / 4) * 2 + 40), (((getScreenWidth() / 4) * 2 + 100) + 419), (((getScreenHeight() / 4) * 2 + 40) + 259));
+        level1.onTouchEvent(event, ((getScreenWidth() / 4 - 320)), ((getScreenHeight() / 4 - 200)), (((getScreenWidth() / 4 - 320)) + 619), (((getScreenHeight() / 4) - 200) + 459));
+        level2.onTouchEvent(event, ((getScreenWidth() / 4) * 2 + 200), ((getScreenHeight() / 4 - 200)), (((getScreenWidth() / 4) * 2 + 200) + 619), (((getScreenHeight() / 4) - 200) + 459));
+        level3.onTouchEvent(event, ((getScreenWidth() / 4) - 320), ((getScreenHeight() / 4) * 2 + 60), (((getScreenWidth() / 4) - 320) + 619), (((getScreenHeight() / 4) * 2 + 60) + 459));
+        level4.onTouchEvent(event, ((getScreenWidth() / 4) * 2 + 200), ((getScreenHeight() / 4) * 2 + 60), (((getScreenWidth() / 4) * 2 + 200) + 619), (((getScreenHeight() / 4) * 2 + 60) + 459));
 
         if(level1.isTouched() == true){
             level1.isTouched = false;

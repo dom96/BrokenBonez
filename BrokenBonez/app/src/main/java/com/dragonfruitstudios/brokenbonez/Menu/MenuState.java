@@ -30,10 +30,10 @@ public class MenuState implements GameObject {
     public MenuState(AssetLoader assetLoader, GameSceneManager gameSceneManager) {
         this.assetLoader = assetLoader;
         this.gameSceneManager = gameSceneManager;
-        startGame = new ImageButton("menu/start.png", assetLoader, getScreenWidth() / 4 - 14, getScreenHeight() / 4 + 60, 612, 180);
-        hiScore = new ImageButton("menu/hiscore.png", assetLoader, getScreenWidth() / 4 - 14, getScreenHeight() / 4 * 2 + 120, 270, 60);
-        credits = new ImageButton("menu/credits.png", assetLoader,  getScreenWidth() / 4 * 2 + 29, getScreenHeight() / 4 * 2 + 120, 270, 60);
-        settings = new ImageButton("menu/settings.png", assetLoader, (getScreenWidth() / 10) * 10 - 80, (getScreenHeight() / 10) * 10 - 55, 60, 50);
+        startGame = new ImageButton("menu/start.png", assetLoader, getScreenWidth() / 2 - getScreenWidth() / 4, getScreenHeight() / 4 + 60, 930, 270);
+        hiScore = new ImageButton("menu/hiscore.png", assetLoader, getScreenWidth() / 2 - getScreenWidth() / 4, getScreenHeight() / 4 * 2 + 120, 425, 120);
+        credits = new ImageButton("menu/credits.png", assetLoader,  getScreenWidth() / 4 * 2 + 25, getScreenHeight() / 4 * 2 + 120, 425, 120);
+        settings = new ImageButton("menu/settings.png", assetLoader, (getScreenWidth() / 10) * 9 + 70, (getScreenHeight() / 10) * 9 + 15, 120, 100);
         this.assetLoader.AddAssets(new String[]{"menu/tv.png", "menu/tvnoise.png"});
         noise = assetLoader.getBitmapByName("menu/tvnoise.png");
         background = assetLoader.getBitmapByName("menu/tv.png");
@@ -92,10 +92,10 @@ public class MenuState implements GameObject {
      * I need a quick explanation on that.
      */
     public void onTouchEvent(MotionEvent event) {
-        startGame.onTouchEvent(event, (getScreenWidth() / 4 - 14), (getScreenHeight() / 4 + 60), ((getScreenWidth() / 4 - 14) + 611), ((getScreenHeight() / 4 + 60) + 179));
-        hiScore.onTouchEvent(event, (getScreenWidth() / 4 - 14), (getScreenHeight() / 4 * 2 + 120), ((getScreenWidth() / 4 - 14) + 269), ((getScreenHeight() / 4 * 2 + 120) + 59));
-        credits.onTouchEvent(event, (getScreenWidth() / 4 * 2 + 29), (getScreenHeight() / 4 * 2 + 120), ((getScreenWidth() / 4 * 2 + 29) + 269), ((getScreenHeight() / 4 * 2 + 120) + 59));
-        settings.onTouchEvent(event, (getScreenWidth() / 10) * 10 - 80, (getScreenHeight() / 10) * 10 - 55, (((getScreenWidth() / 10) * 10 - 80) + 269), (((getScreenHeight() / 10) * 10 - 55) + 59));
+        startGame.onTouchEvent(event, (getScreenWidth() / 2 - getScreenWidth() / 4), (getScreenHeight() / 4 + 60), ((getScreenWidth() / 2 - getScreenWidth() / 4) + 929), ((getScreenHeight() / 4 + 60) + 269));
+        hiScore.onTouchEvent(event, (getScreenWidth() / 2 - getScreenWidth() / 4), (getScreenHeight() / 4 * 2 + 120), ((getScreenWidth() / 2 - getScreenWidth() / 4) + 424), ((getScreenHeight() / 4 * 2 + 120) + 119));
+        credits.onTouchEvent(event, (getScreenWidth() / 4 * 2 + 25), (getScreenHeight() / 4 * 2 + 120), ((getScreenWidth() / 4 * 2 + 25) + 424), ((getScreenHeight() / 4 * 2 + 120) + 119));
+        settings.onTouchEvent(event, (getScreenWidth() / 10) * 9 + 70, (getScreenHeight() / 10) * 9 + 15, (((getScreenWidth() / 10) * 9 + 70) + 119), (((getScreenHeight() / 10) * 9 + 15) + 99));
 
         if(startGame.isTouched() == true){
             startGame.isTouched = false;
