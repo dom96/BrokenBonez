@@ -7,6 +7,7 @@ import android.util.Log;
 import com.dragonfruitstudios.brokenbonez.Game.Graphics;
 import com.dragonfruitstudios.brokenbonez.Game.Level;
 import com.dragonfruitstudios.brokenbonez.GameLoop;
+import com.dragonfruitstudios.brokenbonez.Input.Accelerometer;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Circle;
 import com.dragonfruitstudios.brokenbonez.Game.GameObject;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
@@ -97,11 +98,11 @@ public class Bike implements GameObject {
         gameView.disableCamera();
         // Draw text on screen with some debug info
         DynamicBody debugWheel = leftWheel; // The wheel to show debug info for.
-        String debugInfo = String.format("Bike[%s, OnGrnd: %s %s, A: %.1f°, Tilt: %.1f]",
+        String debugInfo = String.format("Bike[%s, OnGrnd: %s %s, A: %.1f°, Tilt: %.1f, AX: %.1f, AY: %.1f]",
                 debugWheel.toString(),
                 leftWheel.isOnGround() ? "✓" : "✘", rightWheel.isOnGround() ? "✓" : "✘",
                 (Math.toDegrees(new Line(leftWheel.getPos(), rightWheel.getPos()).calcRotation())),
-                currentTiltForce);
+                currentTiltForce, Accelerometer.x, Accelerometer.y, Accelerometer.z);
         gameView.drawText(debugInfo, 20, 60, Color.WHITE);
     }
 
