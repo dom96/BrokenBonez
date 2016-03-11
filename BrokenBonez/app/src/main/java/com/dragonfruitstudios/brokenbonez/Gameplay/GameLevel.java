@@ -14,6 +14,7 @@ import com.dragonfruitstudios.brokenbonez.Math.Collisions.Circle;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Intersector;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Line;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Manifold;
+import com.dragonfruitstudios.brokenbonez.Math.Collisions.Polygon;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Rect;
 import com.dragonfruitstudios.brokenbonez.Game.Drawable;
 import com.dragonfruitstudios.brokenbonez.Game.GameObject;
@@ -35,6 +36,8 @@ public class GameLevel extends Level {
     LevelInfo info; // Holds information about the current level.
 
     VectorF bikePos;
+
+    boolean layersScaled = false;
 
     public GameLevel(GameState state) {
         gameState = state;
@@ -95,6 +98,14 @@ public class GameLevel extends Level {
     public void updateSize(int w, int h) {
         Log.d("UpdateSize", "Updating size in Level: " + w + " " + h);
         startPoint = calcStartPoint(w, h);
+
+        if (!layersScaled) {
+            // Scale each SolidLayer's coordinates to the current phone's resolution.
+            for (LevelInfo.SolidLayer sl : info.solids) {
+                scalePolygon(sl, w, h);
+            }
+            layersScaled = true;
+        }
     }
 
     private void drawScrolled(GameView view, Bitmap img, float scrollFactor,
@@ -203,7 +214,7 @@ public class GameLevel extends Level {
         Line currentLine = lines.get(index);
         float currentAngle = currentLine.calcRotation();
         if (index+1 < lines.size()) {
-            Line nextLine = lines.get(index+1);
+            Line nextLine = lines.get(index + 1);
             float nextAngle = nextLine.calcRotation();
             return currentAngle-nextAngle;
         }
@@ -212,12 +223,31 @@ public class GameLevel extends Level {
         }
     }
 
+    /**
+     * Scales the specified line to the current phone's resolution.
+     */
+    private void scaleLine(Line line, int w, int h) {
+        // The levels have been designed for a 768x1280 screen.
+        line.getStart().div(new VectorF(1, 768));
+        line.getStart().mult(new VectorF(1, h));
+        line.getFinish().div(new VectorF(1, 768));
+        line.getFinish().mult(new VectorF(1, h));
+    }
+
+    /**
+     * Scales the specified polygon to the current phone's resolution.
+     */
+    private void scalePolygon(Polygon polygon, int w, int h) {
+        for (Line l : polygon.getLines()) {
+            scaleLine(l, w, h);
+        }
+    }
+
     private void drawSolidLayer(LevelInfo.SolidLayer sl, GameView gameView) {
         // Draw the SolidLayer's fill image.
         String fillKey = info.getSolidLayerKey(sl, LevelInfo.AssetType.Fill);
         Bitmap fillImage = getAssetLoader().getBitmapByName(fillKey);
         gameView.fillPolygon(fillImage, sl);
-
 
         int surfaceOffset = 0;
         // Draw the image beneath each line.
@@ -260,8 +290,6 @@ public class GameLevel extends Level {
                 surfaceOffset += width;
             }
         }
-
-
     }
 
     public void update(float lastUpdate, VectorF bikePos) {
