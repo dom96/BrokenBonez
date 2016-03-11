@@ -97,9 +97,11 @@ public class Bike implements GameObject {
         gameView.disableCamera();
         // Draw text on screen with some debug info
         DynamicBody debugWheel = leftWheel; // The wheel to show debug info for.
-        String debugInfo = String.format("Bike[%s, OnGrnd: %s %s, A: %.1f°]", debugWheel.toString(),
+        String debugInfo = String.format("Bike[%s, OnGrnd: %s %s, A: %.1f°, Tilt: %.1f]",
+                debugWheel.toString(),
                 leftWheel.isOnGround() ? "✓" : "✘", rightWheel.isOnGround() ? "✓" : "✘",
-                (Math.toDegrees(new Line(leftWheel.getPos(), rightWheel.getPos()).calcRotation())));
+                (Math.toDegrees(new Line(leftWheel.getPos(), rightWheel.getPos()).calcRotation())),
+                currentTiltForce);
         gameView.drawText(debugInfo, 20, 60, Color.WHITE);
     }
 
