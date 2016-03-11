@@ -22,7 +22,7 @@ public class Accelerometer {
             if((currentTime - lastUpdate) > 100){
                 long extraTime = (currentTime - lastUpdate);
                 lastUpdate = currentTime;
-
+                
                 Log.d("X", "" + currX);
                 Log.d("Y", "" + currY);
                 //Log.d("Z", "" + currZ);
