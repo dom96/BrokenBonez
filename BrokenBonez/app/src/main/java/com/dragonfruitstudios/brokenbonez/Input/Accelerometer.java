@@ -21,14 +21,11 @@ public class Accelerometer {
             currX = event.values[0];
             currY = event.values[1];
             currZ = event.values[2];
-<<<<<<< HEAD
-            
-=======
+
             x = currX;
             y = currY;
             z = currZ;
 
->>>>>>> dom
             long currentTime = System.currentTimeMillis();
             if((currentTime - lastUpdate) > 100){
                 long extraTime = (currentTime - lastUpdate);
@@ -38,61 +35,49 @@ public class Accelerometer {
                 Log.d("Y", "" + currY);
                 //Log.d("Z", "" + currZ);
 
-                if((currX < 9.2 && currY > 0.8)){
+                if((currY > 3.0)){
                     mPhoneSide = phoneSide.LEFT;
                     //Log.d("tilted on", "" + mPhoneSide);
                     switch ((int) currX){
-                        case 1: returnValue = (float) 0.90;
+                        case 3: returnValue = (float) 0.6;
                             break;
-                        case 2: returnValue = (float) 0.80;
+                        case 4: returnValue = (float) 0.5;
                             break;
-                        case 3: returnValue = (float) 0.70;
+                        case 5: returnValue = (float) 0.4;
                             break;
-                        case 4: returnValue = (float) 0.60;
+                        case 6: returnValue = (float) 0.3;
                             break;
-                        case 5: returnValue = (float) 0.50;
+                        case 7: returnValue = (float) 0.2;
                             break;
-                        case 6: returnValue = (float) 0.40;
-                            break;
-                        case 7: returnValue = (float) 0.30;
-                            break;
-                        case 8: returnValue = (float) 0.20;
-                            break;
-                        case 9: returnValue = (float) 0.10;
+                        case 8: returnValue = (float) 0.1;
                             break;
                         default:break;
                     }
                 }
 
-                else if((currX < 9.50 && currY < 0.0)){
+                else if((currY < -3.0)){
                     mPhoneSide = phoneSide.RIGHT;
                     //Log.d("tilted on", "" + mPhoneSide);
                     switch ((int) currX){
-                        case 1: returnValue = (float) 0.90;
+                        case 3: returnValue = (float) 0.1;
                             break;
-                        case 2: returnValue = (float) 0.80;
+                        case 4: returnValue = (float) 0.2;
                             break;
-                        case 3: returnValue = (float) 0.70;
+                        case 5: returnValue = (float) 0.3;
                             break;
-                        case 4: returnValue = (float) 0.60;
+                        case 6: returnValue = (float) 0.4;
                             break;
-                        case 5: returnValue = (float) 0.50;
+                        case 7: returnValue = (float) 0.5;
                             break;
-                        case 6: returnValue = (float) 0.40;
-                            break;
-                        case 7: returnValue = (float) 0.30;
-                            break;
-                        case 8: returnValue = (float) 0.20;
-                            break;
-                        case 9: returnValue = (float) 0.10;
+                        case 8: returnValue = (float) 0.6;
                             break;
                         default:break;
                     }
                 }
-                else if(currZ < -1.0){
+                else if(currZ < 1.0){
                     mPhoneSide = phoneSide.DOWN;
                 }
-                else if(currY < 1.0){
+                else if(currY < -1.0){
                     mPhoneSide = phoneSide.FLAT;
                 }
             }
