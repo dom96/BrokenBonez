@@ -17,33 +17,37 @@ public class Accelerometer {
             currX = event.values[0];
             currY = event.values[1];
             currZ = event.values[2];
-
+            
             long currentTime = System.currentTimeMillis();
             if((currentTime - lastUpdate) > 100){
                 long extraTime = (currentTime - lastUpdate);
                 lastUpdate = currentTime;
 
-                //Log.d("X", "" + currX);
-                //Log.d("Y", "" + currY);
+                Log.d("X", "" + currX);
+                Log.d("Y", "" + currY);
                 //Log.d("Z", "" + currZ);
 
-                if((currX < 9.50 && currY > 0.4)){
+                if((currX < 9.2 && currY > 0.8)){
                     mPhoneSide = phoneSide.LEFT;
                     //Log.d("tilted on", "" + mPhoneSide);
                     switch ((int) currX){
-                        case 1: returnValue = (float) 0.7;
+                        case 1: returnValue = (float) 0.90;
                             break;
-                        case 2: returnValue = (float) 0.6;
+                        case 2: returnValue = (float) 0.80;
                             break;
-                        case 3: returnValue = (float) 0.5;
+                        case 3: returnValue = (float) 0.70;
                             break;
-                        case 4: returnValue = (float) 0.4;
+                        case 4: returnValue = (float) 0.60;
                             break;
-                        case 5: returnValue = (float) 0.3;
+                        case 5: returnValue = (float) 0.50;
                             break;
-                        case 6: returnValue = (float) 0.2;
+                        case 6: returnValue = (float) 0.40;
                             break;
-                        case 7: returnValue = (float) 0.1;
+                        case 7: returnValue = (float) 0.30;
+                            break;
+                        case 8: returnValue = (float) 0.20;
+                            break;
+                        case 9: returnValue = (float) 0.10;
                             break;
                         default:break;
                     }
@@ -53,19 +57,23 @@ public class Accelerometer {
                     mPhoneSide = phoneSide.RIGHT;
                     //Log.d("tilted on", "" + mPhoneSide);
                     switch ((int) currX){
-                        case 1: returnValue = (float) 0.7;
+                        case 1: returnValue = (float) 0.90;
                             break;
-                        case 2: returnValue = (float) 0.6;
+                        case 2: returnValue = (float) 0.80;
                             break;
-                        case 3: returnValue = (float) 0.5;
+                        case 3: returnValue = (float) 0.70;
                             break;
-                        case 4: returnValue = (float) 0.4;
+                        case 4: returnValue = (float) 0.60;
                             break;
-                        case 5: returnValue = (float) 0.3;
+                        case 5: returnValue = (float) 0.50;
                             break;
-                        case 6: returnValue = (float) 0.2;
+                        case 6: returnValue = (float) 0.40;
                             break;
-                        case 7: returnValue = (float) 0.1;
+                        case 7: returnValue = (float) 0.30;
+                            break;
+                        case 8: returnValue = (float) 0.20;
+                            break;
+                        case 9: returnValue = (float) 0.10;
                             break;
                         default:break;
                     }
