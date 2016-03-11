@@ -1,16 +1,12 @@
 package com.dragonfruitstudios.brokenbonez.Gameplay;
 
-import android.graphics.Canvas;
-import android.graphics.ColorFilter;
-import android.graphics.drawable.Drawable;
 
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.Camera;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
+import com.dragonfruitstudios.brokenbonez.HighScores.HighScore;
 import com.dragonfruitstudios.brokenbonez.Math.Physics.Simulator;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
-import com.dragonfruitstudios.brokenbonez.R;
-import com.plattysoft.leonids.ParticleSystem;
 
 
 public class GameState {
@@ -19,6 +15,7 @@ public class GameState {
     private AssetLoader assetLoader;
     private GameSceneManager gameSceneManager;
     private Simulator physicsSimulator;
+    HighScore score;
 
     private Camera camera;
 
@@ -39,6 +36,8 @@ public class GameState {
 
         currentLevel = new GameLevel(this);
         bike = new Bike(currentLevel, Bike.BodyType.Bike);
+
+        this.score = new HighScore(gameSceneManager.gameView);
     }
 
     public void newGame(Bike.BodyType bikeBodyType, int bikeColor) {
@@ -65,6 +64,7 @@ public class GameState {
         currentLevel.draw(view);
         bike.draw(view);
         physicsSimulator.draw(view);
+        score.draw(view);
     }
 
     public void setBikeAcceleration(float strength) {

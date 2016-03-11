@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.widget.EditText;
 
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
@@ -195,6 +196,15 @@ public class HighScore {
         });
         AlertDialog nameAlertDialog = nameAlert.create();
         nameAlertDialog.show();
+    }
+
+    public void uploadWeb(){
+        // TODO Add ability to upload stats
+    }
+
+    public void draw(GameView gameView) {
+        gameView.drawText(String.valueOf(this.getCurrentScore()), gameView.getWidth() - 200, 100, Color.WHITE, 40);
+
     }
 
 }
