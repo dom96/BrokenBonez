@@ -165,6 +165,10 @@ public class Polygon extends Intersector implements Drawable {
         return lines;
     }
 
+    public void setLines(ArrayList<Line> lines) {
+        this.lines = lines;
+    }
+
     public Intersector copy() {
         return new Polygon(new ArrayList<Line>(lines));
     }

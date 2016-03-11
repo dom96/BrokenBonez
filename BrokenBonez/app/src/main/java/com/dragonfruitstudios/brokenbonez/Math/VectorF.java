@@ -178,6 +178,11 @@ public class VectorF {
         y /= scalar;
     }
 
+    public void div(VectorF v) {
+        x /= v.x;
+        y /= v.y;
+    }
+
     /**
      * Convert this vector instance into a Unit vector (i.e. a vector of magnitude 1).
      */
