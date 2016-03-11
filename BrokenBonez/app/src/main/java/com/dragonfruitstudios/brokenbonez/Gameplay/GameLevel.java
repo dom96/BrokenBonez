@@ -50,28 +50,19 @@ public class GameLevel extends Level {
                 GameView.ImageOrigin.BottomLeft));
         info.layers.add(new LevelInfo.ColorLayer("buildings2.png", 0.5f, 0.15f, 25f,
                 GameView.ImageOrigin.BottomLeft, 20f, Color.TRANSPARENT, Color.BLACK));
-        info.layers.add(new LevelInfo.Layer("bushes.png", 1f, 0.8f, -250f,
-                GameView.ImageOrigin.BottomLeft));
-        info.layers.add(new LevelInfo.Layer("ground.png", 1f, 1f, 0f,
-                GameView.ImageOrigin.BottomLeft));
+        //info.layers.add(new LevelInfo.Layer("bushes.png", 1f, 0.8f, -250f,
+        //        GameView.ImageOrigin.BottomLeft));
+        //info.layers.add(new LevelInfo.Layer("ground.png", 1f, 1f, 0f,
+        //        GameView.ImageOrigin.BottomLeft));
 
-        //info.solids.add(LevelInfo.SolidLayer.createRect(new VectorF(0, 410), 200, 1000,
-        //        info.getSurfaceKey(), info.getTransparentKey(), info.getTransparentKey(),
-        //        info.getTransparentKey(), info.getGroundKey()));
-
+        // Load the SVG file which defines the level's geometry.
         info.loadSVG(state.getAssetLoader(), "level1.svg", new VectorF(0, 0));
 
-        /*ArrayList<Line> lines = new ArrayList<Line>();
-        ArrayList<String> keys = new ArrayList<String>();
-        lines.add(new Line(200, 410, 215, 440));
-        keys.add(info.getSurfaceKey());
-        lines.add(new Line(215, 440, 250, 460));
-        keys.add(info.getSurfaceKey());
-        lines.add(new Line(250, 460, 295, 475));
-        keys.add(info.getSurfaceKey());
-        lines.add(new Line(295, 475, 300, 480));
-        keys.add(info.getSurfaceKey());
-        info.solids.add(LevelInfo.SolidLayer.createPolygon(lines, keys, info.getGroundKey()));*/
+        // Initialise the SolidLayer class asset keys.
+        info.addInfo("plain", info.getSurfaceKey(), info.getGroundKey(),
+                new VectorF(0, -5));
+        info.addInfo("bushes", info.getImagePath("bushes.png"), info.getGroundKey(),
+                new VectorF(0, -260));
 
         // Load bitmaps defined in LevelInfo.
         info.loadAssets(state.getAssetLoader());
@@ -222,19 +213,28 @@ public class GameLevel extends Level {
     }
 
     private void drawSolidLayer(LevelInfo.SolidLayer sl, GameView gameView) {
-
         // Draw the SolidLayer's fill image.
-        gameView.fillPolygon(getAssetLoader().getBitmapByName(sl.getFillKey()), sl);
+        String fillKey = info.getSolidLayerKey(sl, LevelInfo.AssetType.Fill);
+        Bitmap fillImage = getAssetLoader().getBitmapByName(fillKey);
+        gameView.fillPolygon(fillImage, sl);
 
 
         int surfaceOffset = 0;
         // Draw the image beneath each line.
         for (int i = 0; i < sl.getLines().size(); i++) {
-            String assetKey = sl.getAssetKey(i);
+            LevelInfo.SolidLayer.Info classInfo = info.getSolidLayerInfo(sl);
+            LevelInfo.AssetType assetType = sl.getAssetType(i);
+            String assetKey = info.getSolidLayerKey(sl, assetType);
             // Don't draw if key is transparent.
             if (!assetKey.equals(info.getTransparentKey())) {
                 Bitmap asset = getAssetLoader().getBitmapByName(assetKey);
-                Line line = sl.getLines().get(i);
+                Line line = sl.getLines().get(i).copy();
+
+                if (assetType == LevelInfo.AssetType.Surface) {
+                    // Translate the SolidLayer Line by the surface offset.
+                    line.getStart().add(classInfo.surfaceOffset);
+                    line.getFinish().add(classInfo.surfaceOffset);
+                }
 
                 // Determine whether a gap needs to be filled between solid surface layers.
                 float angleDiff = calcAngleDiff(sl, i);
