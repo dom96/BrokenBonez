@@ -10,6 +10,10 @@ public class Accelerometer {
     enum phoneSide {LEFT, RIGHT, FLAT, DOWN}
     static phoneSide mPhoneSide = null;
 
+    public static float x = 0;
+    public static float y = 0;
+    public static float z = 0;
+
     public void onSensorChanged(SensorEvent event) {
         if(event.sensor.getType() == Sensor.TYPE_ACCELEROMETER){
             float currX, currY, currZ;
@@ -17,7 +21,14 @@ public class Accelerometer {
             currX = event.values[0];
             currY = event.values[1];
             currZ = event.values[2];
+<<<<<<< HEAD
             
+=======
+            x = currX;
+            y = currY;
+            z = currZ;
+
+>>>>>>> dom
             long currentTime = System.currentTimeMillis();
             if((currentTime - lastUpdate) > 100){
                 long extraTime = (currentTime - lastUpdate);
