@@ -67,11 +67,11 @@ public class GameLevel extends Level {
                 GameView.ImageOrigin.BottomLeft));
 
         // Load the SVG file which defines the level's geometry.
-        info.loadSVG(state.getAssetLoader(), "level1.svg", new VectorF(0, 0));
+        info.loadSVG(state.getAssetLoader(), "level_flat.svg", new VectorF(0, 0));
 
         // Initialise the SolidLayer class asset keys.
-        info.addInfo("plain", info.getSurfaceKey(), info.getImagePath("ground_base.png"),
-                new VectorF(0, -5));
+        info.addInfo("plain", info.getSurfaceKey(), info.getTransparentKey(),
+                new VectorF(0, 0));
         info.addInfo("bushes", info.getImagePath("bushes.png"), info.getImagePath("ground_base.png"),
                 new VectorF(0, -260));
 
@@ -248,8 +248,10 @@ public class GameLevel extends Level {
     private void drawSolidLayer(LevelInfo.SolidLayer sl, GameView gameView) {
         // Draw the SolidLayer's fill image.
         String fillKey = info.getSolidLayerKey(sl, LevelInfo.AssetType.Fill);
-        Bitmap fillImage = scaledBitmaps.get(fillKey);
-        gameView.fillPolygon(fillImage, sl);
+        if (!fillKey.equals(info.getTransparentKey())) {
+            Bitmap fillImage = scaledBitmaps.get(fillKey);
+            gameView.fillPolygon(fillImage, sl);
+        }
 
         int slOffsetX = 0;
         // Draw the image beneath each line.

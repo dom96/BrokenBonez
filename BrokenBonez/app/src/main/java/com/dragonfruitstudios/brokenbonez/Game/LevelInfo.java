@@ -182,7 +182,11 @@ public class LevelInfo {
                     loadAsset(loader, result, getSolidLayerKey(sl, ak.assetType));
                 }
             }
-            loadAsset(loader, result, getSolidLayerKey(sl, AssetType.Fill));
+
+            String fillKey = getSolidLayerKey(sl, AssetType.Fill);
+            if (!fillKey.equals(getTransparentKey())) {
+                loadAsset(loader, result, fillKey);
+            }
         }
         return result;
     }
