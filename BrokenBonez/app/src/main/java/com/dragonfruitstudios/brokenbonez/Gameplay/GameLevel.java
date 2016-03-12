@@ -110,7 +110,7 @@ public class GameLevel extends Level {
         if (!layersScaled) {
             // Scale each SolidLayer's coordinates to the current phone's resolution.
             for (LevelInfo.SolidLayer sl : info.solids) {
-                scalePolygon(sl, w, h);
+                Graphics.scalePolygon(sl, w, h);
             }
             layersScaled = true;
         }
@@ -120,8 +120,8 @@ public class GameLevel extends Level {
             // Create scaled versions of each of the bitmaps stored in the HashMap.
             for (Map.Entry<String, Bitmap> item : scaledBitmaps.entrySet()) {
                 Bitmap img = Bitmap.createScaledBitmap(item.getValue(),
-                        (int)scaleX(item.getValue().getWidth(), w),
-                        (int)scaleY(item.getValue().getHeight(), h), false);
+                        (int)Graphics.scaleX(item.getValue().getWidth(), w),
+                        (int)Graphics.scaleY(item.getValue().getHeight(), h), false);
                 scaledBitmaps.put(item.getKey(), img);
             }
             bitmapsScaled = true;
@@ -159,36 +159,38 @@ public class GameLevel extends Level {
                 LevelInfo.ColorLayer cLayer = ((LevelInfo.ColorLayer) l);
 
                 // Draw the image
-                pos.add(0, scaleY(l.yPos, gameView.getHeight()));
+                pos.add(0, Graphics.scaleY(l.yPos, gameView.getHeight()));
                 drawScrolled(gameView, img, l.scrollFactor, pos, l.origin);
 
                 float imgTop = 0;
                 float imgBottom = 0;
-                float scaledY = scaleY(cLayer.colorHeight, gameView.getHeight());
+                float scaledColorHeight = Graphics.scaleY(cLayer.colorHeight, gameView.getHeight());
                 switch (l.origin) {
                     case MiddleLeft:
                     case Middle:
                         imgTop = pos.y - (img.getHeight()/2);
                         imgBottom = pos.y + (img.getHeight()/2);
-                        gameView.drawRect(0, imgTop - scaledY,
+                        gameView.drawRect(0, imgTop - scaledColorHeight,
                                 gameView.getWidth(), imgTop, cLayer.colorTop);
                         gameView.drawRect(0, imgBottom,
-                                gameView.getWidth(), imgBottom + scaledY, cLayer.colorBottom);
+                                gameView.getWidth(), imgBottom + scaledColorHeight,
+                                cLayer.colorBottom);
                         break;
                     case TopLeft:
                         break;
                     case BottomLeft:
                         imgTop = pos.y - (img.getHeight());
                         imgBottom = pos.y;
-                        gameView.drawRect(0, imgTop - scaledY,
+                        gameView.drawRect(0, imgTop - scaledColorHeight,
                                 gameView.getWidth(), imgTop, cLayer.colorTop);
                         gameView.drawRect(0, imgBottom,
-                                gameView.getWidth(), imgBottom + scaledY, cLayer.colorBottom);
+                                gameView.getWidth(), imgBottom + scaledColorHeight,
+                                cLayer.colorBottom);
                         break;
                 }
             }
             else {
-                pos.add(0, scaleY(l.yPos, gameView.getHeight()));
+                pos.add(0, Graphics.scaleY(l.yPos, gameView.getHeight()));
                 drawScrolled(gameView, img, l.scrollFactor, pos, l.origin);
             }
         }
@@ -243,37 +245,6 @@ public class GameLevel extends Level {
         }
     }
 
-    private float scaleX(float x, int w) {
-        return (x / 1280) * w;
-    }
-
-    private float scaleY(float y, int h) {
-        return (y / 768) * h;
-    }
-
-    private void scalePos(VectorF pos, int w, int h) {
-        pos.div(new VectorF(1280, 768));
-        pos.mult(new VectorF(w, h));
-    }
-
-    /**
-     * Scales the specified line to the current phone's resolution.
-     */
-    private void scaleLine(Line line, int w, int h) {
-        // The levels have been designed for a 768x1280 screen.
-        scalePos(line.getStart(), w, h);
-        scalePos(line.getFinish(), w, h);
-    }
-
-    /**
-     * Scales the specified polygon to the current phone's resolution.
-     */
-    private void scalePolygon(Polygon polygon, int w, int h) {
-        for (Line l : polygon.getLines()) {
-            scaleLine(l, w, h);
-        }
-    }
-
     private void drawSolidLayer(LevelInfo.SolidLayer sl, GameView gameView) {
         // Draw the SolidLayer's fill image.
         String fillKey = info.getSolidLayerKey(sl, LevelInfo.AssetType.Fill);
@@ -294,7 +265,7 @@ public class GameLevel extends Level {
                 if (assetType == LevelInfo.AssetType.Surface) {
                     // Scale the surface offset depending on the screen resolution.
                     VectorF surfaceOffsetY = classInfo.surfaceOffset.copy();
-                    scalePos(surfaceOffsetY, gameView.getWidth(), gameView.getHeight());
+                    Graphics.scalePos(surfaceOffsetY, gameView.getWidth(), gameView.getHeight());
                     // Translate the SolidLayer Line by the surface offset.
                     line.getStart().add(surfaceOffsetY);
                     line.getFinish().add(surfaceOffsetY);
