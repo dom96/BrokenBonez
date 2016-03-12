@@ -114,15 +114,12 @@ public class LevelInfo {
         public String path; // Relative to level image dir.
         public float yPos; // Resolution independent factors used to place this layer along the vertical.
         public float scrollFactor; // Factor used to scroll this layer when the bike moves.
-        public float yMargin; // How much to move this layer down after its
-                              // position has been calculated based on the `yFactor`.
         public GameView.ImageOrigin origin;
 
-        public Layer(String path, float yPos, float scrollFactor, float yMargin, GameView.ImageOrigin origin) {
+        public Layer(String path, float yPos, float scrollFactor, GameView.ImageOrigin origin) {
             this.path = path;
             this.yPos = yPos;
             this.scrollFactor = scrollFactor;
-            this.yMargin = yMargin;
             this.origin = origin;
         }
     }
@@ -136,19 +133,20 @@ public class LevelInfo {
         public int colorTop; // Color specifying the color to put above the image.
         public int colorBottom; // Color specifying the color to put below the image.
 
-        public ColorLayer(String path, float yPos, float scrollFactor, float yMargin,
+        public ColorLayer(String path, float yPos, float scrollFactor,
                           GameView.ImageOrigin origin, float colorHeight,
                           String colorTop, String colorBottom) {
-            super(path, yPos, scrollFactor, yMargin, origin);
+            super(path, yPos, scrollFactor, origin);
             this.colorHeight = colorHeight;
             this.colorTop = Color.parseColor(colorTop);
             this.colorBottom = Color.parseColor(colorBottom);
         }
 
-        public ColorLayer(String path, float yPos, float scrollFactor, float yMargin,
+        public ColorLayer(String path, float yPos, float scrollFactor,
                           GameView.ImageOrigin origin, float colorHeight,
                           int colorTop, int colorBottom) {
-            super(path, yPos, scrollFactor, yMargin, origin);
+            super(path, yPos, scrollFactor, origin);
+            this.colorHeight = colorHeight;
             this.colorTop = colorTop;
             this.colorBottom = colorBottom;
         }
@@ -163,22 +161,30 @@ public class LevelInfo {
         this.slAssets = new HashMap<String,SolidLayer.Info>();
     }
 
-    public void loadAssets(AssetLoader loader) {
-        loader.AddAssets(new String[]{getSurfaceKey()});
-        loader.AddAssets(new String[] {getGroundKey()});
+    private void loadAsset(AssetLoader loader, HashMap<String, Bitmap> scaled, String path) {
+        loader.AddAssets(new String[] {path});
+        scaled.put(path, loader.getBitmapByName(path));
+    }
+
+    public HashMap<String, Bitmap> loadAssets(AssetLoader loader) {
+        HashMap<String, Bitmap> result = new HashMap<>();
+        loadAsset(loader, result, getSurfaceKey());
+        loadAsset(loader, result, getGroundKey());
         // Add the background layer's assets.
         for (Layer l : layers) {
-            loader.AddAssets(new String[] {getLayerKey(l)});
+            loadAsset(loader, result, getLayerKey(l));
         }
         // Add the Solid layers' assets.
         for (SolidLayer sl : solids) {
             // TODO: UGH. An `addAsset` method is desperately needed.
             for (SolidLayer.AssetKey ak : sl.assetKeys) {
                 if (ak.assetType != AssetType.Transparent) {
-                    loader.AddAssets(new String[]{getSolidLayerKey(sl, ak.assetType)});
+                    loadAsset(loader, result, getSolidLayerKey(sl, ak.assetType));
                 }
             }
+            loadAsset(loader, result, getSolidLayerKey(sl, AssetType.Fill));
         }
+        return result;
     }
 
     public void addInfo(String theClass, String surfaceKey, String fillKey) {
