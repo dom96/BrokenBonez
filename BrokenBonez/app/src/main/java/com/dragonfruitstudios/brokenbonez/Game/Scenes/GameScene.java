@@ -90,5 +90,8 @@ public class GameScene extends Scene {
             if(Accelerometer.isDown()){
                 state.setBikeTilt(Accelerometer.bikeStill());
             }
+            if(Accelerometer.getReturnValue() == 0){
+                state.setBikeTilt(Accelerometer.bikeStill());
+            }
     }
 }

@@ -39,21 +39,21 @@ public class Accelerometer {
                     mPhoneSide = phoneSide.LEFT;
                     //Log.d("tilted on", "" + mPhoneSide);
                     switch ((int) currX){
-                        case 1: returnValue = (float) 0.0;
+                        case 1:
                             break;
-                        case 2: returnValue = (float) 0.0;
+                        case 2:
                             break;
-                        case 3: returnValue = (float) 0.1;
+                        case 3: returnValue = (float) 0.6;
                             break;
-                        case 4: returnValue = (float) 0.2;
+                        case 4: returnValue = (float) 0.5;
                             break;
-                        case 5: returnValue = (float) 0.3;
+                        case 5: returnValue = (float) 0.4;
                             break;
-                        case 6: returnValue = (float) 0.4;
+                        case 6: returnValue = (float) 0.3;
                             break;
-                        case 7: returnValue = (float) 0.5;
+                        case 7: returnValue = (float) 0.2;
                             break;
-                        case 8: returnValue = (float) 0.6;
+                        case 8: returnValue = (float) 0.1;
                             break;
                         case 9:
                             break;
@@ -65,23 +65,23 @@ public class Accelerometer {
                     mPhoneSide = phoneSide.RIGHT;
                     //Log.d("tilted on", "" + mPhoneSide);
                     switch ((int) currX){
-                        case 1: returnValue = (float) 0.0;
+                        case -1:
                             break;
-                        case 2: returnValue = (float) 0.0;
+                        case -2:
                             break;
-                        case 3: returnValue = (float) 0.1;
+                        case -3: returnValue = (float) 0.6;
                             break;
-                        case 4: returnValue = (float) 0.2;
+                        case -4: returnValue = (float) 0.5;
                             break;
-                        case 5: returnValue = (float) 0.3;
+                        case -5: returnValue = (float) 0.4;
                             break;
-                        case 6: returnValue = (float) 0.4;
+                        case -6: returnValue = (float) 0.3;
                             break;
-                        case 7: returnValue = (float) 0.5;
+                        case -7: returnValue = (float) 0.2;
                             break;
-                        case 8: returnValue = (float) 0.6;
+                        case -8: returnValue = (float) 0.1;
                             break;
-                        case 9:
+                        case -9:
                             break;
                         default:break;
                     }
