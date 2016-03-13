@@ -43,19 +43,19 @@ public class Accelerometer {
                             break;
                         case 2: returnValue = (float) 0.0;
                             break;
-                        case 3: returnValue = (float) 0.6;
+                        case 3: returnValue = (float) 0.1;
                             break;
-                        case 4: returnValue = (float) 0.5;
+                        case 4: returnValue = (float) 0.2;
                             break;
-                        case 5: returnValue = (float) 0.4;
+                        case 5: returnValue = (float) 0.3;
                             break;
-                        case 6: returnValue = (float) 0.3;
+                        case 6: returnValue = (float) 0.4;
                             break;
-                        case 7: returnValue = (float) 0.2;
+                        case 7: returnValue = (float) 0.5;
                             break;
-                        case 8: returnValue = (float) 0.1;
+                        case 8: returnValue = (float) 0.6;
                             break;
-                        case 9: returnValue = (float) 0.0;
+                        case 9:
                             break;
                         default:break;
                     }
@@ -81,7 +81,7 @@ public class Accelerometer {
                             break;
                         case 8: returnValue = (float) 0.6;
                             break;
-                        case 9: returnValue = (float) 0.0;
+                        case 9:
                             break;
                         default:break;
                     }
