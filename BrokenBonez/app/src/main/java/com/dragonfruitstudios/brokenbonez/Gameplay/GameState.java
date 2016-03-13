@@ -15,7 +15,7 @@ public class GameState {
     private AssetLoader assetLoader;
     private GameSceneManager gameSceneManager;
     private Simulator physicsSimulator;
-    HighScore score;
+    public HighScore score;
 
     private Camera camera;
 
@@ -51,6 +51,7 @@ public class GameState {
         physicsSimulator.update(lastUpdate);
         currentLevel.update(lastUpdate, bike.getPos());
         camera.centerHorizontally(bike.getPos().x);
+        score.changeTimeBy(lastUpdate);
     }
 
     public void updateSize(int w, int h) {

@@ -35,6 +35,7 @@ import java.util.Map;
 public class HighScore {
 
     int currentScore = 0;
+    float time = 0;
     GameView gameView;
     String name;
 
@@ -51,7 +52,7 @@ public class HighScore {
      * Basically calls addHighScore() using the class variables (name and currentScore)
      */
     public void addHighScoreData(){
-        AddHighScore(this.getCurrentScore(), this.getName());
+        AddHighScore(this.getCurrentScore(), this.getTime(), this.getName());
     }
 
     /**
@@ -64,10 +65,10 @@ public class HighScore {
      * @param newHighScore high score passed into the function to be saved
      * @param name         name of the user being passed in
      */
-    private void AddHighScore(int newHighScore, String name){
+    private void AddHighScore(int newHighScore, float time, String name){
         SharedPreferences gamePrefs = gameView.getContext().getSharedPreferences("BrokenScores", Context.MODE_PRIVATE);
         DateFormat dateForm = new SimpleDateFormat("dd-MM-yyyy-kk-mm-ss");
-        String highScore = name + "-" + dateForm.format(new Date());
+        String highScore = name + "〰" + time + "〰" + dateForm.format(new Date());
         if (gamePrefs.getAll().size() > 4){
             int lowestScore = 0;
             String lowestID = "";
@@ -118,7 +119,31 @@ public class HighScore {
         this.name = name;
     }
 
-    private  List<PrefData> buildArrayListOfSharedPreferences(Map<String,?> highscores){
+    public float getTime() {
+        return time;
+    }
+
+    public void setTime(float time) {
+        this.time = time;
+    }
+
+    public int getTimeSeconds(){
+        return Math.round(this.getTime() /1000);
+    }
+
+    public float getTimeSingleDecPoint(){
+        return (Math.round(this.getTime() / 100.0f) / 10.0f);
+    }
+
+    public void changeScoreBy(int score){
+        this.setCurrentScore(this.getCurrentScore() + score);
+    }
+
+    public void changeTimeBy(float time){
+        this.setTime(this.getTime() + time);
+    }
+
+    private List<PrefData> buildArrayListOfSharedPreferences(Map<String,?> highscores){
         List<PrefData> highScoresList = new ArrayList<>();
         for(Map.Entry<String,?> singleHighscore : highscores.entrySet()) {
             PrefData prefData = new PrefData();
@@ -133,14 +158,14 @@ public class HighScore {
      * Generates a sorted list of the scores, sorting by the score
      * @return sorted list, sorted by score
      */
-    public  List<PrefData> getSortedList(){
+    public List<PrefData> getSortedList(){
         SharedPreferences gamePrefs = this.gameView.getContext().getSharedPreferences("BrokenScores", Context.MODE_PRIVATE);
         List<PrefData> list = buildArrayListOfSharedPreferences(gamePrefs.getAll());
         list = sortList(list);
         return list;
     }
 
-    private  List<PrefData> sortList(List<PrefData> list){
+    private List<PrefData> sortList(List<PrefData> list){
         Collections.sort(list, new Comparator<PrefData>() {
             @Override
             public int compare(PrefData z1, PrefData z2) {
@@ -162,6 +187,12 @@ public class HighScore {
         SharedPreferences.Editor editor = gamePrefs.edit();
         editor.clear();
         editor.commit();
+    }
+
+    public void reset(){
+        this.setName("");
+        this.setTime(0);
+        this.setCurrentScore(0);
     }
 
 
@@ -203,7 +234,7 @@ public class HighScore {
     }
 
     public void draw(GameView gameView) {
-        gameView.drawText(String.valueOf(this.getCurrentScore()), gameView.getWidth() - 200, 100, Color.WHITE, 40);
+        gameView.drawText(String.valueOf(this.getCurrentScore()) + " - " + String.valueOf(this.getTimeSingleDecPoint()), gameView.getWidth() - 200, 100, Color.WHITE, 40);
 
     }
 
