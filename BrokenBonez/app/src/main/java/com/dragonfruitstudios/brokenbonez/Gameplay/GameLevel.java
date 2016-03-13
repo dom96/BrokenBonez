@@ -58,12 +58,16 @@ public class GameLevel extends Level {
         //        GameView.ImageOrigin.BottomLeft));
 
         // Load the SVG file which defines the level's geometry.
-        info.loadSVG(state.getAssetLoader(), "level_flat.svg", new VectorF(0, 0));
+        info.loadSVG(state.getAssetLoader(), "level_flat.svg", new VectorF(-600, 0));
 
         // Initialise the SolidLayer class asset keys.
         info.addInfo("plain", info.getSurfaceKey(), info.getImagePath("ground_base.png"),
                 new VectorF(0, 0));
         info.addInfo("little_ramp", info.getTransparentKey(), info.getImagePath("little_ramp.png"),
+                new VectorF(0, 0));
+        info.addInfo("building1", info.getTransparentKey(), info.getImagePath("building1.png"),
+                new VectorF(0, 0));
+        info.addInfo("building2", info.getTransparentKey(), info.getImagePath("building2.png"),
                 new VectorF(0, 0));
 
         // Load bitmaps defined in LevelInfo.
