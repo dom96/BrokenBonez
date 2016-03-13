@@ -18,6 +18,7 @@ public class Polygon extends Intersector implements Drawable {
     private ArrayList<Line> lines;
 
     private VectorF size;
+    private RectF rect;
 
     private android.graphics.RectF calcRect() {
         // TODO: This code sucks. Clean it up. But make sure tests pass.
@@ -40,8 +41,7 @@ public class Polygon extends Intersector implements Drawable {
     }
 
     private VectorF calcSize() {
-        RectF res = calcRect();
-        return new VectorF(res.right - res.left, res.bottom - res.top);
+        return new VectorF(rect.right - rect.left, rect.bottom - rect.top);
     }
 
     protected Polygon() {
@@ -50,11 +50,13 @@ public class Polygon extends Intersector implements Drawable {
 
     public Polygon(Line[] lines) {
         this.lines = new ArrayList<Line>(Arrays.asList(lines));
+        rect = calcRect();
         size = calcSize();
     }
 
     public Polygon(ArrayList<Line> lines) {
         this.lines = lines;
+        rect = calcRect();
         size = calcSize();
     }
 
@@ -187,7 +189,12 @@ public class Polygon extends Intersector implements Drawable {
     }
 
     public RectF getRect() {
-        return calcRect();
+        return rect;
+    }
+
+    public void recalculateBounds() {
+        rect = calcRect();
+        size = calcSize();
     }
 
     /**

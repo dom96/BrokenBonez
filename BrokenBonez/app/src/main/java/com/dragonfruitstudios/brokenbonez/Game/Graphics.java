@@ -91,6 +91,7 @@ public class Graphics {
         for (Line l : polygon.getLines()) {
             scaleLine(l, w, h);
         }
+        polygon.recalculateBounds();
     }
 
     // </editor-fold>

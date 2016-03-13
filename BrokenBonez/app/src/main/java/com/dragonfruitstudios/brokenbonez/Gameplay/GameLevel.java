@@ -54,14 +54,14 @@ public class GameLevel extends Level {
                 GameView.ImageOrigin.BottomLeft, 20f, Color.TRANSPARENT, Color.BLACK));
         info.layers.add(new LevelInfo.Layer("bushes.png", 518f, 0.8f,
                 GameView.ImageOrigin.BottomLeft));
-        info.layers.add(new LevelInfo.Layer("ground.png", 768f, 1f,
-                GameView.ImageOrigin.BottomLeft));
+        //info.layers.add(new LevelInfo.Layer("ground.png", 768f, 1f,
+        //        GameView.ImageOrigin.BottomLeft));
 
         // Load the SVG file which defines the level's geometry.
         info.loadSVG(state.getAssetLoader(), "level_flat.svg", new VectorF(0, 0));
 
         // Initialise the SolidLayer class asset keys.
-        info.addInfo("plain", info.getSurfaceKey(), info.getTransparentKey(),
+        info.addInfo("plain", info.getSurfaceKey(), info.getImagePath("ground_base.png"),
                 new VectorF(0, 0));
         info.addInfo("little_ramp", info.getTransparentKey(), info.getImagePath("little_ramp.png"),
                 new VectorF(0, 0));
@@ -71,7 +71,7 @@ public class GameLevel extends Level {
 
         Simulator physicsSimulator = gameState.getPhysicsSimulator();
         for (LevelInfo.SolidLayer sl : info.solids) {
-            physicsSimulator.createStaticBody(sl);
+            physicsSimulator.addStaticShape(sl);
         }
 
         /*

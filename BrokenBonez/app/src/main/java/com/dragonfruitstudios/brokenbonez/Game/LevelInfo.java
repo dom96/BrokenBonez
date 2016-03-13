@@ -412,8 +412,10 @@ public class LevelInfo {
                 SolidLayer.AssetKey[] keys;
                 boolean selfClosed = false;
                 // Check if the lines form a closed Polygon.
-                // TODO: Allow some approximation here.
-                if (lines.get(0).getStart().equals(lines.get(lines.size()-1).getFinish())) {
+                VectorF firstPoint = lines.get(0).getStart();
+                VectorF lastPoint = lines.get(lines.size()-1).getFinish();
+                float distSq = firstPoint.distSquared(lastPoint);
+                if (distSq < Math.pow(5, 2)) {
                     keys = new SolidLayer.AssetKey[] {
                             surfaceKey
                     };

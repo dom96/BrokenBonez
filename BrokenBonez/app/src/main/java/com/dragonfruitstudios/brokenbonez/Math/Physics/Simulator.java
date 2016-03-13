@@ -121,4 +121,15 @@ public class Simulator {
         constraints.add(c);
         return c;
     }
+
+    /**
+     * Adds the specified shape to the simulator as a StaticBody as-is, i.e. the shape is not
+     * copied. This allows you to make changes to the shape and they will be reflected in the
+     * Physics engine.
+     */
+    public void addStaticShape(Intersector shape) {
+        StaticBody body = new StaticBody();
+        body.boundingShape = shape;
+        staticBodies.add(body);
+    }
 }
