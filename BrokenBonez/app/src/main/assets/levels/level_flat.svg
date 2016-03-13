@@ -9,6 +9,15 @@
         fill="none" stroke="black" stroke-width="1"
         d="M 0.00,518.00
            C 0.00,518.00 974.00,518.00 974.00,518.00" />
+
+
+  <path id="ramp1" class="little_ramp"
+        fill="none" stroke="black" stroke-width="1"
+        d="M 974.00,462.00
+           C 974.00,462.00 863.00,518.00 863.00,518.00
+             863.00,518.00 974.00,518.00 974.00,518.00
+             974.00,518.00 974.00,462.00 974.00,462.00" />
+
   <path id="Path" class="plain"
         fill="none" stroke="black" stroke-width="1"
         d="M 973.75,518.00

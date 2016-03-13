@@ -1,25 +1,16 @@
 package com.dragonfruitstudios.brokenbonez.Gameplay;
 
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.util.Log;
 
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
-import com.dragonfruitstudios.brokenbonez.Game.Camera;
 import com.dragonfruitstudios.brokenbonez.Game.Graphics;
 import com.dragonfruitstudios.brokenbonez.Game.Level;
 import com.dragonfruitstudios.brokenbonez.Game.LevelInfo;
-import com.dragonfruitstudios.brokenbonez.Math.Collisions.Circle;
-import com.dragonfruitstudios.brokenbonez.Math.Collisions.Intersector;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Line;
-import com.dragonfruitstudios.brokenbonez.Math.Collisions.Manifold;
-import com.dragonfruitstudios.brokenbonez.Math.Collisions.Polygon;
-import com.dragonfruitstudios.brokenbonez.Math.Collisions.Rect;
-import com.dragonfruitstudios.brokenbonez.Game.Drawable;
-import com.dragonfruitstudios.brokenbonez.Game.GameObject;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
-import com.dragonfruitstudios.brokenbonez.Math.Collisions.Triangle;
 import com.dragonfruitstudios.brokenbonez.Math.Physics.Simulator;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
@@ -72,8 +63,8 @@ public class GameLevel extends Level {
         // Initialise the SolidLayer class asset keys.
         info.addInfo("plain", info.getSurfaceKey(), info.getTransparentKey(),
                 new VectorF(0, 0));
-        info.addInfo("bushes", info.getImagePath("bushes.png"), info.getImagePath("ground_base.png"),
-                new VectorF(0, -260));
+        info.addInfo("little_ramp", info.getTransparentKey(), info.getImagePath("little_ramp.png"),
+                new VectorF(0, 0));
 
         // Load bitmaps defined in LevelInfo.
         scaledBitmaps = info.loadAssets(state.getAssetLoader());
@@ -250,7 +241,14 @@ public class GameLevel extends Level {
         String fillKey = info.getSolidLayerKey(sl, LevelInfo.AssetType.Fill);
         if (!fillKey.equals(info.getTransparentKey())) {
             Bitmap fillImage = scaledBitmaps.get(fillKey);
-            gameView.fillPolygon(fillImage, sl);
+            if (sl.usesFillPolygon()) {
+                gameView.fillPolygon(fillImage, sl);
+            }
+            else {
+                // TODO: Rotation.
+                Rect src = new Rect(0, 0, fillImage.getWidth(), fillImage.getHeight());
+                gameView.drawImage(fillImage, src, sl.getRect(), 0);
+            }
         }
 
         int slOffsetX = 0;

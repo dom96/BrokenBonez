@@ -1,6 +1,7 @@
 package com.dragonfruitstudios.brokenbonez.Math.Collisions;
 
-import android.graphics.Color;
+import android.graphics.*;
+import android.graphics.Rect;
 
 import com.dragonfruitstudios.brokenbonez.Game.Drawable;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
@@ -18,7 +19,7 @@ public class Polygon extends Intersector implements Drawable {
 
     private VectorF size;
 
-    private VectorF calcSize() {
+    private android.graphics.RectF calcRect() {
         // TODO: This code sucks. Clean it up. But make sure tests pass.
         float minX = Float.MAX_VALUE;
         float maxX = -Float.MAX_VALUE;
@@ -35,8 +36,12 @@ public class Polygon extends Intersector implements Drawable {
             minY = Math.min(minY, l.getFinish().y);
             maxY = Math.max(maxY, l.getFinish().y);
         }
+        return new RectF(minX, minY, maxX, maxY);
+    }
 
-        return new VectorF(maxX - minX, maxY - minY);
+    private VectorF calcSize() {
+        RectF res = calcRect();
+        return new VectorF(res.right - res.left, res.bottom - res.top);
     }
 
     protected Polygon() {
@@ -179,6 +184,10 @@ public class Polygon extends Intersector implements Drawable {
 
     public VectorF getSize() {
         return size;
+    }
+
+    public RectF getRect() {
+        return calcRect();
     }
 
     /**

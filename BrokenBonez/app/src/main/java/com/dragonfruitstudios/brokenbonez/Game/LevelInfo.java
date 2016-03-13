@@ -56,6 +56,7 @@ public class LevelInfo {
         // line.
         private ArrayList<AssetKey> assetKeys;
         private String theClass;
+        private boolean selfClosed;
 
         private SolidLayer(Polygon polygon) {
             super(polygon.getLines());
@@ -74,6 +75,16 @@ public class LevelInfo {
 
         public AssetType getAssetType(int i) {
             return assetKeys.get(i).assetType;
+        }
+
+        /**
+         * Determines whether this SolidLayer's Fill image should be drawn using `fillPolygon`.
+         *
+         * Currently `true` for Polygons which have been automatically closed by the SVG path
+         * parser.
+         */
+        public boolean usesFillPolygon() {
+            return !selfClosed;
         }
 
         static class AssetKey {
@@ -178,8 +189,9 @@ public class LevelInfo {
         for (SolidLayer sl : solids) {
             // TODO: UGH. An `addAsset` method is desperately needed.
             for (SolidLayer.AssetKey ak : sl.assetKeys) {
-                if (ak.assetType != AssetType.Transparent) {
-                    loadAsset(loader, result, getSolidLayerKey(sl, ak.assetType));
+                String key = getSolidLayerKey(sl, ak.assetType);
+                if (ak.assetType != AssetType.Transparent && key.length() > 0) {
+                    loadAsset(loader, result, key);
                 }
             }
 
@@ -397,21 +409,34 @@ public class LevelInfo {
                 SolidLayer.AssetKey surfaceKey = new SolidLayer.AssetKey(
                         AssetType.Surface, 0, lines.size()-1);
 
-                // TODO: Quick way to close the Polygon.
-                Line left = new Line(lines.get(0).getStart().copy(),
-                        lines.get(0).getStart().added(new VectorF(0, 400)));
-                Line right = new Line(lines.get(lines.size()-1).getFinish().copy(),
-                        lines.get(lines.size()-1).getFinish().added(new VectorF(0, 400)));
-                Line bottom = new Line(left.getFinish().copy(), right.getFinish().copy());
-                lines.add(right);
-                lines.add(bottom);
-                lines.add(left);
-                SolidLayer.AssetKey[] keys = new SolidLayer.AssetKey[] {
-                        surfaceKey,
-                        new SolidLayer.AssetKey(AssetType.Transparent,
-                                surfaceKey.indexEnd+1, surfaceKey.indexEnd+4)
-                };
+                SolidLayer.AssetKey[] keys;
+                boolean selfClosed = false;
+                // Check if the lines form a closed Polygon.
+                // TODO: Allow some approximation here.
+                if (lines.get(0).getStart().equals(lines.get(lines.size()-1).getFinish())) {
+                    keys = new SolidLayer.AssetKey[] {
+                            surfaceKey
+                    };
+                    selfClosed = true;
+                }
+                else {
+                    // TODO: Quick way to close the Polygon.
+                    Line left = new Line(lines.get(0).getStart().copy(),
+                            lines.get(0).getStart().added(new VectorF(0, 400)));
+                    Line right = new Line(lines.get(lines.size() - 1).getFinish().copy(),
+                            lines.get(lines.size() - 1).getFinish().added(new VectorF(0, 400)));
+                    Line bottom = new Line(left.getFinish().copy(), right.getFinish().copy());
+                    lines.add(right);
+                    lines.add(bottom);
+                    lines.add(left);
+                    keys = new SolidLayer.AssetKey[]{
+                            surfaceKey,
+                            new SolidLayer.AssetKey(AssetType.Transparent,
+                                    surfaceKey.indexEnd + 1, surfaceKey.indexEnd + 4)
+                    };
+                }
                 SolidLayer newLayer = SolidLayer.createPolygon(lines, keys);
+                newLayer.selfClosed = selfClosed;
                 solids.add(newLayer);
 
                 // Set the SolidLayer's id.

@@ -270,6 +270,10 @@ public class VectorF {
         return MathUtils.equal((b.x - this.x) * (c.y - this.y), (c.x - this.x) * (b.y - this.y), epsilon);
     }
 
+    public boolean equals(VectorF b) {
+        return this.x == b.x && this.y == b.y;
+    }
+
     // <editor-fold desc="Getters/Setters">
 
     // TODO: Remove these? Since the actual fields are public?
