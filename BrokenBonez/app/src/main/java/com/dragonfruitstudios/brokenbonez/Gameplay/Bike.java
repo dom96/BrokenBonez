@@ -183,7 +183,7 @@ public class Bike implements GameObject {
         // Left wheel is controlled by the engine, so it gets the acceleration.
         // TODO: Maximum speed of bike is currently hardcoded. Make this customisable, perhaps
         // TODO: allow different bikes with differing acceleration characteristics?
-        leftWheel.setTorque(700 * strength);
+        leftWheel.setTorque(500 * strength);
 
         Log.d("Bike/Trq", "Torque is now " + 5 * strength);
     }
