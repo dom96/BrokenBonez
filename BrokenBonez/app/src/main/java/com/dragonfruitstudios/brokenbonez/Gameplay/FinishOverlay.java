@@ -9,7 +9,7 @@ import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Game.Graphics;
 import com.dragonfruitstudios.brokenbonez.Menu.ImageButton;
 
-public class DeathOverlay {
+public class FinishOverlay {
     AssetLoader assetLoader;
 
     private boolean enabled;
@@ -19,7 +19,7 @@ public class DeathOverlay {
     ImageButton mainMenuBtn;
     ImageButton restartLevelBtn;
 
-    public DeathOverlay(AssetLoader assetLoader) {
+    public FinishOverlay(AssetLoader assetLoader) {
         this.assetLoader = assetLoader;
         assetLoader.AddAssets(new String[]{"menu/deathoverlay/continue.png",
                 "menu/deathoverlay/main_menu.png",

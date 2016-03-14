@@ -1,8 +1,5 @@
 package com.dragonfruitstudios.brokenbonez.Gameplay;
 
-import android.graphics.Canvas;
-import android.graphics.ColorFilter;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.MotionEvent;
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
@@ -26,7 +23,7 @@ public class GameState {
 
     private Camera camera;
 
-    private DeathOverlay deathOverlay;
+    private FinishOverlay finishOverlay;
     private boolean slowMotion;
 
     public GameState(AssetLoader assetLoader, GameSceneManager gameSceneManager) {
@@ -48,7 +45,7 @@ public class GameState {
         bike = new Bike(currentLevel, Bike.BodyType.Bike);
 
         slowMotion = false;
-        deathOverlay = new DeathOverlay(assetLoader);
+        finishOverlay = new FinishOverlay(assetLoader);
         this.score = new HighScore(gameSceneManager.gameView);
     }
 
@@ -57,7 +54,7 @@ public class GameState {
         bike.setBodyType(bikeBodyType);
         bike.reset();
         setSlowMotion(false);
-        deathOverlay.disable();
+        finishOverlay.disable();
         score.reset();
     }
 
@@ -66,7 +63,7 @@ public class GameState {
         physicsSimulator.update(lastUpdate);
         currentLevel.update(lastUpdate, bike.getPos());
         camera.centerHorizontally(bike.getPos().x);
-        if (!deathOverlay.isEnabled()) {
+        if (!finishOverlay.isEnabled()) {
             score.changeTimeBy(lastUpdate);
         }
     }
@@ -82,12 +79,12 @@ public class GameState {
         currentLevel.draw(view);
         bike.draw(view);
         physicsSimulator.draw(view);
-        deathOverlay.draw(view);
+        finishOverlay.draw(view);
         score.draw(view);
     }
 
     public void onTouchEvent(MotionEvent event) {
-        if (!deathOverlay.isEnabled()) {
+        if (!finishOverlay.isEnabled()) {
             // Determine what action the user performed.
             TouchHandler.ControlIsActive action = TouchHandler.determineAction(event,
                     Graphics.getScreenWidth() / 2);
@@ -105,8 +102,8 @@ public class GameState {
             }
         }
 
-        DeathOverlay.OverlayResult result = deathOverlay.onTouchEvent(event);
-        Log.d("GS", "DeathOverlay wants: " + result.toString());
+        FinishOverlay.OverlayResult result = finishOverlay.onTouchEvent(event);
+        Log.d("GS", "FinishOverlay wants: " + result.toString());
         switch (result) {
             case Continue:
                 score.askName(true);
@@ -155,7 +152,7 @@ public class GameState {
     }
 
     public void endGame(boolean crashed) {
-        deathOverlay.enable(crashed);
+        finishOverlay.enable(crashed);
         setSlowMotion(true);
     }
 }
