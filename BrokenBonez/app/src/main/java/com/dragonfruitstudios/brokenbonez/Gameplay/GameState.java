@@ -88,7 +88,17 @@ public class GameState {
     }
 
     public void onTouchEvent(MotionEvent event) {
-        deathOverlay.onTouchEvent(event);
+        switch (deathOverlay.onTouchEvent(event)) {
+            case RestartLevel:
+                newGame(bike.getBodyType(), bike.getColor());
+                break;
+            case ShowMainMenu:
+                gameSceneManager.setScene("menuScene");
+                break;
+            case None:
+                break;
+        }
+
     }
 
     public void setBikeAcceleration(float strength) {

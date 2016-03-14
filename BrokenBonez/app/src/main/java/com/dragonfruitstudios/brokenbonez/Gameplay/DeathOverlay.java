@@ -9,6 +9,7 @@ import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Menu.ImageButton;
 
 public class DeathOverlay {
+
     boolean enabled;
 
     ImageButton mainMenuBtn;
@@ -35,7 +36,7 @@ public class DeathOverlay {
 
     public void draw(GameView view) {
         if (enabled) {
-            view.drawRect(0, 0, view.getWidth(), view.getHeight(), Color.argb(200, 0, 0, 0));
+            view.drawRect(0, 0, view.getWidth(), view.getHeight(), Color.argb(150, 0, 0, 0));
 
             view.drawTextCenter("Game Over!", view.getWidth() / 2, 200, Color.parseColor("#ffffff"),
                     150);
@@ -45,8 +46,21 @@ public class DeathOverlay {
         }
     }
 
-    public void onTouchEvent(MotionEvent event) {
-        // TODO:
-        //mainMenuBtn.onTouchEvent(event, );
+    public enum OverlayResult {
+        ShowMainMenu, RestartLevel, None
+    }
+
+    public OverlayResult onTouchEvent(MotionEvent event) {
+        if (enabled) {
+            mainMenuBtn.onTouchEvent(event);
+            restartLevelBtn.onTouchEvent(event);
+
+            if (mainMenuBtn.isTouched()) {
+                return OverlayResult.ShowMainMenu;
+            } else if (restartLevelBtn.isTouched()) {
+                return OverlayResult.RestartLevel;
+            }
+        }
+        return OverlayResult.None;
     }
 }
