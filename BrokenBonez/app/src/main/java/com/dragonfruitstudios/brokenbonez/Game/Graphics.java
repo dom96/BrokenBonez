@@ -16,6 +16,9 @@ import junit.framework.Assert;
 import java.util.HashMap;
 
 public class Graphics {
+
+    public static boolean drawDebugInfo = false;
+
     /**
      * Finds every pixel with the specified `toReplace` color and replaces it with the
      * specified `replaceWith` color.

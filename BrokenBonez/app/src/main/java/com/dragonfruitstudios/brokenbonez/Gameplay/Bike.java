@@ -139,18 +139,23 @@ public class Bike implements GameObject {
                 gameView.drawImage(body, leftWheel.getPos(), 0, GameView.ImageOrigin.Middle);
             }
         }
+
         // Draw the body rect for debugging purposes.
         bodyRect.draw(gameView);
 
         gameView.disableCamera();
-        // Draw text on screen with some debug info
-        DynamicBody debugWheel = leftWheel; // The wheel to show debug info for.
-        String debugInfo = String.format("Bike[%s, OnGrnd: %s %s, A: %.1f°, Tilt: %.1f, AX: %.1f, AY: %.1f]",
-                debugWheel.toString(),
-                leftWheel.isOnGround() ? "✓" : "✘", rightWheel.isOnGround() ? "✓" : "✘",
-                (Math.toDegrees(new Line(leftWheel.getPos(), rightWheel.getPos()).calcRotation())),
-                currentTiltForce, Accelerometer.x, Accelerometer.y, Accelerometer.z);
-        gameView.drawText(debugInfo, 20, 60, Color.WHITE);
+
+        if (Graphics.drawDebugInfo) {
+            // Draw text on screen with some debug info
+            DynamicBody debugWheel = leftWheel; // The wheel to show debug info for.
+            String debugInfo = String.format(
+                    "Bike[%s, OnGrnd: %s %s, A: %.1f°, Tilt: %.1f, AX:%.1f, AY:%.1f, AZ:%.1f]",
+                    debugWheel.toString(),
+                    leftWheel.isOnGround() ? "✓" : "✘", rightWheel.isOnGround() ? "✓" : "✘",
+                    (Math.toDegrees(new Line(leftWheel.getPos(), rightWheel.getPos()).calcRotation())),
+                    currentTiltForce, Accelerometer.x, Accelerometer.y, Accelerometer.z);
+            gameView.drawText(debugInfo, 20, 60, Color.WHITE);
+        }
     }
 
     /**

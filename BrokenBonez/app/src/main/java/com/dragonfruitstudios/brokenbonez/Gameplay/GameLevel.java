@@ -142,8 +142,6 @@ public class GameLevel extends Level {
     }
 
     public void draw(GameView gameView) {
-        AssetLoader assetLoader = gameState.getAssetLoader();
-        float currHeight = info.calcGroundHeight(assetLoader, gameView.getHeight());
         // Draw the different layers.
         for (LevelInfo.Layer l : info.layers) {
             VectorF pos = bikePos.copy();
@@ -203,10 +201,11 @@ public class GameLevel extends Level {
 
         gameView.disableCamera();
 
-        // Draw debug info.
-        String debugInfo = String.format("Level[grndY: %.1f, totalY: %d]",
-                currHeight, gameView.getHeight());
-        gameView.drawText(debugInfo, 100, 30, Color.WHITE);
+        if (Graphics.drawDebugInfo) {
+            // Draw debug info.
+            String debugInfo = String.format("Level[Name: %s]", info.name);
+            gameView.drawText(debugInfo, 100, 30, Color.WHITE);
+        }
     }
 
     /**

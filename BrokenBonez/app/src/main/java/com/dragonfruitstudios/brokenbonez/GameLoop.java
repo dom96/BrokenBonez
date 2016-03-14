@@ -8,6 +8,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
+import com.dragonfruitstudios.brokenbonez.Game.Graphics;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.BikeSelectionScene;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.CreditsScene;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.GameScene;
@@ -191,7 +192,9 @@ public class GameLoop implements Runnable {
 
         gameSceneManager.draw();
 
-        gameView.drawText("FPS: " + currFPS, 20, 30, Color.WHITE);
+        if (Graphics.drawDebugInfo) {
+            gameView.drawText("FPS: " + currFPS, 20, 30, Color.WHITE);
+        }
         updateLock.unlock();
     }
 

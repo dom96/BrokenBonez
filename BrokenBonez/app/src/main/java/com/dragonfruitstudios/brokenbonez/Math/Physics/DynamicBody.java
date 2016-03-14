@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.util.Log;
 
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
+import com.dragonfruitstudios.brokenbonez.Game.Graphics;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Circle;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Manifold;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
@@ -235,21 +236,23 @@ public class DynamicBody extends Body {
      * Just for debugging.
      */
     void draw(GameView view) {
-        // Draw a yellow line to show the body's rotation.
-        // A rotation of `0` will show the line horizontally to the right.
-        VectorF rotatedFinish = new VectorF(boundingShape.getRadius(), 0);
-        rotatedFinish.rotate(rotation);
-        view.drawLine(getPos(), getPos().added(rotatedFinish), Color.parseColor("#ffe961"));
+        if (Graphics.drawDebugInfo) {
+            // Draw a yellow line to show the body's rotation.
+            // A rotation of `0` will show the line horizontally to the right.
+            VectorF rotatedFinish = new VectorF(boundingShape.getRadius(), 0);
+            rotatedFinish.rotate(rotation);
+            view.drawLine(getPos(), getPos().added(rotatedFinish), Color.parseColor("#ffe961"));
 
-        boundingShape.draw(view);
+            boundingShape.draw(view);
 
-        // Just for testing.
-        // Draw a green line to show the normal of each manifold.
-        for (Manifold manifold : lastManifolds) {
-            VectorF x = new VectorF(boundingShape.getCenter());
-            x.multAdd(manifold.getNormal(), boundingShape.getRadius());
-            view.drawLine(boundingShape.getCenter(), x,
-                    Color.parseColor("#00c80a"));
+            // Just for testing.
+            // Draw a green line to show the normal of each manifold.
+            for (Manifold manifold : lastManifolds) {
+                VectorF x = new VectorF(boundingShape.getCenter());
+                x.multAdd(manifold.getNormal(), boundingShape.getRadius());
+                view.drawLine(boundingShape.getCenter(), x,
+                        Color.parseColor("#00c80a"));
+            }
         }
     }
 

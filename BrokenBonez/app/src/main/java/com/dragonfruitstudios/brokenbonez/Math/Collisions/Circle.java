@@ -5,6 +5,7 @@ import android.graphics.Paint;
 
 import com.dragonfruitstudios.brokenbonez.Game.Drawable;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
+import com.dragonfruitstudios.brokenbonez.Game.Graphics;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 import java.util.ArrayList;
@@ -191,6 +192,8 @@ public class Circle extends Intersector implements Drawable {
      * This draw method is used for debugging to show where the bounding circle is.
      */
     public void draw(GameView view) {
-        view.drawCircle(center.x, center.y, radius, Color.parseColor("#ff279c"), Paint.Style.STROKE);
+        if (Graphics.drawDebugInfo) {
+            view.drawCircle(center.x, center.y, radius, Color.parseColor("#ff279c"), Paint.Style.STROKE);
+        }
     }
 }
