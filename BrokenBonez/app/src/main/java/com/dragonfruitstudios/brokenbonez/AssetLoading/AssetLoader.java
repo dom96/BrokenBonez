@@ -67,6 +67,15 @@ public class AssetLoader {
     @SuppressWarnings("deprecation")
     public AssetLoader AddAssets(String[] assets){
         for (int count = 0; count < assets.length; count++) {
+            if (isSound(assets[count])){
+                if (sounds.containsKey(assets[count])){
+                    continue;
+                }
+            } else {
+                if (images.containsKey(assets[count])){
+                    continue;
+                }
+            }
             long length = 0;
             try {
                 if (isSound(assets[count])) {
