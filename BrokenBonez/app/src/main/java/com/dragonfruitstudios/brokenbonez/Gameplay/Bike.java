@@ -43,6 +43,8 @@ public class Bike implements GameObject {
     // Customisation of the bike.
     Bitmap body;
     BodyType bodyType;
+    Bitmap character;
+    CharacterType characterType;
     int color; // The bike color.
 
     // Specifies how much the bike should be tilting per update.
@@ -55,7 +57,11 @@ public class Bike implements GameObject {
         Bike, Bicycle
     }
 
-    public Bike(Level currentLevel, BodyType bodyType) {
+    public enum CharacterType {
+        DeeDee, Jenny, Leslie, Wanita
+    }
+
+    public Bike(Level currentLevel, BodyType bodyType, CharacterType characterType) {
         this.currentLevel = currentLevel;
 
         Circle circle = new Circle(new VectorF(0, 0), wheelRadius);
@@ -67,6 +73,7 @@ public class Bike implements GameObject {
                 rightWheel, wheelSeparation);
 
         this.bodyType = bodyType;
+        setCharacterType(characterType);
         // Use the `setColor` setter which assigns the `body` for us.
         setColor(Color.parseColor("#4d27f6"));
 
@@ -121,6 +128,9 @@ public class Bike implements GameObject {
                 bodyPos.multAdd(ltrNormal, -wheelRadius);
                 // Draw the body at the specified position and with the specified rotation.
                 gameView.drawImage(body, bodyPos, angle, GameView.ImageOrigin.Middle);
+                // Draw the character at/with the specified position and rotation.
+                bodyPos.multAdd(ltrNormal, -10); // Move the character up a bit.
+                gameView.drawImage(character, bodyPos, angle, GameView.ImageOrigin.Middle);
 
                 // Set the `bodyRect` so that it overlays the bike body.
                 updateBodyRect(leftToRight, ltrNormal);
@@ -261,6 +271,10 @@ public class Bike implements GameObject {
         return bodyType;
     }
 
+    public CharacterType getCharacterType() {
+        return characterType;
+    }
+
     public void setPos(float x, float y) {
         leftWheel.setPos(x, y);
         rightWheel.setPos(x + wheelSeparation, y);
@@ -291,5 +305,25 @@ public class Bike implements GameObject {
     public void setBodyType(BodyType bodyType) {
         this.bodyType = bodyType;
         setColor(color); // Refresh body image.
+    }
+
+    public void setCharacterType(CharacterType characterType) {
+        this.characterType = characterType;
+        String characterKey = "bike/deedee.png";
+        switch (characterType) {
+            case Leslie:
+                characterKey = "bike/leslie.png";
+                break;
+            case DeeDee:
+                characterKey = "bike/deedee.png";
+                break;
+            case Wanita:
+                characterKey = "bike/wanita.png";
+                break;
+            case Jenny:
+                characterKey = "bike/jenny.png";
+                break;
+        }
+        character = currentLevel.getAssetLoader().getBitmapByName(characterKey);
     }
 }

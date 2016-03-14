@@ -28,7 +28,7 @@ public class GameScene extends Scene {
     }
 
     public void newGame(Bike.BodyType bikeBodyType, int bikeColor) {
-        this.state.newGame(bikeBodyType, bikeColor);
+        this.state.newGame(Bike.CharacterType.Leslie, bikeBodyType, bikeColor);
     }
 
     public void draw(GameView view) {

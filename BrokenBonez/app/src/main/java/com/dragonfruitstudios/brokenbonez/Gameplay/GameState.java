@@ -32,7 +32,8 @@ public class GameState {
         // Load assets.
         this.assetLoader = assetLoader;
         this.assetLoader.AddAssets(new String[] {"bike/wheel_basic.png", "bike/body_one.png",
-                "bike/body_two.png"});
+                "bike/body_two.png", "bike/deedee.png", "bike/jenny.png", "bike/leslie.png",
+                "bike/wanita.png"});
         this.assetLoader.AddAssets(new String[]{"bikeEngine.mp3", "bikeEngineRev.mp3",
                 "brokenboneztheme.ogg"});
 
@@ -42,14 +43,16 @@ public class GameState {
         camera = new Camera(0, 0);
 
         currentLevel = new GameLevel(this);
-        bike = new Bike(currentLevel, Bike.BodyType.Bike);
+        bike = new Bike(currentLevel, Bike.BodyType.Bike, Bike.CharacterType.Leslie);
 
         slowMotion = false;
         finishOverlay = new FinishOverlay(assetLoader);
         this.score = new HighScore(gameSceneManager.gameView);
     }
 
-    public void newGame(Bike.BodyType bikeBodyType, int bikeColor) {
+    public void newGame(Bike.CharacterType characterType, Bike.BodyType bikeBodyType,
+                        int bikeColor) {
+        bike.setCharacterType(characterType);
         bike.setColor(bikeColor);
         bike.setBodyType(bikeBodyType);
         bike.reset();
@@ -110,13 +113,13 @@ public class GameState {
                     @Override
                     public void onNameEntered(boolean enteredName) {
                         // TODO: Choose next level.
-                        newGame(bike.getBodyType(), bike.getColor());
+                        newGame(bike.getCharacterType(), bike.getBodyType(), bike.getColor());
                     }
                 });
                 score.askName(true);
                 break;
             case RestartLevel:
-                newGame(bike.getBodyType(), bike.getColor());
+                newGame(bike.getCharacterType(), bike.getBodyType(), bike.getColor());
                 break;
             case ShowMainMenu:
                 gameSceneManager.setScene("menuScene");

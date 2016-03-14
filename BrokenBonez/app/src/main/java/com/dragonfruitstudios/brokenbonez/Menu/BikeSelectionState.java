@@ -97,7 +97,7 @@ public class BikeSelectionState implements GameObject {
         prevPrevPrev = new ImageButton("selection/prev.png", assetLoader, (getScreenWidth() / 10 - 80), (getScreenHeight() / 10) * 8 - 60, 95, 80);
         select = new ImageButton("selection/select.png", assetLoader, (getScreenWidth() / 10) * 2, (getScreenHeight() / 10) * 9 - 20, 290, 80);
         level = new BikeSelectionLevel(this);
-        bike = new Bike(level, Bike.BodyType.Bike);
+        bike = new Bike(level, Bike.BodyType.Bike, Bike.CharacterType.Leslie);
         bike.setColor(Color.BLUE);
         color = colorList[i];
         text = textList[j];
