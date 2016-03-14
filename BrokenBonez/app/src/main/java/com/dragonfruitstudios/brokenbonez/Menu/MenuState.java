@@ -8,7 +8,6 @@ import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.GameObject;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
-import com.dragonfruitstudios.brokenbonez.Input.Vibration;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 public class MenuState implements GameObject {

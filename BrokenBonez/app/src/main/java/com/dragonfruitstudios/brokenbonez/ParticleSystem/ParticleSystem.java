@@ -1,70 +1,34 @@
 package com.dragonfruitstudios.brokenbonez.ParticleSystem;
 
 import android.graphics.Bitmap;
+
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
-class Particle {
-    int partPosX;
-    int partPosY;
-    int partSpeed;
-    Bitmap partImage;
-    float partImagePosX;
-    float partImagePosY;
-    VectorF partImagePos;
-    float partImageRotation;
-
-    public Particle(int startYPos, int yPosRange, int startXPos,
-                    int xPosRange, int minSpeed, int speedRange,
-                    Bitmap bitmap) {
-
-        partPosX = startXPos + (int) (Math.random() * xPosRange);
-        partPosY = startYPos + (int) (Math.random() * yPosRange);
-
-        partImagePosY = yPosRange;
-        partImagePosX = xPosRange;
-
-        this.partSpeed = (int) (minSpeed + Math.random() * speedRange);
-        this.partImage = bitmap;
-        partImagePos = new VectorF(partImagePosX, partImagePosY);
-        partImageRotation = 0;
-    }
-    public void doDraw(GameView view) {
-        view.drawImage(partImage, partImagePos, partImageRotation, GameView.ImageOrigin.TopLeft);
-    }
-
-    public void updatePhysics(int distChange) {
-        partPosX -= distChange * partSpeed;
-        partPosY -= distChange * partSpeed;
-    }
-    public boolean outOfSight() { return partPosY <= -1 * partImage.getHeight(); }
-}
-
 public class ParticleSystem {
-    Particle particles[];
+    private Particle particles[];
+
     private int startYPos;
     private int startXPos;
     private int xPosRange;
-    private int yPosRange;
     private int minSpeed;
     private int speedRange;
     private Bitmap bitmap;
 
-    public ParticleSystem(int startYPos, int yPosRange, int startXPos,
+    public ParticleSystem(int startYPos, int startXPos,
                           int xPosRange, int minSpeed, int speedRange,
                           Bitmap bitmap, int numParticles) {
-
-        particles = new Particle[numParticles];
         this.startYPos = startYPos;
         this.startXPos = startXPos;
-        this.yPosRange = yPosRange;
         this.xPosRange = xPosRange;
         this.minSpeed = minSpeed;
         this.bitmap = bitmap;
         this.speedRange = speedRange;
 
+        particles = new Particle[numParticles];
+
         for (int i = 0; i < particles.length; i++) {
-            particles[i] = new Particle(startYPos, yPosRange, startXPos,
+            particles[i] = new Particle(startYPos, startXPos,
                     xPosRange, minSpeed, speedRange,
                     bitmap);
         }
@@ -81,14 +45,35 @@ public class ParticleSystem {
         for(int i = 0; i < particles.length; i++) {
             Particle particle = particles[i];
             particle.updatePhysics(altDelta);
-
-            // If this particle is completely out of sight
-            // replace it with a new one.
-            if(particle.outOfSight()) {
-                particles[i] = new Particle(startYPos, startXPos,
-                        xPosRange, yPosRange, minSpeed, speedRange,
-                        bitmap);
-            }
         }
+    }
+}
+
+class Particle {
+    private int xpos;
+    private int ypos;
+    private int speed;
+    private Bitmap bitmap;
+    private VectorF pos;
+    private float rotation;
+
+    public Particle(int startYPos, int startXPos,
+                    int xPosRange, int minSpeed, int speedRange,
+                    Bitmap bitmap) {
+        xpos = startXPos + (int) (Math.random() * xPosRange);
+        ypos = (startYPos);
+
+        this.speed = (int) (minSpeed + Math.random() * speedRange);
+        this.bitmap = bitmap;
+        pos = new VectorF(xpos, ypos);
+        this.rotation = 0;
+    }
+
+    public void updatePhysics(int distChange) {
+        ypos -= distChange * speed;
+    }
+
+    public void doDraw(GameView view) {
+        view.drawImage(bitmap, pos, rotation, GameView.ImageOrigin.TopLeft);
     }
 }
