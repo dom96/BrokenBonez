@@ -105,6 +105,7 @@ public class MenuState implements GameObject {
         if(hiScore.isTouched == true){
             hiScore.isTouched = false;
             Log.d("HISCORE", "isTouched");
+            gameSceneManager.setScene("highScoreScene");
         }
         if(credits.isTouched == true){
             credits.isTouched = false;

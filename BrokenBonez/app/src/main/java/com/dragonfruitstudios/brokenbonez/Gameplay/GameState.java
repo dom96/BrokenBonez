@@ -10,6 +10,8 @@ import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.GameLoop;
 import com.dragonfruitstudios.brokenbonez.Math.Physics.Simulator;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
+import com.dragonfruitstudios.brokenbonez.HighScores.HighScore;
+
 
 public class GameState {
     GameLevel currentLevel;
@@ -17,6 +19,7 @@ public class GameState {
     private AssetLoader assetLoader;
     private GameSceneManager gameSceneManager;
     private Simulator physicsSimulator;
+    public HighScore score;
 
     private Camera camera;
 
@@ -42,6 +45,8 @@ public class GameState {
         bike = new Bike(currentLevel, Bike.BodyType.Bike);
 
         slowMotion = false;
+
+        this.score = new HighScore(gameSceneManager.gameView);
     }
 
     public void newGame(Bike.BodyType bikeBodyType, int bikeColor) {
@@ -61,6 +66,7 @@ public class GameState {
         physicsSimulator.update(lastUpdate);
         currentLevel.update(lastUpdate, bike.getPos());
         camera.centerHorizontally(bike.getPos().x);
+        score.changeTimeBy(lastUpdate);
     }
 
     public void updateSize(int w, int h) {
@@ -78,6 +84,7 @@ public class GameState {
         bike.draw(view);
         physicsSimulator.draw(view);
         deathOverlay.draw(view);
+        score.draw(view);
     }
 
     public void onTouchEvent(MotionEvent event) {
