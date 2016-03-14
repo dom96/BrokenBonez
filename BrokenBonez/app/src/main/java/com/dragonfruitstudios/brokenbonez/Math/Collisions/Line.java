@@ -104,6 +104,10 @@ public class Line extends Intersector implements Drawable {
      */
     @Override
     public Manifold.Collection collisionTest(Intersector shape) {
+        if (shape instanceof Circle) {
+            return ((Circle)shape).collisionTest(this);
+        }
+
         return collisionNotImplemented(shape);
     }
 

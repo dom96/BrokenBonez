@@ -3,10 +3,12 @@ package com.dragonfruitstudios.brokenbonez.Gameplay;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.drawable.Drawable;
+import android.view.MotionEvent;
 
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.Camera;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
+import com.dragonfruitstudios.brokenbonez.GameLoop;
 import com.dragonfruitstudios.brokenbonez.Math.Physics.Simulator;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
 import com.dragonfruitstudios.brokenbonez.R;
@@ -21,6 +23,9 @@ public class GameState {
     private Simulator physicsSimulator;
 
     private Camera camera;
+
+    private DeathOverlay deathOverlay;
+    private boolean slowMotion;
 
     public GameState(AssetLoader assetLoader, GameSceneManager gameSceneManager) {
         this.gameSceneManager = gameSceneManager;
@@ -39,12 +44,20 @@ public class GameState {
 
         currentLevel = new GameLevel(this);
         bike = new Bike(currentLevel, Bike.BodyType.Bike);
+
+        slowMotion = false;
     }
 
     public void newGame(Bike.BodyType bikeBodyType, int bikeColor) {
         bike.setColor(bikeColor);
         bike.setBodyType(bikeBodyType);
         bike.reset();
+        setSlowMotion(false);
+
+        // Ensure that deathOverlay has been created.
+        if (deathOverlay != null) {
+            deathOverlay.disable();
+        }
     }
 
     public void update(float lastUpdate) {
@@ -58,6 +71,9 @@ public class GameState {
         currentLevel.updateSize(w, h);
         bike.updateSize(w, h);
         camera.updateSize(w, h);
+
+        // Create the DeathOverlay once the size of the GameView is known.
+        deathOverlay = new DeathOverlay(assetLoader, w, h);
     }
 
     public void draw(GameView view) {
@@ -65,6 +81,11 @@ public class GameState {
         currentLevel.draw(view);
         bike.draw(view);
         physicsSimulator.draw(view);
+        deathOverlay.draw(view);
+    }
+
+    public void onTouchEvent(MotionEvent event) {
+        deathOverlay.onTouchEvent(event);
     }
 
     public void setBikeAcceleration(float strength) {
@@ -85,6 +106,21 @@ public class GameState {
     }
     public Simulator getPhysicsSimulator() {
         return physicsSimulator;
+    }
+
+    public void setSlowMotion(boolean value) {
+        slowMotion = value;
+        if (slowMotion) {
+            Simulator.setUpdateRate(200);
+        }
+        else {
+            Simulator.setUpdateRate(GameLoop.targetFPS);
+        }
+    }
+
+    public void endGame() {
+        deathOverlay.enable();
+        setSlowMotion(true);
     }
 }
 

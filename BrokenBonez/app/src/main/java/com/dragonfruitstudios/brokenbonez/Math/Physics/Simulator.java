@@ -20,6 +20,10 @@ public class Simulator {
     ArrayList<DynamicBody> dynamicBodies;
     ArrayList<Constraint> constraints;
 
+    // Used to calculate update factor.
+    private static float updateRate = 60f;
+
+    // TODO: Make these non-static?
     public final static float gravity = 9.81f;
     public final static float gravityScaled = 10*gravity;
     public final static float airResistance = 0.1f; // Percentage of velocity lost due to air resistance.
@@ -33,7 +37,7 @@ public class Simulator {
 
     public void update(float lastUpdate) {
         // Use a fixed update factor to make the physics simulation deterministic.
-        float updateFactor = GameLoop.calcUpdateFactor(lastUpdate);
+        float updateFactor = Simulator.calcUpdateFactor(lastUpdate);
 
         // TODO: Use Manifold.Collection to hold collection of Manifolds instead of custom
         // ArrayList?
@@ -131,5 +135,50 @@ public class Simulator {
         StaticBody body = new StaticBody();
         body.boundingShape = shape;
         staticBodies.add(body);
+    }
+
+    public void addConstraint(Constraint constraint) {
+        if (!constraints.contains(constraint)) {
+            constraints.add(constraint);
+        }
+    }
+
+    public void removeConstraint(Constraint constraint) {
+        constraints.remove(constraint);
+    }
+
+    /**
+     * Determines whether the specified shape collides with any StaticBodies in this Simulator.
+     */
+    public boolean collidesWith(Intersector shape) {
+        for (StaticBody sb : staticBodies) {
+            // TODO: Optimise this.
+            if (sb.boundingShape.collisionTest(shape).hasCollisions()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Calculates the update factor based on the update rate stored in this class.
+     *
+     * I decided against reusing GameLoop.targetFPS, as this allows for the update rate to be
+     * independent of the frame rate.
+     * @param lastUpdate This isn't used, but passed in case it becomes useful later on.
+     */
+    public static float calcUpdateFactor(float lastUpdate) {
+        return 1f/updateRate;
+    }
+
+    /**
+     * Sets the update rate which determines how fast the simulation advances.
+     *
+     * If FPS is constant then a high value will cause the simulation to become slower, and vice
+     * versa for a low value.
+     * @param updateRate The update rate, default is 60.
+     */
+    public static void setUpdateRate(float updateRate) {
+        Simulator.updateRate = updateRate;
     }
 }

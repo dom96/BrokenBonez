@@ -328,6 +328,11 @@ public class GameLevel extends Level {
      * @param h The height of the screen.
      */
     private VectorF calcStartPoint(int w, int h) {
-        return new VectorF(5, 40);
+        return new VectorF(20, 300);
+    }
+
+    @Override
+    public void onBikeCrash() {
+        gameState.endGame();
     }
 }

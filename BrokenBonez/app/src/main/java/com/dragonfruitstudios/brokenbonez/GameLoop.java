@@ -12,6 +12,8 @@ import com.dragonfruitstudios.brokenbonez.Game.Scenes.GameScene;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.HighScoreScene;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.LevelSelectionScene;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.MenuScene;
+import com.dragonfruitstudios.brokenbonez.Gameplay.Bike;
+
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -222,6 +224,8 @@ public class GameLoop implements Runnable {
                 break;
             case KeyEvent.KEYCODE_D:
                 gameSceneManager.setScene("gameScene");
+                GameScene gameScene = (GameScene)gameSceneManager.getGameSceneByName("gameScene");
+                gameScene.newGame(Bike.BodyType.Bike,Color.BLUE);
                 break;
         }
 

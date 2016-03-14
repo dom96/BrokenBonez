@@ -125,6 +125,12 @@ public class Manifold {
             manifolds.add(manifold);
         }
 
+        public void addAll(Manifold.Collection collection) {
+            for (Manifold m : collection) {
+                this.add(m);
+            }
+        }
+
         public Manifold get(int index) {
             return manifolds.get(index);
         }
