@@ -1,11 +1,13 @@
 package com.dragonfruitstudios.brokenbonez.Math;
 
+import java.io.Serializable;
+
 /**
  * This class implements a Euclidean vector. That is a geometric object consisting of a magnitude
  * and direction.
  * Origin is assumed to be (0, 0).
  */
-public class VectorF {
+public class VectorF implements Serializable {
 
     // Public because accessing these directly is much cleaner than using the getters/setters,
     public float x;

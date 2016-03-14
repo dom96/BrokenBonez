@@ -48,6 +48,7 @@ public class GameSceneManager {
 
     public GameSceneManager(GameView gameView){
         this.gameView = gameView;
+        this.activity = (Activity) gameView.getContext();
     }
 
     public void addScene(String SceneName,  Scene newGameObject){

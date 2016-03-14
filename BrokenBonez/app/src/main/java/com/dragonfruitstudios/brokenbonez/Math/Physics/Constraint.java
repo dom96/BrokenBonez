@@ -27,7 +27,13 @@ public class Constraint {
         // Calculate the distance between the two wheels.
         float distance = leftToRight.magnitude();
         //Log.d("Constraint", "Distance: " + distance);
-        leftToRight.normalise();
+        // Ensure that the magnitude is not 0 which leads to an exception.
+        if (distance != 0) {
+            leftToRight.normalise();
+        }
+        else {
+            leftToRight.set(1, 0);
+        }
 
         // Calculate the velocity relative to the vector between the wheels.
         VectorF leftToRightVel = bodyB.getVelocity().subtracted(bodyA.getVelocity());

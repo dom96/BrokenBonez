@@ -12,6 +12,8 @@ import com.dragonfruitstudios.brokenbonez.Math.Physics.Simulator;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
 import com.dragonfruitstudios.brokenbonez.HighScores.HighScore;
 
+import java.io.IOException;
+
 
 public class GameState {
     GameLevel currentLevel;
@@ -19,7 +21,8 @@ public class GameState {
     private AssetLoader assetLoader;
     private GameSceneManager gameSceneManager;
     private Simulator physicsSimulator;
-    public HighScore score;
+    private Ghost ghost;
+    private HighScore score;
 
     private Camera camera;
 
@@ -48,10 +51,16 @@ public class GameState {
         slowMotion = false;
         finishOverlay = new FinishOverlay(assetLoader);
         this.score = new HighScore(gameSceneManager.gameView);
+
+        // Create Ghost to show the player a Ghost bike of the last playthrough.
+        ghost = new Ghost(gameSceneManager.activity.getApplicationContext(), "level_flat",
+                currentLevel);
+
     }
 
     public void newGame(Bike.CharacterType characterType, Bike.BodyType bikeBodyType,
                         int bikeColor) {
+        // TODO: Level selection.
         bike.setCharacterType(characterType);
         bike.setColor(bikeColor);
         bike.setBodyType(bikeBodyType);
@@ -59,6 +68,7 @@ public class GameState {
         setSlowMotion(false);
         finishOverlay.disable();
         score.reset();
+        ghost.reset();
     }
 
     public void update(float lastUpdate) {
@@ -69,6 +79,8 @@ public class GameState {
         if (!finishOverlay.isEnabled()) {
             score.changeTimeBy(lastUpdate);
         }
+        ghost.createSlice(lastUpdate, bike.getLeftWheel().getPos(), bike.getRightWheel().getPos(),
+                bike.getLeftWheel().getRotation(), bike.getRightWheel().getRotation());
     }
 
     public void updateSize(int w, int h) {
@@ -84,6 +96,7 @@ public class GameState {
         physicsSimulator.draw(view);
         finishOverlay.draw(view);
         score.draw(view);
+        ghost.draw(view);
     }
 
     public void onTouchEvent(MotionEvent event) {
@@ -111,8 +124,17 @@ public class GameState {
             case Continue:
                 score.setCallbacks(new HighScore.HighScoreCallbacks() {
                     @Override
-                    public void onNameEntered(boolean enteredName) {
+                    public void onNameEntered(boolean enteredName, String name) {
                         // TODO: Choose next level.
+                        if (enteredName) {
+                            try {
+                                ghost.save(name);
+                            }
+                            catch (IOException e) {
+                                Log.e("GameState", "Error saving Ghost: " + e.toString());
+                                throw new RuntimeException(e.toString());
+                            }
+                        }
                         newGame(bike.getCharacterType(), bike.getBodyType(), bike.getColor());
                     }
                 });

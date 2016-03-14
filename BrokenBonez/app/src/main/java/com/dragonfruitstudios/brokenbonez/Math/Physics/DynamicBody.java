@@ -232,6 +232,10 @@ public class DynamicBody extends Body {
         return !wasInAir();
     }
 
+    public void setRotation(float rotation) {
+        this.rotation = rotation;
+    }
+
     /**
      * Just for debugging.
      */

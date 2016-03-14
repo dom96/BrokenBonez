@@ -331,4 +331,12 @@ public class Bike implements GameObject {
         }
         character = currentLevel.getAssetLoader().getBitmapByName(characterKey);
     }
+
+    public DynamicBody getLeftWheel() {
+        return leftWheel;
+    }
+
+    public DynamicBody getRightWheel() {
+        return rightWheel;
+    }
 }
