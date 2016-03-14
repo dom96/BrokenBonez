@@ -74,16 +74,16 @@ public class LevelSelectionState implements GameObject {
         level3.onTouchEvent(event);
         level4.onTouchEvent(event);
 
-        if(level1.isTouched() == true){
+        if(level1.onTouchEvent(event) == true){
             this.gameSceneManager.setScene("gameScene");
         }
-        if(level2.isTouched() == true){
+        if(level2.onTouchEvent(event) == true){
             this.gameSceneManager.setScene("gameScene");
         }
-        if(level3.isTouched() == true){
+        if(level3.onTouchEvent(event) == true){
             this.gameSceneManager.setScene("gameScene");
         }
-        if(level4.isTouched() == true){
+        if(level4.onTouchEvent(event) == true){
             this.gameSceneManager.setScene("gameScene");
         }
     }

@@ -97,18 +97,18 @@ public class MenuState implements GameObject {
         credits.onTouchEvent(event);
         settings.onTouchEvent(event);
 
-        if(startGame.isTouched() == true){
+        if(startGame.onTouchEvent(event) == true){
             setNoiseOn();
             setNoiseWait();
         }
-        if(hiScore.isTouched() == true){
+        if(hiScore.onTouchEvent(event) == true){
             Log.d("HISCORE", "isTouched");
             gameSceneManager.setScene("highScoreScene");
         }
-        if(credits.isTouched() == true){
+        if(credits.onTouchEvent(event) == true){
             gameSceneManager.setScene("creditsScene");
         }
-        if(settings.isTouched() == true){
+        if(settings.onTouchEvent(event) == true){
             gameSceneManager.setScene("settingsScene");
         }
 
