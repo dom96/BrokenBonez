@@ -14,6 +14,7 @@ public class ParticleSystem {
     private int minSpeed;
     private int speedRange;
     private Bitmap bitmap;
+    public static boolean particlesEnabled;
 
     public ParticleSystem(int startYPos, int startXPos,
                           int xPosRange, int minSpeed, int speedRange,
@@ -35,9 +36,13 @@ public class ParticleSystem {
     }
 
     public void doDraw(GameView view) {
+        if(particlesEnabled == true){
         for(int i = 0; i < particles.length; i++) {
             Particle particle = particles[i];
-            particle.doDraw(view);
+                particle.doDraw(view);
+            }
+            } else {
+
         }
     }
 

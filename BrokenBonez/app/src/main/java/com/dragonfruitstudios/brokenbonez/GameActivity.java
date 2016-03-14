@@ -25,7 +25,7 @@ public class GameActivity extends Activity implements SensorEventListener {
     GameView gameView;
     PowerManager.WakeLock mWakeLock;
     int counterTest = 0;
-    SensorManager sensorManager;
+    public static SensorManager sensorManager;
     Sensor thisAccelerometer;
 
     @Override
@@ -97,4 +97,6 @@ public class GameActivity extends Activity implements SensorEventListener {
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
+
+
 }
