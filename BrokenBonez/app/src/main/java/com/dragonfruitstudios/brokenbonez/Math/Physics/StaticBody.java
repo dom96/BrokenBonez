@@ -27,6 +27,15 @@ public class StaticBody extends Body {
         this.restitution = 0.1f;
     }
 
+    /**
+     * Creates a new static body with no bounding shape. You must set the bounding shape explicitly.
+     */
+    public StaticBody() {
+        this.mass = 0;
+        this.inverseMass = 0;
+        this.restitution = 0.1f;
+    }
+
     void draw(GameView view) {
         boundingShape.draw(view);
     }

@@ -12,7 +12,11 @@ import com.dragonfruitstudios.brokenbonez.Math.Collisions.Circle;
 import com.dragonfruitstudios.brokenbonez.Game.GameObject;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Line;
+import com.dragonfruitstudios.brokenbonez.Math.Collisions.Rect;
+import com.dragonfruitstudios.brokenbonez.Math.Physics.Constraint;
 import com.dragonfruitstudios.brokenbonez.Math.Physics.DynamicBody;
+import com.dragonfruitstudios.brokenbonez.Math.Physics.Simulator;
+import com.dragonfruitstudios.brokenbonez.Math.Physics.StaticBody;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 public class Bike implements GameObject {
@@ -28,6 +32,10 @@ public class Bike implements GameObject {
     // The wheel's of this bike.
     DynamicBody leftWheel;
     DynamicBody rightWheel;
+    // The constraint between the two wheels.
+    Constraint wheelConstraint;
+    // The body of this bike.
+    Rect bodyRect;
 
     // The start position of this bike.
     VectorF startPos;
@@ -39,6 +47,9 @@ public class Bike implements GameObject {
 
     // Specifies how much the bike should be tilting per update.
     float currentTiltForce = 0;
+
+    // Has this bike crashed?
+    boolean dead;
 
     public enum BodyType {
         Bike, Bicycle
@@ -52,16 +63,36 @@ public class Bike implements GameObject {
         rightWheel = currentLevel.getPhysicsSimulator().createDynamicBody(circle, wheelMass);
 
         // Create a constraint between the two wheels so that they are kept together.
-        currentLevel.getPhysicsSimulator().createConstraint(leftWheel, rightWheel, wheelSeparation);
-
-        // TODO: Just some small hardcoded tests.
-        this.rightWheel.getVelocity().set(20, 0);
-        //this.rightWheel.acceleration.set(40, 0);
-        this.leftWheel.setAngularVelocity(2);
+        wheelConstraint = currentLevel.getPhysicsSimulator().createConstraint(leftWheel,
+                rightWheel, wheelSeparation);
 
         this.bodyType = bodyType;
-        // Use the setter which assigns the `body` for us.
+        // Use the `setColor` setter which assigns the `body` for us.
         setColor(Color.parseColor("#4d27f6"));
+
+        // Create bounding rectangle around Bike body.
+        bodyRect = new Rect(new VectorF(0, 0), 118, 43);
+    }
+
+    private void updateBodyRect(VectorF bodyRotation, VectorF bodyNormal) {
+        // Use the left wheel's position as the position for the bottom left of the body rectangle.
+        VectorF bottomLeft = leftWheel.getPos().copy();
+
+        // Project the bottomLeft vector in the direction of the right wheel.
+        VectorF bottomRight = bottomLeft.copy();
+        bottomRight.multAdd(bodyRotation, wheelSeparation);
+
+        // Project the bottomLeft vector up in the direction of the normal to the body's angle.
+        VectorF topLeft = bottomLeft.copy();
+        topLeft.multAdd(bodyNormal, -43);
+
+        // Project the bottomRight vector up in the direction of the normal to the body's angle.
+        VectorF topRight = bottomRight.copy();
+        topRight.multAdd(bodyNormal, -43);
+
+        // Update the bodyRect with the new positions.
+        bodyRect.setLines(new Line(topLeft, topRight), new Line(topLeft, bottomLeft),
+                new Line(bottomLeft, bottomRight), new Line(bottomRight, topRight));
     }
 
     public void draw(GameView gameView) {
@@ -73,27 +104,33 @@ public class Bike implements GameObject {
         gameView.drawImage(wheel, rightWheel.getPos(), rightWheel.getRotation(),
                 GameView.ImageOrigin.Middle);
 
-        // Draw the bike body.
-        // Calculate the vector between the two wheels.
-        VectorF leftToRight = rightWheel.getPos().subtracted(leftWheel.getPos());
-        // Check if the left wheel is in the same position as the right wheel.
-        if (!leftWheel.getPos().equals(rightWheel.getPos())) {
-            float angle = leftToRight.angle();
-            leftToRight.normalise();
-            VectorF bodyPos = leftWheel.getPos().copy();
-            // Move the body so that its positioned between the two wheels.
-            bodyPos.multAdd(leftToRight, wheelSeparation / 2);
-            // Calculate normal to `leftToRight` vector.
-            VectorF ltrNormal = new VectorF(-leftToRight.getY(), leftToRight.getX());
-            // Move the body so that its positioned above the wheels.
-            bodyPos.multAdd(ltrNormal, -wheelRadius);
-            // Draw the body at the specified position and with the specified rotation.
-            gameView.drawImage(body, bodyPos, angle, GameView.ImageOrigin.Middle);
+        // Draw the bike body as long as the bike hasn't crashed.
+        if (!dead) {
+            // Calculate the vector between the two wheels.
+            VectorF leftToRight = rightWheel.getPos().subtracted(leftWheel.getPos());
+            // Check if the left wheel is in the same position as the right wheel.
+            if (!leftWheel.getPos().equals(rightWheel.getPos())) {
+                float angle = leftToRight.angle();
+                leftToRight.normalise();
+                VectorF bodyPos = leftWheel.getPos().copy();
+                // Move the body so that its positioned between the two wheels.
+                bodyPos.multAdd(leftToRight, wheelSeparation / 2);
+                // Calculate normal to `leftToRight` vector.
+                VectorF ltrNormal = new VectorF(-leftToRight.getY(), leftToRight.getX());
+                // Move the body so that its positioned above the wheels.
+                bodyPos.multAdd(ltrNormal, -wheelRadius);
+                // Draw the body at the specified position and with the specified rotation.
+                gameView.drawImage(body, bodyPos, angle, GameView.ImageOrigin.Middle);
+
+                // Set the `bodyRect` so that it overlays the bike body.
+                updateBodyRect(leftToRight, ltrNormal);
+            } else {
+                // Handle the rare case when the wheels are in the same position.
+                gameView.drawImage(body, leftWheel.getPos(), 0, GameView.ImageOrigin.Middle);
+            }
         }
-        else {
-            // Handle the rare case when the wheels are in the same position.
-            gameView.drawImage(body, leftWheel.getPos(), 0, GameView.ImageOrigin.Middle);
-        }
+        // Draw the body rect for debugging purposes.
+        bodyRect.draw(gameView);
 
         gameView.disableCamera();
         // Draw text on screen with some debug info
@@ -122,16 +159,18 @@ public class Bike implements GameObject {
         // This is necessary because when the Bike is initialised the GameView may not have
         // initialised properly yet, and so its height has not been calculated yet. This causes
         // the start position to be incorrect.
-        this.startPos = startPos;
         Log.d("Bike", "Updated start pos: " + startPos.toString());
+        this.startPos = startPos;
+
         // Calculate positions of the left and right wheels.
         leftWheel.setPos(startPos.x, startPos.y);
         rightWheel.setPos(leftWheel.getPos().x + wheelSeparation, startPos.y);
     }
 
     public void update(float lastUpdate) {
-        float updateFactor = GameLoop.calcUpdateFactor(lastUpdate);
+        float updateFactor = Simulator.calcUpdateFactor(lastUpdate);
 
+        // Handle tilting of the bike depending on the `currentTiltForce`.
         if (Math.abs(currentTiltForce) > 0.01) {
             // This code is a tad magical. The Line constructor does not copy the wheels'
             // position vectors, so when the Line is rotated the position vectors belonging to the
@@ -163,15 +202,31 @@ public class Bike implements GameObject {
                 leftWheel.setHasGravity(true);
             }
         }
+
+        // Determine if Bike body collided with anything.
+        if (currentLevel.collidesWith(bodyRect)) {
+            // The bike collided with something, so let's remove the constraint between the wheels
+            // and make it fall apart.
+            currentLevel.getPhysicsSimulator().removeConstraint(wheelConstraint);
+
+            dead = true;
+
+            // Call the current level's onBikeCrash method. This method will take the necessary
+            // steps to end the game if necessary.
+            currentLevel.onBikeCrash();
+        }
     }
 
     /**
-     * Resets the bike to its original position at rest.
+     * Resets the bike to its original position and state.
      */
     public void reset() {
         updateStartPos(currentLevel.getStartPoint());
         leftWheel.reset();
         rightWheel.reset();
+
+        currentLevel.getPhysicsSimulator().addConstraint(wheelConstraint);
+        dead = false;
     }
 
     /**
@@ -183,7 +238,7 @@ public class Bike implements GameObject {
         // Left wheel is controlled by the engine, so it gets the acceleration.
         // TODO: Maximum speed of bike is currently hardcoded. Make this customisable, perhaps
         // TODO: allow different bikes with differing acceleration characteristics?
-        leftWheel.setTorque(700 * strength);
+        leftWheel.setTorque(500 * strength);
 
         Log.d("Bike/Trq", "Torque is now " + 5 * strength);
     }

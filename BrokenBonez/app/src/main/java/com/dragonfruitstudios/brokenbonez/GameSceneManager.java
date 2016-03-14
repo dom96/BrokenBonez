@@ -1,5 +1,6 @@
 package com.dragonfruitstudios.brokenbonez;
 
+import android.app.Activity;
 import android.hardware.SensorEvent;
 import android.util.Log;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
@@ -33,6 +34,7 @@ import java.util.HashMap;
 
 public class GameSceneManager {
     public GameView gameView;
+    public Activity activity;
     private HashMap<String, Scene> gameScenes=new HashMap<String, Scene>();
     private String currentScene = null;
 
@@ -41,6 +43,7 @@ public class GameSceneManager {
         this.gameView = gameView;
         gameScenes.put(SceneName, newGameObject);
         this.currentScene = SceneName;
+        this.activity = (Activity) gameView.getContext();
     }
 
     public GameSceneManager(GameView gameView){

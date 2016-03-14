@@ -14,8 +14,10 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class AssetLoader {
     /*
@@ -183,6 +185,9 @@ public class AssetLoader {
         }
     }
 
+    /**
+     * Returns the underlying AssetManager.
+     */
     public AssetManager getAssetManager() {
         return assetManager;
     }

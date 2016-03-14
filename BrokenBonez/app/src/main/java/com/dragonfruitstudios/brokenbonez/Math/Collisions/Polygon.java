@@ -1,6 +1,7 @@
 package com.dragonfruitstudios.brokenbonez.Math.Collisions;
 
-import android.graphics.Color;
+import android.graphics.*;
+import android.graphics.Rect;
 
 import com.dragonfruitstudios.brokenbonez.Game.Drawable;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
@@ -17,8 +18,9 @@ public class Polygon extends Intersector implements Drawable {
     private ArrayList<Line> lines;
 
     private VectorF size;
+    private RectF rect;
 
-    private VectorF calcSize() {
+    private android.graphics.RectF calcRect() {
         // TODO: This code sucks. Clean it up. But make sure tests pass.
         float minX = Float.MAX_VALUE;
         float maxX = -Float.MAX_VALUE;
@@ -35,8 +37,11 @@ public class Polygon extends Intersector implements Drawable {
             minY = Math.min(minY, l.getFinish().y);
             maxY = Math.max(maxY, l.getFinish().y);
         }
+        return new RectF(minX, minY, maxX, maxY);
+    }
 
-        return new VectorF(maxX - minX, maxY - minY);
+    private VectorF calcSize() {
+        return new VectorF(rect.right - rect.left, rect.bottom - rect.top);
     }
 
     protected Polygon() {
@@ -45,20 +50,21 @@ public class Polygon extends Intersector implements Drawable {
 
     public Polygon(Line[] lines) {
         this.lines = new ArrayList<Line>(Arrays.asList(lines));
+        rect = calcRect();
         size = calcSize();
     }
 
     public Polygon(ArrayList<Line> lines) {
         this.lines = lines;
+        rect = calcRect();
         size = calcSize();
     }
 
     protected void addVertices(VectorF[] vertices) {
-        VectorF prev = vertices[vertices.length-1];
         for (int i = 0; i < vertices.length-1; i++) {
-            lines.add(new Line(vertices[i], vertices[i+1]));
+            lines.add(new Line(vertices[i].copy(), vertices[i+1].copy()));
         }
-        lines.add(new Line(vertices[vertices.length - 1], vertices[0]));
+        lines.add(new Line(vertices[vertices.length - 1], vertices[0].copy()));
     }
 
     /**
@@ -70,11 +76,35 @@ public class Polygon extends Intersector implements Drawable {
         if (shape instanceof Circle) {
             return ((Circle)shape).collisionTest(this);
         }
+        else if (shape instanceof Polygon) {
+            return ((Polygon)shape).collisionTestWithPolygon(this);
+        }
 
         return collisionNotImplemented(shape);
     }
 
-    // TODO: isPointInside https://en.wikipedia.org/wiki/Even%E2%80%93odd_rule
+    private Manifold.Collection collisionTestWithLine(Line line) {
+        Manifold.Collection result = this.collisionTest(line.getStart());
+        result.addAll(this.collisionTest(line.getFinish()));
+        return result;
+    }
+
+    public Manifold.Collection collisionTestWithPolygon(Polygon shape) {
+        // To determine whether two Polygon's intersect we simply check each vertex inside each
+        // Polygon and see if it is inside the other Polygon using `collisionTest`.
+        // TODO: There is likely a more efficient way of testing whether two Polygons intersect.
+
+        // TODO: Test this method!
+        Manifold.Collection result = new Manifold.Collection();
+        for (Line l : shape.lines) {
+            result.addAll(this.collisionTestWithLine(l));
+        }
+
+        for (Line l : this.lines) {
+            result.addAll(shape.collisionTestWithLine(l));
+        }
+        return result;
+    }
 
     /**
      * Checks whether `point` collides with this Polygon (when `point` is inside the Polygon then
@@ -128,7 +158,7 @@ public class Polygon extends Intersector implements Drawable {
                 }
             }
             // TODO: Calculate normal correctly. The following approximation works rather
-            // well though.
+            // TODO: well though.
             result.add(new Manifold(new VectorF(0, 1), (float)Math.sqrt(closestDist), true));
         }
         return result;
@@ -179,6 +209,15 @@ public class Polygon extends Intersector implements Drawable {
 
     public VectorF getSize() {
         return size;
+    }
+
+    public RectF getRect() {
+        return rect;
+    }
+
+    public void recalculateBounds() {
+        rect = calcRect();
+        size = calcSize();
     }
 
     /**

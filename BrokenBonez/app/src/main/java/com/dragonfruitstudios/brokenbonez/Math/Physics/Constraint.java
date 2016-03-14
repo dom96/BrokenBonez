@@ -18,6 +18,8 @@ public class Constraint {
         // The equations used in this code have been taken from the following article:
         // http://www.wildbunny.co.uk/blog/2011/04/06/physics-engines-for-dummies/
         // (Under the Constraints section).
+        // TODO: There is currently a small bug here which prevents the bike bouncing off walls
+        // TODO: realistically.
 
         // Resolve constraint between left wheel and right wheel.
         // Find a vector from the left wheel to the right wheel.

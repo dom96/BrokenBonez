@@ -1,6 +1,7 @@
 package com.dragonfruitstudios.brokenbonez.Math.Physics;
 
 import android.graphics.Color;
+import android.util.Log;
 
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Circle;
@@ -24,7 +25,7 @@ public class DynamicBody extends Body {
     float angularVelocity; // Radians per second
     float angularAcceleration; // Radians per second per second
 
-    boolean wasInAir; // Determines whether the body was in air.
+    float lastTimeOnGround; // Determines the time when the body was last on the ground.
     float torque; // Determines what engine power to apply to the body about its center.
 
     boolean hasGravity = true;
@@ -48,8 +49,8 @@ public class DynamicBody extends Body {
         rotation = 0; // Rotation is towards x-axis, so 0 means the body is pointing to the right.
         angularAcceleration = 0;
         angularVelocity = 0;
-        wasInAir = true; // Assume that the body was spawned in air.
         torque = 0;
+        lastTimeOnGround = 0;
 
         // Initialise debugging fields.
         lastManifolds = new ArrayList<Manifold>();
@@ -72,17 +73,26 @@ public class DynamicBody extends Body {
                 -(Simulator.airResistance * velocity.getY()));
     }
 
+    /**
+     * Returns true only when the body was in air for longer than 100ms.
+     */
+    private boolean wasInAir() {
+        return System.nanoTime() - lastTimeOnGround > 1e8;
+    }
+
     void update(float updateFactor, ArrayList<Manifold> manifolds) {
         // Save the collision info so that the normals can be drawn in the next frame.
         // (Just for debugging).
         lastManifolds = manifolds;
 
         if (manifolds.size() > 0) {
+            // Update the field which stores the last time the bike was on the ground.
+            lastTimeOnGround = System.nanoTime();
             // The body may be colliding with multiple objects. That's why we get multiple
             // manifolds and have to look at all of them.
             for (Manifold manifold : manifolds) {
-                // Correct position
-                getPos().multAdd(manifold.getNormal(), -(manifold.getPenetration()-0.1f));
+                // Move the body so that it is just above the body it collided with.
+                getPos().multAdd(manifold.getNormal(), -(manifold.getPenetration()+0.1f));
 
                 // The formula used to calculate the impulse is defined here:
                 // http://gamedevelopment.tutsplus.com/tutorials/how-to-create-a-custom-2d-physics-engine-the-basics-and-impulse-resolution--gamedev-6331
@@ -112,8 +122,7 @@ public class DynamicBody extends Body {
                 velocity.multAdd(impulse, inverseMass);
                 // TODO: Apply the impulse to the Body we are colliding with too?
 
-                if (wasInAir) {
-                    wasInAir = false;
+                if (wasInAir()) {
                     // Velocity = ω * radius
                     // Calculate the magnitude of the new velocity based on the bodies angular
                     // velocity. Use the magnitude to find the new vector velocity based on
@@ -133,14 +142,9 @@ public class DynamicBody extends Body {
                     }
                     angularVelocity = newAngularVelocity;
                 }
-
-                // Set velocity based on torque.
-                // Divide updateFactor by 2 so that gravity wins and the wheels don't slide.
-                velocity.multAdd(new VectorF(torque, 0), updateFactor/2);
             }
         }
         else {
-            wasInAir = true;
             // Resolve forces when body is in air.
 
             // Acceleration due to gravity.
@@ -151,6 +155,11 @@ public class DynamicBody extends Body {
             else {
                 acceleration.setY(0);
             }
+        }
+
+        if (!wasInAir()) {
+            // Add torque to velocity if the body is on the ground.
+            velocity.multAdd(new VectorF(torque, 0), updateFactor);
         }
 
         // Calculate the air resistance.
@@ -170,7 +179,7 @@ public class DynamicBody extends Body {
         rotation = 0;
         angularVelocity = 0;
         angularAcceleration = 0;
-        wasInAir = false;
+        lastTimeOnGround = 0;
         torque = 0;
     }
 
@@ -219,7 +228,7 @@ public class DynamicBody extends Body {
     }
 
     public boolean isOnGround() {
-        return !wasInAir;
+        return !wasInAir();
     }
 
     /**

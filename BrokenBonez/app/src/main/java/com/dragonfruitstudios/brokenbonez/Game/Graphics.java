@@ -5,6 +5,8 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
 
+import com.dragonfruitstudios.brokenbonez.Math.Collisions.Line;
+import com.dragonfruitstudios.brokenbonez.Math.Collisions.Polygon;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 import junit.framework.Assert;
@@ -57,5 +59,41 @@ public class Graphics {
             drawnWidth += maxWidth;
         }
     }
+
+    // <editor-fold desc="Methods for scaling to screen resolution">
+
+    public static float scaleX(float x, int w) {
+        return (x / 1280) * w;
+    }
+
+    public static float scaleY(float y, int h) {
+        return (y / 768) * h;
+    }
+
+    public static void scalePos(VectorF pos, int w, int h) {
+        pos.div(new VectorF(1280, 768));
+        pos.mult(new VectorF(w, h));
+    }
+
+    /**
+     * Scales the specified line to the current phone's resolution.
+     */
+    public static void scaleLine(Line line, int w, int h) {
+        // The levels have been designed for a 768x1280 screen.
+        scalePos(line.getStart(), w, h);
+        scalePos(line.getFinish(), w, h);
+    }
+
+    /**
+     * Scales the specified polygon to the current phone's resolution.
+     */
+    public static void scalePolygon(Polygon polygon, int w, int h) {
+        for (Line l : polygon.getLines()) {
+            scaleLine(l, w, h);
+        }
+        polygon.recalculateBounds();
+    }
+
+    // </editor-fold>
 
 }

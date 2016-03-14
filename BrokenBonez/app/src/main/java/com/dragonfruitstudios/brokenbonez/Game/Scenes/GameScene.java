@@ -27,20 +27,28 @@ public class GameScene extends Scene {
         newGame(Bike.BodyType.Bike, Color.BLUE);
     }
 
+    // TODO: Put this into Graphics.
     public int getScreenWidth() {return Resources.getSystem().getDisplayMetrics().widthPixels;}
-    public void newGame(Bike.BodyType bikeBodyType, int bikeColor) {this.state.newGame(bikeBodyType, bikeColor);}
+
+    public void newGame(Bike.BodyType bikeBodyType, int bikeColor) {
+        this.state.newGame(bikeBodyType, bikeColor);
+    }
+
     public void draw(GameView view) {
         state.draw(view);
     }
+
     public void update(float lastUpdate) {
         state.update(lastUpdate);
     }
+
     public void updateSize(int w, int h) {
         state.updateSize(w, h);
     }
 
     public void onTouchEvent(MotionEvent event) {
         // Determine what action the user performed.
+        // TODO: Clean this up.
         TouchHandler.ControlIsActive action = TouchHandler.determineAction(event, getScreenWidth() / 2);
         Log.d("GameActivity/Touch", action.toString());
         switch (action) {
@@ -62,6 +70,8 @@ public class GameScene extends Scene {
                 state.setBikeAcceleration(TouchHandler.getAccel());
                 break;
         }
+
+        state.onTouchEvent(event);
     }
 
     @Override
@@ -70,6 +80,7 @@ public class GameScene extends Scene {
         state.getAssetLoader().getSoundByName("bikeEngine.mp3").setVolume(0.5f);
         state.getAssetLoader().getSoundByName("brokenboneztheme.ogg").setVolume(1f);
         state.getAssetLoader().getSoundByName("brokenboneztheme.ogg").play(true);
+        state.score.reset();
     }
 
     @Override
