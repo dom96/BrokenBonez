@@ -317,6 +317,14 @@ public class GameLevel extends Level {
 
     public void update(float lastUpdate, VectorF bikePos) {
         this.bikePos = bikePos;
+
+        // Determine if Bike passed the finish line.
+        LevelInfo.SolidObject finishLine = info.objects.get("finish");
+        VectorF pos = finishLine.pos.copy();
+        Graphics.scalePos(pos, Graphics.getScreenWidth(), Graphics.getScreenWidth());
+        if (bikePos.x >= pos.x) {
+            gameState.endGame(false);
+        }
     }
 
     public AssetLoader getAssetLoader() {
@@ -347,6 +355,6 @@ public class GameLevel extends Level {
 
     @Override
     public void onBikeCrash() {
-        gameState.endGame();
+        gameState.endGame(true);
     }
 }

@@ -204,7 +204,7 @@ public class Bike implements GameObject {
         }
 
         // Determine if Bike body collided with anything.
-        if (currentLevel.collidesWith(bodyRect)) {
+        if (currentLevel.collidesWith(bodyRect) && !dead) {
             // The bike collided with something, so let's remove the constraint between the wheels
             // and make it fall apart.
             currentLevel.getPhysicsSimulator().removeConstraint(wheelConstraint);

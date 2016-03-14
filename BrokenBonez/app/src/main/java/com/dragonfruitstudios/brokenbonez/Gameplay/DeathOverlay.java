@@ -13,17 +13,21 @@ public class DeathOverlay {
     AssetLoader assetLoader;
 
     private boolean enabled;
+    private boolean crashed;
 
+    ImageButton continueBtn;
     ImageButton mainMenuBtn;
     ImageButton restartLevelBtn;
 
     public DeathOverlay(AssetLoader assetLoader) {
         this.assetLoader = assetLoader;
-        assetLoader.AddAssets(new String[]{"menu/deathoverlay/main_menu.png",
+        assetLoader.AddAssets(new String[]{"menu/deathoverlay/continue.png",
+                "menu/deathoverlay/main_menu.png",
                 "menu/deathoverlay/restart_level.png"});
     }
 
-    public void enable() {
+    public void enable(boolean crashed) {
+        this.crashed = crashed;
         if (!enabled) {
             enabled = true;
 
@@ -31,10 +35,12 @@ public class DeathOverlay {
             // do this really, so this is a workaround (TODO).
             Bitmap btnImg = assetLoader.getBitmapByName("menu/deathoverlay/main_menu.png");
             float buttonsX = (Graphics.getScreenWidth() / 2) - (btnImg.getWidth() / 2);
-            mainMenuBtn = new ImageButton("menu/deathoverlay/main_menu.png", assetLoader, buttonsX,
+            continueBtn = new ImageButton("menu/deathoverlay/continue.png", assetLoader, buttonsX,
                     400, btnImg.getWidth(), btnImg.getHeight());
-            restartLevelBtn = new ImageButton("menu/deathoverlay/restart_level.png", assetLoader, buttonsX,
+            mainMenuBtn = new ImageButton("menu/deathoverlay/main_menu.png", assetLoader, buttonsX,
                     480, btnImg.getWidth(), btnImg.getHeight());
+            restartLevelBtn = new ImageButton("menu/deathoverlay/restart_level.png", assetLoader, buttonsX,
+                    560, btnImg.getWidth(), btnImg.getHeight());
         }
     }
 
@@ -51,27 +57,37 @@ public class DeathOverlay {
             // Draw a transparent overlay over the GameScene.
             view.drawRect(0, 0, view.getWidth(), view.getHeight(), Color.argb(150, 0, 0, 0));
 
-            // Draw the "Game Over" text in the center of the screen.
-            view.drawTextCenter("Game Over!", view.getWidth() / 2, 200, Color.parseColor("#ffffff"),
+            // Draw a message in the center of the screen.
+            String text = crashed ? "Game Over!" : "Level Finished!";
+            view.drawTextCenter(text, view.getWidth() / 2, 200, Color.parseColor("#ffffff"),
                     150);
 
             // Draw the buttons.
+            if (!crashed) {
+                continueBtn.draw(view);
+            }
             mainMenuBtn.draw(view);
             restartLevelBtn.draw(view);
         }
     }
 
     public enum OverlayResult {
-        ShowMainMenu, RestartLevel, None
+        Continue, ShowMainMenu, RestartLevel, None
     }
 
     public OverlayResult onTouchEvent(MotionEvent event) {
         // Only test for touch events if the overlay is enabled.
         if (enabled) {
+            if (!crashed) {
+                continueBtn.onTouchEvent(event);
+            }
             mainMenuBtn.onTouchEvent(event);
             restartLevelBtn.onTouchEvent(event);
 
-            if (mainMenuBtn.isTouched()) {
+            if (continueBtn.isTouched()) {
+                return OverlayResult.Continue;
+            }
+            else if (mainMenuBtn.isTouched()) {
                 return OverlayResult.ShowMainMenu;
             } else if (restartLevelBtn.isTouched()) {
                 return OverlayResult.RestartLevel;

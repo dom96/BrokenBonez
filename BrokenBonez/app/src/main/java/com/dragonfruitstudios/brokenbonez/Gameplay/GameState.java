@@ -66,7 +66,9 @@ public class GameState {
         physicsSimulator.update(lastUpdate);
         currentLevel.update(lastUpdate, bike.getPos());
         camera.centerHorizontally(bike.getPos().x);
-        score.changeTimeBy(lastUpdate);
+        if (!deathOverlay.isEnabled()) {
+            score.changeTimeBy(lastUpdate);
+        }
     }
 
     public void updateSize(int w, int h) {
@@ -106,6 +108,11 @@ public class GameState {
         DeathOverlay.OverlayResult result = deathOverlay.onTouchEvent(event);
         Log.d("GS", "DeathOverlay wants: " + result.toString());
         switch (result) {
+            case Continue:
+                score.askName(true);
+                // TODO: Choose next level.
+                newGame(bike.getBodyType(), bike.getColor());
+                break;
             case RestartLevel:
                 newGame(bike.getBodyType(), bike.getColor());
                 break;
@@ -147,8 +154,8 @@ public class GameState {
         }
     }
 
-    public void endGame() {
-        deathOverlay.enable();
+    public void endGame(boolean crashed) {
+        deathOverlay.enable(crashed);
         setSlowMotion(true);
     }
 }
