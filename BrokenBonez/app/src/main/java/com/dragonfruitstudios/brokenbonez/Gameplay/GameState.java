@@ -106,9 +106,14 @@ public class GameState {
         Log.d("GS", "FinishOverlay wants: " + result.toString());
         switch (result) {
             case Continue:
+                score.setCallbacks(new HighScore.HighScoreCallbacks() {
+                    @Override
+                    public void onNameEntered(boolean enteredName) {
+                        // TODO: Choose next level.
+                        newGame(bike.getBodyType(), bike.getColor());
+                    }
+                });
                 score.askName(true);
-                // TODO: Choose next level.
-                newGame(bike.getBodyType(), bike.getColor());
                 break;
             case RestartLevel:
                 newGame(bike.getBodyType(), bike.getColor());
