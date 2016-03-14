@@ -47,6 +47,8 @@ public class ImageButton {
                     if(f.x > pos.x && f.x < pos.x + scaledImage.getWidth() - 1){
                         if(f.y > pos.y && f.y < pos.y + scaledImage.getHeight() - 1) {
                             isTouched = true;
+                        } else {
+                            isTouched = false;
                         }
                     }
                 }
