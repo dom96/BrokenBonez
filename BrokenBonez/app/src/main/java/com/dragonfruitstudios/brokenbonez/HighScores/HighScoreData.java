@@ -19,7 +19,7 @@ public class HighScoreData {
     public HighScoreData(String data, int score){
         String[] dataParts;
         dataParts = data.split("〰");
-        setData(dataParts[0], score,  Integer.parseInt(dataParts[1]), dataParts[2]);
+        setData(dataParts[0], score,  Float.parseFloat(dataParts[1]), dataParts[2]);
     }
 
     private void setData(String name, int score, float time, String dateTime){

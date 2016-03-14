@@ -44,6 +44,12 @@ public class HighScore {
         public int value;
     }
 
+    public interface HighScoreCallbacks{
+        void onNameEntered(boolean enteredName);
+    }
+
+    HighScoreCallbacks callbacks;
+
     public HighScore(GameView gameView){
         this.gameView = gameView;
     }
@@ -155,6 +161,26 @@ public class HighScore {
     }
 
     /**
+     * Set up the callback for askName when the dialog box closes.
+     * Override onNameEntered(enteredName). enteredName returns true if they enter a name and false
+     * if they click cancel/close.
+     *
+     * Example
+     * HighScore score = new HighScore(gameSceneManager.gameView);
+     * score.setCallbacks(new HighScore.HighScoreCallbacks() {
+     *   @Override
+     *   public void onNameEntered(boolean enteredName) {
+     *
+     *   }
+     *   });
+     *
+     */
+
+    public void setCallbacks(HighScoreCallbacks askNameFinishedFunction) {
+        this.callbacks = askNameFinishedFunction;
+    }
+
+    /**
      * Generates a sorted list of the scores, sorting by the score
      * @return sorted list, sorted by score
      */
@@ -216,6 +242,7 @@ public class HighScore {
                 if (saveScore){
                     addHighScoreData();
                 }
+                callbacks.onNameEntered(true);
             }
         });
         nameAlert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -223,6 +250,7 @@ public class HighScore {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 setName("");
+                callbacks.onNameEntered(false);
             }
         });
         AlertDialog nameAlertDialog = nameAlert.create();
