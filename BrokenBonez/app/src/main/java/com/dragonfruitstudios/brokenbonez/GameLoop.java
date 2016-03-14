@@ -2,17 +2,21 @@ package com.dragonfruitstudios.brokenbonez;
 
 import android.graphics.Color;
 import android.hardware.SensorEvent;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.BikeSelectionScene;
+import com.dragonfruitstudios.brokenbonez.Game.Scenes.CreditsScene;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.GameScene;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.HighScoreScene;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.LevelSelectionScene;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.MenuScene;
 import com.dragonfruitstudios.brokenbonez.Gameplay.Bike;
+import com.dragonfruitstudios.brokenbonez.Game.Scenes.SettingsScene;
+import com.dragonfruitstudios.brokenbonez.Game.Scenes.SplashScene;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -43,20 +47,22 @@ public class GameLoop implements Runnable {
         this.assetLoader = assetLoader;
 
         this.gameSceneManager = new GameSceneManager(gameView); //Setup the GameSceneManager
-
         MenuScene menuScene = new MenuScene(assetLoader, gameSceneManager);   //Create the new MenuScene
         GameScene gameScene = new GameScene(assetLoader, gameSceneManager);   //Create the new GameScene
-
         HighScoreScene highScoreScene = new HighScoreScene(assetLoader, gameSceneManager);
         BikeSelectionScene bikeSelectionScene = new BikeSelectionScene(assetLoader, gameSceneManager);
         LevelSelectionScene levelSelectionScene = new LevelSelectionScene(assetLoader, gameSceneManager);
-        this.gameSceneManager.addScene("menuScene", menuScene, true);  //Add the MenuScene just created to the GameSceneManager, then sets it as the active scene
+        SettingsScene settingsScene = new SettingsScene(assetLoader, gameSceneManager);
+        SplashScene splashScene = new SplashScene(assetLoader, gameSceneManager);
+        CreditsScene creditsScene = new CreditsScene(assetLoader, gameSceneManager);
+        this.gameSceneManager.addScene("splashScene", splashScene, true);
+        this.gameSceneManager.addScene("menuScene", menuScene, false);  //Add the MenuScene just created to the GameSceneManager, then sets it as the active scene
         this.gameSceneManager.addScene("gameScene", gameScene, false); //Add the Gamescene just created to the GameSceneManager, then makes sure it isn't set as active
         this.gameSceneManager.addScene("bikeSelectionScene", bikeSelectionScene, false);
         this.gameSceneManager.addScene("levelSelectionScene", levelSelectionScene, false);
         this.gameSceneManager.addScene("highScoreScene", highScoreScene, false);
-
-
+        this.gameSceneManager.addScene("settingsScene", settingsScene, false);
+        this.gameSceneManager.addScene("creditsScene", creditsScene, false);
         updateLock = new ReentrantLock();
 
         // Set the methods which should be called when certain events occur in the GameView.

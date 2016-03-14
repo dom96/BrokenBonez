@@ -14,6 +14,7 @@ public class MenuState implements GameObject {
     ImageButton startGame;
     ImageButton hiScore;
     ImageButton credits;
+    ImageButton settings;
     AssetLoader assetLoader;
     Bitmap background;
     boolean noiseOn;
@@ -29,9 +30,10 @@ public class MenuState implements GameObject {
     public MenuState(AssetLoader assetLoader, GameSceneManager gameSceneManager) {
         this.assetLoader = assetLoader;
         this.gameSceneManager = gameSceneManager;
-        startGame = new ImageButton("menu/start.png", assetLoader, getScreenWidth() / 4 - 14, getScreenHeight() / 4 + 60, 612, 180);
-        hiScore = new ImageButton("menu/hiscore.png", assetLoader, getScreenWidth() / 4 - 14, getScreenHeight() / 4 * 2 + 120, 270, 60);
-        credits = new ImageButton("menu/credits.png", assetLoader,  getScreenWidth() / 4 * 2 + 29, getScreenHeight() / 4 * 2 + 120, 270, 60);
+        startGame = new ImageButton("menu/start.png", assetLoader, getScreenWidth() / 2 - getScreenWidth() / 4, getScreenHeight() / 4 + 60, 930, 270);
+        hiScore = new ImageButton("menu/hiscore.png", assetLoader, getScreenWidth() / 2 - getScreenWidth() / 4, getScreenHeight() / 4 * 2 + 120, 425, 120);
+        credits = new ImageButton("menu/credits.png", assetLoader,  getScreenWidth() / 4 * 2 + 25, getScreenHeight() / 4 * 2 + 120, 425, 120);
+        settings = new ImageButton("menu/settings.png", assetLoader, (getScreenWidth() / 10) * 9 + 70, (getScreenHeight() / 10) * 9 + 15, 120, 100);
         this.assetLoader.AddAssets(new String[]{"menu/tv.png", "menu/tvnoise.png"});
         noise = assetLoader.getBitmapByName("menu/tvnoise.png");
         background = assetLoader.getBitmapByName("menu/tv.png");
@@ -75,6 +77,7 @@ public class MenuState implements GameObject {
         startGame.draw(view);
         hiScore.draw(view);
         credits.draw(view);
+        settings.draw(view);
         if(getNoiseOn() == true){
             view.drawImage(scaledNoise, pos, rotation, GameView.ImageOrigin.TopLeft);
         }
@@ -89,9 +92,10 @@ public class MenuState implements GameObject {
      * I need a quick explanation on that.
      */
     public void onTouchEvent(MotionEvent event) {
-        startGame.onTouchEvent(event, (getScreenWidth() / 4 - 14), (getScreenHeight() / 4 + 60), ((getScreenWidth() / 4 - 14) + 611), ((getScreenHeight() / 4 + 60) + 179));
-        hiScore.onTouchEvent(event, (getScreenWidth() / 4 - 14), (getScreenHeight() / 4 * 2 + 120), ((getScreenWidth() / 4 - 14) + 269), ((getScreenHeight() / 4 * 2 + 120) + 59));
-        credits.onTouchEvent(event, (getScreenWidth() / 4 * 2 + 29), (getScreenHeight() / 4 * 2 + 120), ((getScreenWidth() / 4 * 2 + 29) + 269), ((getScreenHeight() / 4 * 2 + 120) + 59));
+        startGame.onTouchEvent(event, (getScreenWidth() / 2 - getScreenWidth() / 4), (getScreenHeight() / 4 + 60), ((getScreenWidth() / 2 - getScreenWidth() / 4) + 929), ((getScreenHeight() / 4 + 60) + 269));
+        hiScore.onTouchEvent(event, (getScreenWidth() / 2 - getScreenWidth() / 4), (getScreenHeight() / 4 * 2 + 120), ((getScreenWidth() / 2 - getScreenWidth() / 4) + 424), ((getScreenHeight() / 4 * 2 + 120) + 119));
+        credits.onTouchEvent(event, (getScreenWidth() / 4 * 2 + 25), (getScreenHeight() / 4 * 2 + 120), ((getScreenWidth() / 4 * 2 + 25) + 424), ((getScreenHeight() / 4 * 2 + 120) + 119));
+        settings.onTouchEvent(event, (getScreenWidth() / 10) * 9 + 70, (getScreenHeight() / 10) * 9 + 15, (((getScreenWidth() / 10) * 9 + 70) + 119), (((getScreenHeight() / 10) * 9 + 15) + 99));
 
         if(startGame.isTouched() == true){
             startGame.isTouched = false;
@@ -104,8 +108,13 @@ public class MenuState implements GameObject {
         }
         if(credits.isTouched == true){
             credits.isTouched = false;
-            Log.d("CREDITS", "isTouched");
+            gameSceneManager.setScene("creditsScene");
         }
+        if(settings.isTouched == true){
+            settings.isTouched = false;
+            gameSceneManager.setScene("settingsScene");
+        }
+
     }
 
     public void startBikeSelectionScreen(){this.gameSceneManager.setScene("bikeSelectionScene");}

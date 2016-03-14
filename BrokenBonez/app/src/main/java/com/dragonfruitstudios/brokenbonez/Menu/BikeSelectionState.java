@@ -87,15 +87,15 @@ public class BikeSelectionState implements GameObject {
         pos = new VectorF(0, 0);
         textPos = new VectorF((getScreenWidth() / 10) * 2, (getScreenHeight() / 10) * 4 - 60);
         charNamePos = new VectorF((getScreenWidth() / 10) * 2, (getScreenHeight() / 10) * 8 - 60);
-        charImagePos = new VectorF((getScreenWidth() / 10) * 7, (getScreenHeight() / 10) * 5 + 20);
+        charImagePos = new VectorF((getScreenWidth() / 10) * 7, (getScreenHeight() / 10) * 4 + 180);
         rotation = 0;
-        next = new ImageButton("selection/next.png", assetLoader, (getScreenWidth() / 10) * 4 + 80, (getScreenHeight() / 10) * 4 - 60, 75, 60);
-        nextNext = new ImageButton("selection/next.png", assetLoader, (getScreenWidth() / 10) * 4 + 80, (getScreenHeight() / 10) * 6 - 60, 75, 60);
-        nextNextNext = new ImageButton("selection/next.png", assetLoader, (getScreenWidth() / 10) * 4 + 80, (getScreenHeight() / 10) * 8 - 60, 75, 60);
-        prev = new ImageButton("selection/prev.png", assetLoader, (getScreenWidth() / 10), (getScreenHeight() / 10) * 4 - 60, 75, 60);
-        prevPrev = new ImageButton("selection/prev.png", assetLoader, (getScreenWidth() / 10), (getScreenHeight() / 10) * 6 - 60, 75, 60);
-        prevPrevPrev = new ImageButton("selection/prev.png", assetLoader, (getScreenWidth() / 10), (getScreenHeight() / 10) * 8 - 60, 75, 60);
-        select = new ImageButton("selection/select.png", assetLoader, (getScreenWidth() / 10) * 2, (getScreenHeight() / 10) * 9 - 20, 270, 60);
+        next = new ImageButton("selection/next.png", assetLoader, (getScreenWidth() / 10) * 4 + 80, (getScreenHeight() / 10) * 4 - 60, 95, 80);
+        nextNext = new ImageButton("selection/next.png", assetLoader, (getScreenWidth() / 10) * 4 + 80, (getScreenHeight() / 10) * 6 - 60, 95, 80);
+        nextNextNext = new ImageButton("selection/next.png", assetLoader, (getScreenWidth() / 10) * 4 + 80, (getScreenHeight() / 10) * 8 - 60, 95, 80);
+        prev = new ImageButton("selection/prev.png", assetLoader, (getScreenWidth() / 10 - 80), (getScreenHeight() / 10) * 4 - 60, 95, 80);
+        prevPrev = new ImageButton("selection/prev.png", assetLoader, (getScreenWidth() / 10 - 80), (getScreenHeight() / 10) * 6 - 60, 95, 80);
+        prevPrevPrev = new ImageButton("selection/prev.png", assetLoader, (getScreenWidth() / 10 - 80), (getScreenHeight() / 10) * 8 - 60, 95, 80);
+        select = new ImageButton("selection/select.png", assetLoader, (getScreenWidth() / 10) * 2, (getScreenHeight() / 10) * 9 - 20, 290, 80);
         level = new BikeSelectionLevel(this);
         bike = new Bike(level, Bike.BodyType.Bike);
         bike.setColor(Color.BLUE);
@@ -130,7 +130,7 @@ public class BikeSelectionState implements GameObject {
     @Override
     public void draw(GameView view) {
         view.drawImage(scaledBackground, pos, rotation, GameView.ImageOrigin.TopLeft);
-        view.drawRect((getScreenHeight() / 10) * 3 + 60, 350, (getScreenWidth() / 10) * 4 - 10, 450, color);
+        view.drawRect((getScreenHeight() / 10) * 3 + 100, 580, (getScreenWidth() / 10) * 3 + 30, 680, color);
         view.drawImage(text, textPos, rotation, GameView.ImageOrigin.TopLeft);
         view.drawImage(charName, charNamePos, rotation, GameView.ImageOrigin.TopLeft);
         view.drawImage(charImage, charImagePos, rotation, GameView.ImageOrigin.TopLeft);
@@ -149,13 +149,13 @@ public class BikeSelectionState implements GameObject {
     }
 
     public void onTouchEvent(MotionEvent event) {
-        next.onTouchEvent(event, ((getScreenWidth() / 10) * 4 + 80), ((getScreenHeight() / 10) * 4 - 60), (((getScreenWidth() / 10) * 4 + 80) + 74), (((getScreenHeight() / 10) * 4 - 60) + 59));
-        nextNext.onTouchEvent(event, ((getScreenWidth() / 10) * 4 + 80), ((getScreenHeight() / 10) * 6 - 60), (((getScreenWidth() / 10) * 4 + 80) + 74), (((getScreenHeight() / 10) * 6 - 60) + 59));
-        nextNextNext.onTouchEvent(event, ((getScreenWidth() / 10) * 4 + 80), ((getScreenHeight() / 10) * 8 - 60), (((getScreenWidth() / 10) * 4 + 80) + 74), (((getScreenHeight() / 10) * 8 - 60) + 74));
-        prev.onTouchEvent(event, ((getScreenWidth() / 10)), ((getScreenHeight() / 10) * 4 - 60), (((getScreenWidth() / 10)) + 74), (((getScreenHeight() / 10) * 4 - 60) + 59));
-        prevPrev.onTouchEvent(event, (getScreenWidth() / 10), ((getScreenHeight() / 10) * 6 - 60), (((getScreenWidth() / 10)) + 74), (((getScreenHeight() / 10) * 6 - 60) + 59));
-        prevPrevPrev.onTouchEvent(event, ((getScreenWidth() / 10)), ((getScreenHeight() / 10) * 8 - 60), (((getScreenWidth() / 10)) + 74), (((getScreenHeight() / 10) * 8 - 60) + 59));
-        select.onTouchEvent(event, ((getScreenWidth() / 10) * 2), ((getScreenHeight() / 10) * 9 - 20), (((getScreenWidth() / 10) * 2) + 269), (((getScreenHeight() / 10) * 9 - 20) + 59));
+        next.onTouchEvent(event, ((getScreenWidth() / 10) * 4 + 80), ((getScreenHeight() / 10) * 4 - 60), (((getScreenWidth() / 10) * 4 + 80) + 94), (((getScreenHeight() / 10) * 4 - 60) + 79));
+        nextNext.onTouchEvent(event, ((getScreenWidth() / 10) * 4 + 80), ((getScreenHeight() / 10) * 6 - 60), (((getScreenWidth() / 10) * 4 + 80) + 94), (((getScreenHeight() / 10) * 6 - 60) + 79));
+        nextNextNext.onTouchEvent(event, ((getScreenWidth() / 10) * 4 + 80), ((getScreenHeight() / 10) * 8 - 60), (((getScreenWidth() / 10) * 4 + 80) + 94), (((getScreenHeight() / 10) * 8 - 60) + 79));
+        prev.onTouchEvent(event, ((getScreenWidth() / 10 - 80)), ((getScreenHeight() / 10) * 4 - 60), (((getScreenWidth() / 10 - 80)) + 94), (((getScreenHeight() / 10) * 4 - 60) + 79));
+        prevPrev.onTouchEvent(event, ((getScreenWidth() / 10 - 80)), ((getScreenHeight() / 10) * 6 - 60), (((getScreenWidth() / 10 - 80)) + 94), (((getScreenHeight() / 10) * 6 - 60) + 79));
+        prevPrevPrev.onTouchEvent(event, ((getScreenWidth() / 10 - 80)), ((getScreenHeight() / 10) * 8 - 60), (((getScreenWidth() / 10 - 80)) + 94), (((getScreenHeight() / 10) * 8 - 60) + 79));
+        select.onTouchEvent(event, ((getScreenWidth() / 10) * 2), ((getScreenHeight() / 10) * 9 - 20), (((getScreenWidth() / 10) * 2) + 289), (((getScreenHeight() / 10) * 9 - 20)) + 79);
 
         if(select.isTouched() == true){
             select.isTouched = false;

@@ -4,16 +4,12 @@ import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
-
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.Camera;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.GameLoop;
 import com.dragonfruitstudios.brokenbonez.Math.Physics.Simulator;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
-import com.dragonfruitstudios.brokenbonez.R;
-import com.plattysoft.leonids.ParticleSystem;
-
 
 public class GameState {
     GameLevel currentLevel;

@@ -6,6 +6,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.view.KeyEvent;
@@ -13,6 +14,7 @@ import android.view.MotionEvent;
 import android.view.WindowManager;
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
+import com.dragonfruitstudios.brokenbonez.Menu.SplashState;
 
 /**
  * Game Activity class used for creating a new game view and game loop instance. Also defines some
@@ -78,9 +80,6 @@ public class GameActivity extends Activity implements SensorEventListener {
     public boolean onTouchEvent(MotionEvent event) {
         gameLoop.onGameTouch(event);
         return super.onTouchEvent(event);
-        /**new ParticleSystem(this, 400, R.drawable.smoke, 400)
-                .setSpeedModuleAndAngleRange(0.2f, 0.4f, 180, 200)
-                .emit(gameView, 400);**/
     }
 
     @Override

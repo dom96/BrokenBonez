@@ -11,7 +11,7 @@ import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Math.Physics.Simulator;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
-public class BikeSelectionLevel extends Level {
+public class  BikeSelectionLevel extends Level {
 
     BikeSelectionState bikeSelectionState;
     VectorF startPoint;
@@ -26,19 +26,19 @@ public class BikeSelectionLevel extends Level {
 
         for (int i = 0; i < 1; i++) {
             float height = 320;
-            Rect rect = new Rect(new VectorF(getScreenWidth() / 10 * 6, height), 360, 30);
+            Rect rect = new Rect(new VectorF(getScreenWidth() / 10 * 6, getScreenHeight() / 10 * 4), 600, 30);
             physicsSimulator.createStaticBody(rect);
         }
 
         for(int i = 0; i < 1; i++) {
             float height = 300;
-            Rect rect = new Rect(new VectorF(getScreenWidth() / 10 * 6, getScreenHeight() / 10 * 2), 30, 180);
+            Rect rect = new Rect(new VectorF(getScreenWidth() / 10 * 6, getScreenHeight() / 10 * 3), 30, 140);
             physicsSimulator.createStaticBody(rect);
         }
 
         for(int i = 0; i < 1; i++) {
             float height = 300;
-            Rect rect = new Rect(new VectorF(getScreenWidth() / 10 * 9, getScreenHeight() / 10 * 2), 30, 180);
+            Rect rect = new Rect(new VectorF(getScreenWidth() / 10 * 9, getScreenHeight() / 10 * 3), 30, 140);
             physicsSimulator.createStaticBody(rect);
         }
     }
