@@ -1,7 +1,6 @@
 package com.dragonfruitstudios.brokenbonez.Gameplay;
 
 import android.graphics.Bitmap;
-
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.Camera;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
@@ -15,10 +14,12 @@ public class GameState {
     private AssetLoader assetLoader;
     private GameSceneManager gameSceneManager;
     private Simulator physicsSimulator;
-
     private Camera camera;
+
     private Bitmap particleTest;
     private ParticleSystem particleSystem;
+    static float bikeX;
+    static float bikeY;
 
     public GameState(AssetLoader assetLoader, GameSceneManager gameSceneManager) {
         this.gameSceneManager = gameSceneManager;
@@ -33,7 +34,7 @@ public class GameState {
         // Create a new physics simulator.
         this.physicsSimulator = new Simulator();
         this.particleTest = assetLoader.getBitmapByName("particleTest.png");
-        this.particleSystem = new ParticleSystem(0, 100, 220, 100, 20, 100, particleTest, false, 100);
+        this.particleSystem = new ParticleSystem(200, (int) bikeY, 200, (int) bikeX, (int) bikeX, 100, particleTest, 20);
         camera = new Camera(0, 0);
 
         currentLevel = new GameLevel(this);
@@ -52,6 +53,8 @@ public class GameState {
         currentLevel.update(lastUpdate, bike.getPos());
         camera.centerHorizontally(bike.getPos().x);
         particleSystem.updatePhysics((int) lastUpdate);
+        bikeX = bike.getPos().x;
+        bikeY = bike.getPos().y;
     }
 
     public void updateSize(int w, int h) {
@@ -65,7 +68,7 @@ public class GameState {
         currentLevel.draw(view);
         bike.draw(view);
         physicsSimulator.draw(view);
-        particleSystem.doDraw(view, bike.getPos());
+        particleSystem.doDraw(view);
     }
 
     public void setBikeAcceleration(float strength) {

@@ -5,29 +5,39 @@ import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 class Particle {
-    int partX;
-    int partY;
+    int partPosX;
+    int partPosY;
     int partSpeed;
     Bitmap partImage;
-    //VectorF pos;
-    float rotation;
+    float partImagePosX;
+    float partImagePosY;
+    VectorF partImagePos;
+    float partImageRotation;
 
     public Particle(int startYPos, int yPosRange, int startXPos,
                     int xPosRange, int minSpeed, int speedRange,
                     Bitmap bitmap) {
 
-        partX = startXPos + (int) (Math.random() * xPosRange);
-        partY = startYPos + (int) (Math.random() * yPosRange);
+        partPosX = startXPos + (int) (Math.random() * xPosRange);
+        partPosY = startYPos + (int) (Math.random() * yPosRange);
+
+        partImagePosY = yPosRange;
+        partImagePosX = xPosRange;
+
         this.partSpeed = (int) (minSpeed + Math.random() * speedRange);
         this.partImage = bitmap;
-        //pos = new VectorF(partX, partY);
-        rotation = 0;
+        partImagePos = new VectorF(partImagePosX, partImagePosY);
+        partImageRotation = 0;
     }
+    public void doDraw(GameView view) {
+        view.drawImage(partImage, partImagePos, partImageRotation, GameView.ImageOrigin.TopLeft);
+    }
+
     public void updatePhysics(int distChange) {
-        partY -= distChange * partSpeed;
+        partPosX -= distChange * partSpeed;
+        partPosY -= distChange * partSpeed;
     }
-    public void doDraw(GameView view, VectorF pos) { view.drawImage(partImage, pos, rotation, GameView.ImageOrigin.TopLeft); }
-    public boolean outOfSight() { return partY <= -1 * partImage.getHeight(); }
+    public boolean outOfSight() { return partPosY <= -1 * partImage.getHeight(); }
 }
 
 public class ParticleSystem {
@@ -39,11 +49,10 @@ public class ParticleSystem {
     private int minSpeed;
     private int speedRange;
     private Bitmap bitmap;
-    boolean respawnParticle;
 
     public ParticleSystem(int startYPos, int yPosRange, int startXPos,
                           int xPosRange, int minSpeed, int speedRange,
-                          Bitmap bitmap, boolean respawnParticle, int numParticles) {
+                          Bitmap bitmap, int numParticles) {
 
         particles = new Particle[numParticles];
         this.startYPos = startYPos;
@@ -53,7 +62,6 @@ public class ParticleSystem {
         this.minSpeed = minSpeed;
         this.bitmap = bitmap;
         this.speedRange = speedRange;
-        this.respawnParticle = respawnParticle;
 
         for (int i = 0; i < particles.length; i++) {
             particles[i] = new Particle(startYPos, yPosRange, startXPos,
@@ -62,10 +70,10 @@ public class ParticleSystem {
         }
     }
 
-    public void doDraw(GameView view, VectorF pos) {
+    public void doDraw(GameView view) {
         for(int i = 0; i < particles.length; i++) {
             Particle particle = particles[i];
-            particle.doDraw(view, pos);
+            particle.doDraw(view);
         }
     }
 
