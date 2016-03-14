@@ -83,6 +83,10 @@
         d="M 4842.00,518.00
            C 4842.00,518.00 5496.67,518.00 5496.67,518.00" />
 
+    <path id="FinishLine" class="finish"
+            fill="none" stroke="black" stroke-width="1"
+            d="M 5364.00,518.00" />
+
   <path id="EndBuilding" class="building2"
         fill="none" stroke="black" stroke-width="1"
         d="M 5886.33,733.67
