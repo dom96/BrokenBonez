@@ -3,11 +3,14 @@ package com.dragonfruitstudios.brokenbonez.Gameplay;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.MotionEvent;
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.Camera;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
+import com.dragonfruitstudios.brokenbonez.Game.Graphics;
 import com.dragonfruitstudios.brokenbonez.GameLoop;
+import com.dragonfruitstudios.brokenbonez.Input.TouchHandler;
 import com.dragonfruitstudios.brokenbonez.Math.Physics.Simulator;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
 import com.dragonfruitstudios.brokenbonez.HighScores.HighScore;
@@ -45,7 +48,7 @@ public class GameState {
         bike = new Bike(currentLevel, Bike.BodyType.Bike);
 
         slowMotion = false;
-
+        deathOverlay = new DeathOverlay(assetLoader);
         this.score = new HighScore(gameSceneManager.gameView);
     }
 
@@ -54,11 +57,8 @@ public class GameState {
         bike.setBodyType(bikeBodyType);
         bike.reset();
         setSlowMotion(false);
-
-        // Ensure that deathOverlay has been created.
-        if (deathOverlay != null) {
-            deathOverlay.disable();
-        }
+        deathOverlay.disable();
+        score.reset();
     }
 
     public void update(float lastUpdate) {
@@ -73,9 +73,6 @@ public class GameState {
         currentLevel.updateSize(w, h);
         bike.updateSize(w, h);
         camera.updateSize(w, h);
-
-        // Create the DeathOverlay once the size of the GameView is known.
-        deathOverlay = new DeathOverlay(assetLoader, w, h);
     }
 
     public void draw(GameView view) {
@@ -88,7 +85,27 @@ public class GameState {
     }
 
     public void onTouchEvent(MotionEvent event) {
-        switch (deathOverlay.onTouchEvent(event)) {
+        if (!deathOverlay.isEnabled()) {
+            // Determine what action the user performed.
+            TouchHandler.ControlIsActive action = TouchHandler.determineAction(event,
+                    Graphics.getScreenWidth() / 2);
+            switch (action) {
+                case ACTION_GAS_UP:
+                case ACTION_BRAKE_UP:
+                case ACTION_NONE:
+                    setBikeAcceleration(0);
+                    break;
+                case ACTION_GAS_DOWN:
+                case ACTION_BRAKE_DOWN:
+                    setBikeAcceleration(TouchHandler.getAccel());
+                    getAssetLoader().getSoundByName("bikeEngineRev.mp3").play(false);   //Nearly ready, still little more test
+                    break;
+            }
+        }
+
+        DeathOverlay.OverlayResult result = deathOverlay.onTouchEvent(event);
+        Log.d("GS", "DeathOverlay wants: " + result.toString());
+        switch (result) {
             case RestartLevel:
                 newGame(bike.getBodyType(), bike.getColor());
                 break;
@@ -98,10 +115,9 @@ public class GameState {
             case None:
                 break;
         }
-
     }
 
-    public void setBikeAcceleration(float strength) {
+    private void setBikeAcceleration(float strength) {
         bike.setTorque(strength);
     }
 

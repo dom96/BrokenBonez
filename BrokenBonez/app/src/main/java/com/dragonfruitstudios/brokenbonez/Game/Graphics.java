@@ -1,5 +1,6 @@
 package com.dragonfruitstudios.brokenbonez.Game;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -58,6 +59,14 @@ public class Graphics {
             // Increment `drawnWidth` by the width that was drawn.
             drawnWidth += maxWidth;
         }
+    }
+
+    public static int getScreenWidth() {
+        return Resources.getSystem().getDisplayMetrics().widthPixels;
+    }
+
+    public static int getScreenHeight() {
+        return Resources.getSystem().getDisplayMetrics().heightPixels;
     }
 
     // <editor-fold desc="Methods for scaling to screen resolution">

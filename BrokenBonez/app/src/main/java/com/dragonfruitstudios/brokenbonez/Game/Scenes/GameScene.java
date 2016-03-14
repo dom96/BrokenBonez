@@ -27,9 +27,6 @@ public class GameScene extends Scene {
         newGame(Bike.BodyType.Bike, Color.BLUE);
     }
 
-    // TODO: Put this into Graphics.
-    public int getScreenWidth() {return Resources.getSystem().getDisplayMetrics().widthPixels;}
-
     public void newGame(Bike.BodyType bikeBodyType, int bikeColor) {
         this.state.newGame(bikeBodyType, bikeColor);
     }
@@ -47,30 +44,6 @@ public class GameScene extends Scene {
     }
 
     public void onTouchEvent(MotionEvent event) {
-        // Determine what action the user performed.
-        // TODO: Clean this up.
-        TouchHandler.ControlIsActive action = TouchHandler.determineAction(event, getScreenWidth() / 2);
-        Log.d("GameActivity/Touch", action.toString());
-        switch (action) {
-            case ACTION_NONE:
-                state.setBikeAcceleration(TouchHandler.getAccel());
-                break;
-            case ACTION_GAS_DOWN:
-                state.setBikeAcceleration(TouchHandler.getAccel());
-                state.getAssetLoader().getSoundByName("bikeEngineRev.mp3").play(false);   //Nearly ready, still little more test
-                break;
-            case ACTION_GAS_UP:
-                state.setBikeAcceleration(TouchHandler.getAccel());
-                break;
-            case ACTION_BRAKE_DOWN:
-                // TODO: This should brake not move the wheel backward.
-                state.setBikeAcceleration(TouchHandler.getAccel());
-                break;
-            case ACTION_BRAKE_UP:
-                state.setBikeAcceleration(TouchHandler.getAccel());
-                break;
-        }
-
         state.onTouchEvent(event);
     }
 
@@ -86,9 +59,7 @@ public class GameScene extends Scene {
     @Override
     public void onSensorChanged(SensorEvent event) {
             accelerometer.onSensorChanged(event);
-            //Log.d("RETURN VALUE", "" + Accelerometer.getReturnValue());
-            // TODO: Test this when bike method is created.
-            Accelerometer.getReturnValue();
+
             if (Accelerometer.isLeft()) {
                 state.setBikeTilt(Accelerometer.getReturnValue());
             }
