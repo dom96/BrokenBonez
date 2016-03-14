@@ -92,10 +92,10 @@ public class MenuState implements GameObject {
      * I need a quick explanation on that.
      */
     public void onTouchEvent(MotionEvent event) {
-        startGame.onTouchEvent(event, (getScreenWidth() / 2 - getScreenWidth() / 4), (getScreenHeight() / 4 + 60), ((getScreenWidth() / 2 - getScreenWidth() / 4) + 929), ((getScreenHeight() / 4 + 60) + 269));
-        hiScore.onTouchEvent(event, (getScreenWidth() / 2 - getScreenWidth() / 4), (getScreenHeight() / 4 * 2 + 120), ((getScreenWidth() / 2 - getScreenWidth() / 4) + 424), ((getScreenHeight() / 4 * 2 + 120) + 119));
-        credits.onTouchEvent(event, (getScreenWidth() / 4 * 2 + 25), (getScreenHeight() / 4 * 2 + 120), ((getScreenWidth() / 4 * 2 + 25) + 424), ((getScreenHeight() / 4 * 2 + 120) + 119));
-        settings.onTouchEvent(event, (getScreenWidth() / 10) * 9 + 70, (getScreenHeight() / 10) * 9 + 15, (((getScreenWidth() / 10) * 9 + 70) + 119), (((getScreenHeight() / 10) * 9 + 15) + 99));
+        startGame.onTouchEvent(event);
+        hiScore.onTouchEvent(event);
+        credits.onTouchEvent(event);
+        settings.onTouchEvent(event);
 
         if(startGame.isTouched() == true){
             startGame.isTouched = false;

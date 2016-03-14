@@ -149,13 +149,13 @@ public class BikeSelectionState implements GameObject {
     }
 
     public void onTouchEvent(MotionEvent event) {
-        next.onTouchEvent(event, ((getScreenWidth() / 10) * 4 + 80), ((getScreenHeight() / 10) * 4 - 60), (((getScreenWidth() / 10) * 4 + 80) + 94), (((getScreenHeight() / 10) * 4 - 60) + 79));
-        nextNext.onTouchEvent(event, ((getScreenWidth() / 10) * 4 + 80), ((getScreenHeight() / 10) * 6 - 60), (((getScreenWidth() / 10) * 4 + 80) + 94), (((getScreenHeight() / 10) * 6 - 60) + 79));
-        nextNextNext.onTouchEvent(event, ((getScreenWidth() / 10) * 4 + 80), ((getScreenHeight() / 10) * 8 - 60), (((getScreenWidth() / 10) * 4 + 80) + 94), (((getScreenHeight() / 10) * 8 - 60) + 79));
-        prev.onTouchEvent(event, ((getScreenWidth() / 10 - 80)), ((getScreenHeight() / 10) * 4 - 60), (((getScreenWidth() / 10 - 80)) + 94), (((getScreenHeight() / 10) * 4 - 60) + 79));
-        prevPrev.onTouchEvent(event, ((getScreenWidth() / 10 - 80)), ((getScreenHeight() / 10) * 6 - 60), (((getScreenWidth() / 10 - 80)) + 94), (((getScreenHeight() / 10) * 6 - 60) + 79));
-        prevPrevPrev.onTouchEvent(event, ((getScreenWidth() / 10 - 80)), ((getScreenHeight() / 10) * 8 - 60), (((getScreenWidth() / 10 - 80)) + 94), (((getScreenHeight() / 10) * 8 - 60) + 79));
-        select.onTouchEvent(event, ((getScreenWidth() / 10) * 2), ((getScreenHeight() / 10) * 9 - 20), (((getScreenWidth() / 10) * 2) + 289), (((getScreenHeight() / 10) * 9 - 20)) + 79);
+        next.onTouchEvent(event);
+        nextNext.onTouchEvent(event);
+        nextNextNext.onTouchEvent(event);
+        prev.onTouchEvent(event);
+        prevPrev.onTouchEvent(event);
+        prevPrevPrev.onTouchEvent(event);
+        select.onTouchEvent(event);
 
         if(select.isTouched() == true){
             select.isTouched = false;

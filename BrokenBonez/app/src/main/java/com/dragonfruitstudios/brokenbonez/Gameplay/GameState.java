@@ -1,25 +1,15 @@
 package com.dragonfruitstudios.brokenbonez.Gameplay;
 
-<<<<<<< HEAD
 import android.graphics.Bitmap;
-=======
-import android.graphics.Canvas;
-import android.graphics.ColorFilter;
-import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
->>>>>>> origin
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.Camera;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.GameLoop;
 import com.dragonfruitstudios.brokenbonez.Math.Physics.Simulator;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
-<<<<<<< HEAD
 import com.dragonfruitstudios.brokenbonez.ParticleSystem.ParticleSystem;
-=======
 import com.dragonfruitstudios.brokenbonez.HighScores.HighScore;
-
->>>>>>> origin
 
 public class GameState {
     GameLevel currentLevel;
@@ -27,21 +17,17 @@ public class GameState {
     private AssetLoader assetLoader;
     private GameSceneManager gameSceneManager;
     private Simulator physicsSimulator;
-<<<<<<< HEAD
-    private Camera camera;
 
     private Bitmap particleTest;
     private ParticleSystem particleSystem;
     static float bikeX;
     static float bikeY;
-=======
     public HighScore score;
 
     private Camera camera;
 
     private DeathOverlay deathOverlay;
     private boolean slowMotion;
->>>>>>> origin
 
     public GameState(AssetLoader assetLoader, GameSceneManager gameSceneManager) {
         this.gameSceneManager = gameSceneManager;
@@ -84,13 +70,10 @@ public class GameState {
         physicsSimulator.update(lastUpdate);
         currentLevel.update(lastUpdate, bike.getPos());
         camera.centerHorizontally(bike.getPos().x);
-<<<<<<< HEAD
         particleSystem.updatePhysics((int) lastUpdate);
         bikeX = bike.getPos().x;
         bikeY = bike.getPos().y;
-=======
         score.changeTimeBy(lastUpdate);
->>>>>>> origin
     }
 
     public void updateSize(int w, int h) {
@@ -107,16 +90,13 @@ public class GameState {
         currentLevel.draw(view);
         bike.draw(view);
         physicsSimulator.draw(view);
-<<<<<<< HEAD
         particleSystem.doDraw(view);
-=======
         deathOverlay.draw(view);
         score.draw(view);
     }
 
     public void onTouchEvent(MotionEvent event) {
         deathOverlay.onTouchEvent(event);
->>>>>>> origin
     }
 
     public void setBikeAcceleration(float strength) {

@@ -69,10 +69,10 @@ public class LevelSelectionState implements GameObject {
     }
 
     public void onTouchEvent(MotionEvent event) {
-        level1.onTouchEvent(event, ((getScreenWidth() / 4 - 320)), ((getScreenHeight() / 4 - 200)), (((getScreenWidth() / 4 - 320)) + 619), (((getScreenHeight() / 4) - 200) + 459));
-        level2.onTouchEvent(event, ((getScreenWidth() / 4) * 2 + 200), ((getScreenHeight() / 4 - 200)), (((getScreenWidth() / 4) * 2 + 200) + 619), (((getScreenHeight() / 4) - 200) + 459));
-        level3.onTouchEvent(event, ((getScreenWidth() / 4) - 320), ((getScreenHeight() / 4) * 2 + 60), (((getScreenWidth() / 4) - 320) + 619), (((getScreenHeight() / 4) * 2 + 60) + 459));
-        level4.onTouchEvent(event, ((getScreenWidth() / 4) * 2 + 200), ((getScreenHeight() / 4) * 2 + 60), (((getScreenWidth() / 4) * 2 + 200) + 619), (((getScreenHeight() / 4) * 2 + 60) + 459));
+        level1.onTouchEvent(event);
+        level2.onTouchEvent(event);
+        level3.onTouchEvent(event);
+        level4.onTouchEvent(event);
 
         if(level1.isTouched() == true){
             level1.isTouched = false;
