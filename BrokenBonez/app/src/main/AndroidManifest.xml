@@ -28,4 +28,5 @@
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <!--the device's touch screen is capable of tracking two or more fingers fully independently-->
     <uses-feature android:name="android.hardware.touchscreen.multitouch.distinct" android:required="true"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
 </manifest>
