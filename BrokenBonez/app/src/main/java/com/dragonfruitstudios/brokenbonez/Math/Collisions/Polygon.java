@@ -66,6 +66,7 @@ public class Polygon extends Intersector implements Drawable {
             lines.add(new Line(vertices[i].copy(), vertices[i+1].copy()));
         }
         lines.add(new Line(vertices[vertices.length - 1], vertices[0].copy()));
+        recalculateBounds();
     }
 
     /**
