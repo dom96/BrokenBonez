@@ -1,0 +1,28 @@
+= Readme
+
+The files stored here define the Levels used by BrokenBonez. They are defined as SVG files.
+The easiest way to create these files is using GIMP. To do simply create the desired Paths then
+execute the script specified in the next section.
+
+The `Template.xcf` file shows a number of boundaries that should be respected when designing a
+level, making the ground higher than the boundaries will result in a level that looks unnatural.
+
+You can use any of the `Level*.xcf` files as an example.
+
+== Exporting the paths in a GIMP xcf file to SVG
+
+In GIMP you can export each path manually into an SVG file, but AFAIK there is no GUI way to
+export all paths into an SVG file. Thankfully I have found a way to use the Python console to
+do this. (http://stackoverflow.com/questions/29148488/export-all-svg-paths-with-gimp-python-plugin)
+
+Open the Python console by clicking: Filters->Python-Fu->Console. Then type the following,
+line-by-line:
+
+```
+img = gimp.image_list()[0] <1>
+from gimpfu import *
+pdb.gimp_vectors_export_to_file(img, "/Users/user/foo.svg", None) <2>
+```
+<1> The `[0]` refers to a specific image opened in GIMP, if you have multiple open then this number
+    may be different.
+<2> Make sure to update the path where the svg file will be saved.
