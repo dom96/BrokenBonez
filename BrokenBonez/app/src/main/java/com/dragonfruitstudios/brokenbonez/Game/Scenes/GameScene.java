@@ -18,11 +18,9 @@ import com.dragonfruitstudios.brokenbonez.Input.TouchHandler;
  */
 public class GameScene extends Scene {
     GameState state;
-    Accelerometer accelerometer;
 
     public GameScene(AssetLoader assetLoader, GameSceneManager gameSceneManager) {
         super(assetLoader, gameSceneManager);
-        accelerometer = new Accelerometer();
         this.state = new GameState(assetLoader, this.gameSceneManager);
         newGame(Bike.BodyType.Bike, Color.BLUE);
     }
@@ -57,22 +55,6 @@ public class GameScene extends Scene {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-            accelerometer.onSensorChanged(event);
-
-            if (Accelerometer.isLeft()) {
-                state.setBikeTilt(Accelerometer.getReturnValue());
-            }
-            else {
-                state.setBikeTilt(-Accelerometer.getReturnValue());
-            }
-            if(Accelerometer.isFlat()){
-                state.setBikeTilt(Accelerometer.bikeStill());
-            }
-            if(Accelerometer.isDown()){
-                state.setBikeTilt(Accelerometer.bikeStill());
-            }
-            if(Accelerometer.getReturnValue() == 0){
-                state.setBikeTilt(Accelerometer.bikeStill());
-            }
+        state.setBikeTilt(Accelerometer.calculateTiltStrength(event));
     }
 }
