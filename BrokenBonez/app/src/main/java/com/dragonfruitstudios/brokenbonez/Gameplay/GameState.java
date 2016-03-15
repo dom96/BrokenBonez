@@ -68,8 +68,8 @@ public class GameState {
         particleManager.update(lastUpdate, bike.getPos());
         camera.centerHorizontally(bike.getPos().x);
         score.changeTimeBy(lastUpdate);
-
     }
+
     public void updateSize(int w, int h) {
         currentLevel.updateSize(w, h);
         bike.updateSize(w, h);

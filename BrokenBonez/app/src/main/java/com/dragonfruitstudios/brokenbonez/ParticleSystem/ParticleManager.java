@@ -8,12 +8,14 @@ import com.dragonfruitstudios.brokenbonez.GameSceneManager;
 import com.dragonfruitstudios.brokenbonez.Gameplay.GameState;
 import com.dragonfruitstudios.brokenbonez.Input.TouchHandler;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
+import com.dragonfruitstudios.brokenbonez.Menu.Settings;
+import com.dragonfruitstudios.brokenbonez.Menu.SettingsState;
 
 public class ParticleManager {
     private AssetLoader assetLoader;
     private GameSceneManager gameSceneManager;
     private GameState state;
-
+    Settings settings;
     private Bitmap[] smokeParticles;
     private Bitmap mudParticles;
     private ParticleSystem smokeParticleSystem;
@@ -38,7 +40,7 @@ public class ParticleManager {
                 assetLoader.getBitmapByName("particlesystem/fire.png")};
 
         this.mudParticles = assetLoader.getBitmapByName("particlesystem/mud.png");
-
+        settings = SettingsState.load(gameSceneManager.gameView.getContext());
 
 
     }
@@ -66,7 +68,9 @@ public class ParticleManager {
     }
 
     public void draw(GameView view){
-        smokeParticleSystem.doDraw(view);
-        mudParticleSystem.doDraw(view);
+        if(settings.boolParticlesEnabled == true) {
+            smokeParticleSystem.doDraw(view);
+            mudParticleSystem.doDraw(view);
+        }
     }
 }

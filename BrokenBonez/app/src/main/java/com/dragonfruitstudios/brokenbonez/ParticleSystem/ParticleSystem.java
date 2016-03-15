@@ -9,7 +9,6 @@ import com.dragonfruitstudios.brokenbonez.Menu.SettingsState;
 
 public class ParticleSystem {
     private Particle particles[];
-    Settings settings;
     GameSceneManager gameSceneManager;
 
     private int startYPos;
@@ -29,7 +28,6 @@ public class ParticleSystem {
         this.minSpeed = minSpeed;
         this.bitmap = bitmap;
         this.speedRange = speedRange;
-        settings = SettingsState.load(gameSceneManager.gameView.getContext());
         particles = new Particle[numParticles];
 
         for (int i = 0; i < particles.length; i++) {
@@ -40,12 +38,10 @@ public class ParticleSystem {
     }
 
     public void doDraw(GameView view) {
-        if(settings.boolParticlesEnabled == true){
         for(int i = 0; i < particles.length; i++) {
             Particle particle = particles[i];
                 particle.doDraw(view);
             }
-        }
     }
 
     public void updatePhysics(int altDelta) {
