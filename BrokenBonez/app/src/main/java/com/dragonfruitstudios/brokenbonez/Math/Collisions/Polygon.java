@@ -91,7 +91,7 @@ public class Polygon extends Intersector implements Drawable {
         return result;
     }
 
-    public Manifold.Collection collisionTestWithPolygon(Polygon shape) {
+    private Manifold.Collection collisionTestWithPolygon(Polygon shape) {
         // To determine whether two Polygon's intersect we simply check each vertex inside each
         // Polygon and see if it is inside the other Polygon using `collisionTest`.
         // TODO: There is likely a more efficient way of testing whether two Polygons intersect.
