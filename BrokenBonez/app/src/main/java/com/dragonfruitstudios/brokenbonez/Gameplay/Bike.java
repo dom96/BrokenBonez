@@ -355,4 +355,8 @@ public class Bike implements GameObject {
     public DynamicBody getRightWheel() {
         return rightWheel;
     }
+
+    public Rect getBodyRect(){
+        return bodyRect;
+    }
 }

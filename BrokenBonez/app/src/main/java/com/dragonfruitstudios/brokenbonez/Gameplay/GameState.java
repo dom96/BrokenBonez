@@ -168,19 +168,11 @@ public class GameState {
         bike.setTilt(value);
     }
 
-    public Rect getBikeRect(){
-        return bike.bodyRect;
-    }
-
     public AssetLoader getAssetLoader() {
         return assetLoader;
     }
     public Simulator getPhysicsSimulator() {
         return physicsSimulator;
-    }
-
-    public DynamicBody getLeftWheel(){
-        return this.bike.getLeftWheel();
     }
 
     public void setSlowMotion(boolean value) {

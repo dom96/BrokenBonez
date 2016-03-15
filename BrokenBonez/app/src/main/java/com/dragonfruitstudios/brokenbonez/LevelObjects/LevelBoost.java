@@ -8,20 +8,20 @@ import com.dragonfruitstudios.brokenbonez.Math.Collisions.Rect;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 
-public class LevelCoin extends LevelObject {
+public class LevelBoost extends LevelObject {
 
-    String coinSound = "coin.mp3";
-    String coinImage = "coin.png";
-    Rect rect;
+    private final String boostSound = "coin.mp3";
+    private final String boostImage = "boostgameicon.png";
+    private Rect rect;
 
-    public LevelCoin(AssetLoader assets, float x, float y, float rotation){
+    public LevelBoost(AssetLoader assets, float x, float y, float rotation){
         this.v = new VectorF(x, y);
-        String[] s = {coinSound, coinImage};
+        String[] s = {boostSound, boostImage};
         this.assets = assets;
         this.assets.AddAssets(s);
         this.rotation = rotation;
-        float width = assets.getBitmapByName(coinImage).getWidth();
-        float height = assets.getBitmapByName(coinImage).getHeight();
+        float width = assets.getBitmapByName(boostImage).getWidth();
+        float height = assets.getBitmapByName(boostImage).getHeight();
         VectorF vector = this.getVector();
         this.rect = new Rect(vector, width, height);
         this.rect.recalculateBounds();
@@ -29,8 +29,9 @@ public class LevelCoin extends LevelObject {
 
     @Override
     public void draw(GameView gameView) {
+        this.rect.draw(gameView);
         if (this.getVisible()) {
-            gameView.drawImage(assets.getBitmapByName(coinImage), this.getVector(), this.rotation, GameView.ImageOrigin.Middle);
+            gameView.drawImage(assets.getBitmapByName(boostImage), this.getVector(), this.rotation, GameView.ImageOrigin.Middle);
         }
     }
 
@@ -49,15 +50,15 @@ public class LevelCoin extends LevelObject {
 
     @Override
     public void onHit(Bike bike, HighScore score) {
-        if (this.getVisible()){
+        if (this.getVisible()) {
             this.setVisible(false);
-            this.playSound();
-            score.changeScoreBy(1);
+            //this.playSound();
+            bike.getLeftWheel().getVelocity().set(1000, 0);
         }
     }
 
     @Override
     public void playSound() {
-        assets.getSoundByName(coinSound).play(false);
+        assets.getSoundByName(boostSound).play(false);
     }
 }
