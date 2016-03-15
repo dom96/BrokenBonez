@@ -86,4 +86,12 @@ public class GhostInfo implements Serializable {
     public void enableReading() {
         time = 0;
     }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 }

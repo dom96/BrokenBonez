@@ -1,9 +1,11 @@
 package com.dragonfruitstudios.brokenbonez.Gameplay;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
+import com.dragonfruitstudios.brokenbonez.Game.Graphics;
 import com.dragonfruitstudios.brokenbonez.Game.Level;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
@@ -77,6 +79,7 @@ public class Ghost extends Bike  {
             return;
         }
 
+        currentRun.setUsername(username);
         String filename = "ghost_" + levelName;
         FileOutputStream stream = context.openFileOutput(filename, Context.MODE_PRIVATE);
         ObjectOutputStream serialiseStream = new ObjectOutputStream(stream);
@@ -99,11 +102,33 @@ public class Ghost extends Bike  {
     }
 
     @Override
+    public void setColor(int color) {
+        super.setColor(color);
+        Graphics.ghostify(body);
+    }
+
+    @Override
+    public void setCharacterType(CharacterType characterType) {
+        super.setCharacterType(characterType);
+        // Need to make a mutable copy of the bitmap in order to change its color.
+        character = character.copy(character.getConfig(), true);
+        Graphics.ghostify(character);
+    }
+
+    @Override
     public void draw(GameView view) {
         // TODO: Change the bike model to look more ghost-like.
         // TODO: Display name of player above the ghost.
         if (prevRun != null) {
             super.draw(view);
+
+            view.enableCamera();
+            VectorF normal = new VectorF(getRotation()-(float)Math.toRadians(90));
+            VectorF pos = getPos().copy();
+            pos.multAdd(normal, -50);
+            view.drawTextCenter(prevRun.getUsername(), pos.x, pos.y, Color.WHITE, 30,
+                    getRotation());
+            view.disableCamera();
         }
     }
 

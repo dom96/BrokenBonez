@@ -77,7 +77,7 @@ public class FinishOverlay {
 
     public OverlayResult onTouchEvent(MotionEvent event) {
         // Only test for touch events if the overlay is enabled.
-        if (enabled) {
+        if (enabled && continueBtn != null) {
             if (!crashed) {
                 continueBtn.onTouchEvent(event);
             }

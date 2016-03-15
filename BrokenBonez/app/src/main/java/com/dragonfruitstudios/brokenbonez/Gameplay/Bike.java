@@ -288,6 +288,11 @@ public class Bike implements GameObject {
         return characterType;
     }
 
+    public float getRotation() {
+        VectorF leftToRight = rightWheel.getPos().subtracted(leftWheel.getPos());
+        return leftToRight.angle();
+    }
+
     public void setPos(float x, float y) {
         leftWheel.setPos(x, y);
         rightWheel.setPos(x + wheelSeparation, y);

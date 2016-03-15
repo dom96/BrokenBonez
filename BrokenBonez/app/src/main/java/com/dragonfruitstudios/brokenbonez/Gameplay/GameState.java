@@ -92,11 +92,11 @@ public class GameState {
     public void draw(GameView view) {
         view.setCamera(camera);
         currentLevel.draw(view);
+        ghost.draw(view);
         bike.draw(view);
         physicsSimulator.draw(view);
-        finishOverlay.draw(view);
         score.draw(view);
-        ghost.draw(view);
+        finishOverlay.draw(view);
     }
 
     public void onTouchEvent(MotionEvent event) {

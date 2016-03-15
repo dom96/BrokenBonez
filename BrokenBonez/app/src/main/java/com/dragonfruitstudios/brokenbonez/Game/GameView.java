@@ -172,6 +172,16 @@ public class GameView extends View {
         paint.setTextAlign(Paint.Align.LEFT);
     }
 
+    public void drawTextCenter(String text, float x, float y, int color, int textSize,
+                               float rotation) {
+        paint.setTextAlign(Paint.Align.CENTER);
+        canvas.save();
+        canvas.rotate((float) Math.toDegrees(rotation), x, y);
+        drawText(text, x, y, color, textSize);
+        canvas.restore();
+        paint.setTextAlign(Paint.Align.LEFT);
+    }
+
 
     /**
      * Draws a rectangle at the specified coordinates and with the specified color.
