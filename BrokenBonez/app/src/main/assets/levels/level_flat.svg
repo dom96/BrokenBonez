@@ -19,7 +19,7 @@
            C 500.00,518.00 1516.00,518.00 1516.00,518.00
              1516.00,518.00 2504.00,518.00 2504.00,518.00" />
 
-  <path id="Ramp1" class="little_ramp"
+  <path id="Ramp1" class="little_ramp2"
         fill="none" stroke="black" stroke-width="1"
         d="M 1100.00,518.00
            C 1100.00,518.00 1246.00,518.00 1246.00,518.00

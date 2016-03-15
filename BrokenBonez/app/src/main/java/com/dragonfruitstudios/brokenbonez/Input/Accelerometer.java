@@ -24,6 +24,7 @@ public class Accelerometer {
     }
 
     private static boolean isEmulator() {
+        // Taken from: http://stackoverflow.com/a/21505193/492186
         return Build.FINGERPRINT.startsWith("generic")
                 || Build.FINGERPRINT.startsWith("unknown")
                 || Build.MODEL.contains("google_sdk")

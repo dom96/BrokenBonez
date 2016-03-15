@@ -114,6 +114,8 @@ public class LevelInfo {
 
             public VectorF surfaceOffset;
 
+            public boolean surfaceInForeground;
+
             Info(String theClass, String surfaceKey, String fillKey) {
                 this.theClass = theClass;
                 this.surfaceKey = surfaceKey;
@@ -228,6 +230,11 @@ public class LevelInfo {
         slAssets.get(theClass).surfaceOffset = surfaceOffset;
     }
 
+    public void addInfo(String theClass, String surfaceKey, String fillKey,
+                        VectorF surfaceOffset, boolean surfaceInForeground) {
+        addInfo(theClass, surfaceKey, fillKey, surfaceOffset);
+        slAssets.get(theClass).surfaceInForeground = surfaceInForeground;
+    }
 
     private String getLevelPath() {
         return "levels/" + name + "/";

@@ -3,6 +3,7 @@ package com.dragonfruitstudios.brokenbonez.Gameplay;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.util.Log;
 
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
@@ -56,7 +57,7 @@ public class GameLevel extends Level {
                 GameView.ImageOrigin.BottomLeft));
 
         // Load the SVG file which defines the level's geometry.
-        info.loadSVG(state.getAssetLoader(), "level_flat.svg", new VectorF(-600, 0));
+        info.loadSVG(state.getAssetLoader(), "level2.svg", new VectorF(-600, 0));
 
         // Initialise the SolidLayer class asset keys.
         info.addInfo("plain", info.getSurfaceKey(), info.getImagePath("ground_base.png"),
@@ -67,6 +68,10 @@ public class GameLevel extends Level {
                 new VectorF(0, 0));
         info.addInfo("building2", info.getTransparentKey(), info.getImagePath("building2.png"),
                 new VectorF(0, 0));
+        info.addInfo("little_ramp2", info.getTransparentKey(), info.getImagePath("little_ramp2.png"),
+                new VectorF(0, 0));
+        info.addInfo("bridge", info.getImagePath("bridge_rail.png"), info.getImagePath("bridge.png"),
+                new VectorF(-10, -39), true);
 
         // Load bitmaps defined in LevelInfo.
         scaledBitmaps = info.loadAssets(state.getAssetLoader());
@@ -208,6 +213,14 @@ public class GameLevel extends Level {
         }
     }
 
+    public void drawForeground(GameView view) {
+        view.enableCamera();
+        for (LevelInfo.SolidLayer sl : info.solids) {
+            drawSolidLayerForeground(sl, view);
+        }
+        view.disableCamera();
+    }
+
     /**
      * Calculates the angle to draw gap between solid layers.
      */
@@ -266,8 +279,8 @@ public class GameLevel extends Level {
             LevelInfo.SolidLayer.Info classInfo = info.getSolidLayerInfo(sl);
             LevelInfo.AssetType assetType = sl.getAssetType(i);
             String assetKey = info.getSolidLayerKey(sl, assetType);
-            // Don't draw if key is transparent.
-            if (!assetKey.equals(info.getTransparentKey())) {
+            // Don't draw if key is transparent and is to be drawn behind the bike.
+            if (!assetKey.equals(info.getTransparentKey()) && !classInfo.surfaceInForeground) {
                 Bitmap asset = scaledBitmaps.get(assetKey);
                 Line line = sl.getLines().get(i).copy();
 
@@ -306,6 +319,34 @@ public class GameLevel extends Level {
         }
     }
 
+    /**
+     * Draws a solid layer's surface in the foreground. This is primarily used for the drawing
+     * of the bridge railings.
+     */
+    private void drawSolidLayerForeground(LevelInfo.SolidLayer sl, GameView view) {
+        // Grab the Info object for this specific SolidLayer.
+        LevelInfo.SolidLayer.Info classInfo = info.getSolidLayerInfo(sl);
+        // Only draw when the surface key isn't transparent, and the SolidLayer wasn't filled
+        // automatically by the SolidLayer parser.
+        if (!classInfo.surfaceKey.equals(info.getTransparentKey()) && !sl.usesFillPolygon()) {
+            // Grab the AssetLoader key for this SolidLayer's Surface.
+            String surfaceKey = info.getSolidLayerKey(sl, LevelInfo.AssetType.Surface);
+            // Grab the image for this SolidLayer's surface key.
+            Bitmap surfaceImage = scaledBitmaps.get(surfaceKey);
+
+            // Create a source rectangle for this image.
+            Rect src = new Rect(0, 0, surfaceImage.getWidth(), surfaceImage.getHeight());
+            // Compute a rectangle to draw the image into.
+            RectF dest = new RectF(sl.getRect());
+            dest.offset(classInfo.surfaceOffset.x, classInfo.surfaceOffset.y);
+            // TODO: This is a bit rough and is bridge railing specific.
+            dest.bottom = dest.top + (surfaceImage.getHeight()-40);
+
+            // Draw the image.
+            view.drawImage(surfaceImage, src, dest, 0);
+        }
+    }
+
     private void drawFinishLine(LevelInfo.SolidObject so, GameView view) {
         String finishLineKey = info.getFinishLineKey();
         Bitmap finishLine = scaledBitmaps.get(finishLineKey);
@@ -319,6 +360,9 @@ public class GameLevel extends Level {
 
         // Determine if Bike passed the finish line.
         LevelInfo.SolidObject finishLine = info.objects.get("finish");
+        if (finishLine == null) {
+            throw new RuntimeException("Level doesn't define a finish line.");
+        }
         VectorF pos = finishLine.pos.copy();
         Graphics.scalePos(pos, Graphics.getScreenWidth(), Graphics.getScreenWidth());
         if (bikePos.x >= pos.x) {

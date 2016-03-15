@@ -102,6 +102,7 @@ public class GameState {
         score.draw(view);
         finishOverlay.draw(view);
         particleManager.draw(view);
+        currentLevel.drawForeground(view);
     }
 
     public void onTouchEvent(MotionEvent event) {
