@@ -3,11 +3,14 @@ package com.dragonfruitstudios.brokenbonez.Menu;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.view.MotionEvent;
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.Camera;
 import com.dragonfruitstudios.brokenbonez.Game.GameObject;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
+import com.dragonfruitstudios.brokenbonez.Game.Graphics;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.GameScene;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
 import com.dragonfruitstudios.brokenbonez.Gameplay.Bike;
@@ -20,7 +23,6 @@ public class BikeSelectionState implements GameObject {
     private GameSceneManager gameSceneManager;
     private Simulator physicsSimulator;
     Bitmap background;
-    final Bitmap scaledBackground;
     VectorF pos;
     VectorF textPos;
     VectorF charNamePos;
@@ -60,7 +62,7 @@ public class BikeSelectionState implements GameObject {
         this.physicsSimulator = new Simulator();
         camera = new Camera(0, 0);
         bikeSelectionLevel = new BikeSelectionLevel(this);
-        this.assetLoader.AddAssets(new String[]{"selection/selectiontext.png", "selection/dirtbike.png", "selection/bmx.png", "selection/bikeselect.png", "selection/deedeetext.png", "selection/jennytext.png", "selection/leslietext.png", "selection/wanitatext.png", "selection/deedee.png", "selection/jenny.png", "selection/leslie.png", "selection/wanita.png", "selection/selectionText.png"});
+        this.assetLoader.AddAssets(new String[]{"selection/selectiontext.png", "selection/dirtbike.png", "selection/bmx.png", "selection/bikeselect.png", "selection/leslietext.png", "selection/deedeetext.png", "selection/jennytext.png", "selection/wanitatext.png", "selection/leslie.png", "selection/deedee.png", "selection/jenny.png", "selection/wanita.png", "selection/selectionText.png"});
         background = assetLoader.getBitmapByName("selection/selectiontext.png");
         blue = Color.BLUE;
         purple = Color.parseColor("#7b2b80");
@@ -81,9 +83,8 @@ public class BikeSelectionState implements GameObject {
         wanita = assetLoader.getBitmapByName("selection/wanita.png");
         colorList = new int[]{blue, purple, green, red, yellow, white, orange};
         textList = new Bitmap[]{dirtbike, bmx};
-        charNameList = new Bitmap[]{deedeetext, jennytext, leslietext, wanitatext};
-        charImageList = new Bitmap[]{deedee, jenny, leslie, wanita};
-        scaledBackground = background.createScaledBitmap(background, getScreenWidth(), getScreenHeight(), false);
+        charNameList = new Bitmap[]{leslietext, deedeetext, jennytext, wanitatext};
+        charImageList = new Bitmap[]{leslie, deedee, jenny, wanita};
         pos = new VectorF(0, 0);
         textPos = new VectorF((getScreenWidth() / 10) * 2, (getScreenHeight() / 10) * 4 - 60);
         charNamePos = new VectorF((getScreenWidth() / 10) * 2, (getScreenHeight() / 10) * 8 - 60);
@@ -129,7 +130,7 @@ public class BikeSelectionState implements GameObject {
 
     @Override
     public void draw(GameView view) {
-        view.drawImage(scaledBackground, pos, rotation, GameView.ImageOrigin.TopLeft);
+        view.drawImage(background, new Rect(0,0, 1200, 920), new RectF(0,0, Graphics.getScreenWidth(), Graphics.getScreenHeight()), 0);
         view.drawRect((getScreenHeight() / 10) * 3 + 100, 580, (getScreenWidth() / 10) * 3 + 30, 680, color);
         view.drawImage(text, textPos, rotation, GameView.ImageOrigin.TopLeft);
         view.drawImage(charName, charNamePos, rotation, GameView.ImageOrigin.TopLeft);
@@ -278,15 +279,19 @@ public class BikeSelectionState implements GameObject {
             switch (k) {
                 case 0:
                     setCharName(0);
+                    bike.setCharacterType(Bike.CharacterType.Leslie);
                     break;
                 case 1:
                     setCharName(1);
+                    bike.setCharacterType(Bike.CharacterType.DeeDee);
                     break;
                 case 2:
                     setCharName(2);
+                    bike.setCharacterType(Bike.CharacterType.Jenny);
                     break;
                 case 3:
                     setCharName(3);
+                    bike.setCharacterType(Bike.CharacterType.Wanita);
                     break;
             }
         }
@@ -301,15 +306,19 @@ public class BikeSelectionState implements GameObject {
             switch (k) {
                 case 0:
                     setCharName(0);
+                    bike.setCharacterType(Bike.CharacterType.Leslie);
                     break;
                 case 1:
                     setCharName(1);
+                    bike.setCharacterType(Bike.CharacterType.DeeDee);
                     break;
                 case 2:
                     setCharName(2);
+                    bike.setCharacterType(Bike.CharacterType.Jenny);
                     break;
                 case 3:
                     setCharName(3);
+                    bike.setCharacterType(Bike.CharacterType.Wanita);
                     break;
             }
         }

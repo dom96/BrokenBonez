@@ -10,7 +10,6 @@ import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 public class ImageButton {
     Bitmap image;
-    final Bitmap scaledImage;
     String imageName;
     AssetLoader assetLoader;
     VectorF pos;
@@ -24,13 +23,12 @@ public class ImageButton {
         this.pos = new VectorF(x, y);
         this.rectangle = new Rect(this.pos, width, height);
         this.assetLoader = assetLoader;
-        this.assetLoader.AddAssets(new String[]{"menu/start.png", "menu/hiscore.png", "menu/credits.png", "selection/next.png", "selection/prev.png", "selection/select.png", "selection/level1.png", "selection/level2.png", "selection/level3.png", "selection/level4.png", "menu/settings.png", "menu/checked.png", "menu/unchecked.png"});
+        this.assetLoader.AddAssets(new String[]{"menu/start.png", "menu/highscore.png", "menu/credits.png", "selection/next.png", "selection/prev.png", "selection/select.png", "selection/level1.png", "selection/level2.png", "selection/level3.png", "selection/level4.png", "menu/settings.png", "menu/checked.png", "menu/unchecked.png"});
         this.image = assetLoader.getBitmapByName(imageName);
-        this.scaledImage = image.createScaledBitmap(image, (int)width, (int)height, false);
     }
 
     public void draw(GameView view) {
-        view.drawImage(scaledImage, pos, rotation, GameView.ImageOrigin.TopLeft);
+        view.drawImage(image, pos, rotation, GameView.ImageOrigin.TopLeft);
     }
 
     public boolean onTouchEvent(MotionEvent event) {
@@ -44,8 +42,8 @@ public class ImageButton {
                 f.y = event.getY(pointerIndex);
                 VectorF posCollide = new VectorF(pos.x, pos.y);
                 if(rectangle.collidesWith(posCollide)) {
-                    if(f.x > pos.x && f.x < pos.x + scaledImage.getWidth() - 1){
-                        if(f.y > pos.y && f.y < pos.y + scaledImage.getHeight() - 1) {
+                    if(f.x > pos.x && f.x < pos.x + image.getWidth() - 1){
+                        if(f.y > pos.y && f.y < pos.y + image.getHeight() - 1) {
                             return true;
                         } else {
                             return false;

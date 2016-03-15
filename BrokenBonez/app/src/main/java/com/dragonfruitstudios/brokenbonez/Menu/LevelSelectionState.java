@@ -2,11 +2,14 @@ package com.dragonfruitstudios.brokenbonez.Menu;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.view.MotionEvent;
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.Camera;
 import com.dragonfruitstudios.brokenbonez.Game.GameObject;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
+import com.dragonfruitstudios.brokenbonez.Game.Graphics;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
 import com.dragonfruitstudios.brokenbonez.Math.Physics.Simulator;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
@@ -21,7 +24,6 @@ public class LevelSelectionState implements GameObject {
     ImageButton level2;
     ImageButton level3;
     ImageButton level4;
-    final Bitmap scaledBackground;
     VectorF pos;
     float rotation;
 
@@ -32,7 +34,6 @@ public class LevelSelectionState implements GameObject {
         camera = new Camera(0, 0);
         this.assetLoader.AddAssets(new String[]{"selection/levelText.png"});
         background = assetLoader.getBitmapByName("selection/levelText.png");
-        scaledBackground = background.createScaledBitmap(background, getScreenWidth(), getScreenHeight(), false);
         level1 = new ImageButton("selection/level1.png", assetLoader, (getScreenWidth() / 4 - 320), (getScreenHeight() / 4 - 200), 620, 460);
         level2 = new ImageButton("selection/level2.png", assetLoader, (getScreenWidth() / 4) * 2 + 200, (getScreenHeight() / 4 - 200), 620, 460);
         level3 = new ImageButton("selection/level3.png", assetLoader, (getScreenWidth() / 4) - 320, (getScreenHeight() / 4) * 2 + 60, 620, 460);
@@ -59,7 +60,7 @@ public class LevelSelectionState implements GameObject {
 
     @Override
     public void draw(GameView view) {
-        view.drawImage(scaledBackground, pos, rotation, GameView.ImageOrigin.TopLeft);
+        view.drawImage(background, new Rect(0,0, 1200, 920), new RectF(0,0, Graphics.getScreenWidth(), Graphics.getScreenHeight()), 0);
         view.setCamera(camera);
         physicsSimulator.draw(view);
         level1.draw(view);

@@ -1,8 +1,8 @@
 package com.dragonfruitstudios.brokenbonez.ParticleSystem;
 
 import android.graphics.Bitmap;
-
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
+import com.dragonfruitstudios.brokenbonez.Game.GameObject;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
 import com.dragonfruitstudios.brokenbonez.Gameplay.GameState;
@@ -11,7 +11,7 @@ import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 import com.dragonfruitstudios.brokenbonez.Menu.Settings;
 import com.dragonfruitstudios.brokenbonez.Menu.SettingsState;
 
-public class ParticleManager {
+public class ParticleManager implements GameObject{
     private AssetLoader assetLoader;
     private GameSceneManager gameSceneManager;
     private GameState state;
@@ -45,32 +45,38 @@ public class ParticleManager {
 
     }
 
-    public void update(float lastUpdate, VectorF bikePos){
+    public void draw(GameView view){
+        if(settings.boolParticlesEnabled == true) {
+            smokeParticleSystem.doDraw(view);
+            mudParticleSystem.doDraw(view);
+        }
+    }
+
+    public void update(float lastUpdate, VectorF bikePos) {
         if(TouchHandler.cIA == TouchHandler.ControlIsActive.ACTION_GAS_DOWN){
             i = 1;
             i++;
             if(i > 3){
                 i = 0;
             }
-            j = 4;
+            j = 1;
         } else {
             i = 0;
             i++;
             if(i > 1){
                 i = 0;
             }
-            j = 4;
+            j = 1;
         }
-        this.smokeParticleSystem = new ParticleSystem((int) bikePos.y - 25, 1030, 100, 10, 100, smokeParticles[i], j, gameSceneManager);
-        smokeParticleSystem.updatePhysics((int) lastUpdate);
+        this.smokeParticleSystem = new ParticleSystem((int) bikePos.y - 25, 790, 100, 1, 10, smokeParticles[i], j, gameSceneManager);
         this.mudParticleSystem = new ParticleSystem(720, 1280, 100, 10, 100, mudParticles, 4, gameSceneManager);
+    }
+    public void update(float lastUpdate) {
         mudParticleSystem.updatePhysics((int) lastUpdate);
+        smokeParticleSystem.updatePhysics((int) lastUpdate);
     }
 
-    public void draw(GameView view){
-        if(settings.boolParticlesEnabled == true) {
-            smokeParticleSystem.doDraw(view);
-            mudParticleSystem.doDraw(view);
-        }
+    public void updateSize(int width, int height) {
+
     }
 }
