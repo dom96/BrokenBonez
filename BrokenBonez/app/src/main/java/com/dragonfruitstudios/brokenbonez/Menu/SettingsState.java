@@ -1,12 +1,10 @@
 package com.dragonfruitstudios.brokenbonez.Menu;
 
-import android.content.Context;
 import android.content.res.Resources;
 import android.view.MotionEvent;
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.GameObject;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
-import com.dragonfruitstudios.brokenbonez.GameActivity;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
 import com.dragonfruitstudios.brokenbonez.ParticleSystem.ParticleSystem;
 
