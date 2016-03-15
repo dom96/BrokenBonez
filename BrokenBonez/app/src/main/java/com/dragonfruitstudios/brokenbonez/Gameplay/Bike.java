@@ -24,7 +24,7 @@ public class Bike implements GameObject {
     final float wheelSeparation = 74f; // TODO: Change this depending on body type.
     final float wheelRadius = 20f;
     final float wheelMass = 200f;
-    final float tiltSensitivity = 5f; // Affects the rate of bike tilting.
+    final float tiltSensitivity = 2f; // Affects the rate of bike tilting.
 
     // The current level that this bike is on.
     Level currentLevel;
@@ -43,6 +43,8 @@ public class Bike implements GameObject {
     // Customisation of the bike.
     Bitmap body;
     BodyType bodyType;
+    Bitmap character;
+    CharacterType characterType;
     int color; // The bike color.
 
     // Specifies how much the bike should be tilting per update.
@@ -55,7 +57,11 @@ public class Bike implements GameObject {
         Bike, Bicycle
     }
 
-    public Bike(Level currentLevel, BodyType bodyType) {
+    public enum CharacterType {
+        DeeDee, Jenny, Leslie, Wanita
+    }
+
+    public Bike(Level currentLevel, BodyType bodyType, CharacterType characterType) {
         this.currentLevel = currentLevel;
 
         Circle circle = new Circle(new VectorF(0, 0), wheelRadius);
@@ -67,6 +73,7 @@ public class Bike implements GameObject {
                 rightWheel, wheelSeparation);
 
         this.bodyType = bodyType;
+        setCharacterType(characterType);
         // Use the `setColor` setter which assigns the `body` for us.
         setColor(Color.parseColor("#4d27f6"));
 
@@ -121,6 +128,9 @@ public class Bike implements GameObject {
                 bodyPos.multAdd(ltrNormal, -wheelRadius);
                 // Draw the body at the specified position and with the specified rotation.
                 gameView.drawImage(body, bodyPos, angle, GameView.ImageOrigin.Middle);
+                // Draw the character at/with the specified position and rotation.
+                bodyPos.multAdd(ltrNormal, -10); // Move the character up a bit.
+                gameView.drawImage(character, bodyPos, angle, GameView.ImageOrigin.Middle);
 
                 // Set the `bodyRect` so that it overlays the bike body.
                 updateBodyRect(leftToRight, ltrNormal);
@@ -129,18 +139,23 @@ public class Bike implements GameObject {
                 gameView.drawImage(body, leftWheel.getPos(), 0, GameView.ImageOrigin.Middle);
             }
         }
+
         // Draw the body rect for debugging purposes.
         bodyRect.draw(gameView);
 
         gameView.disableCamera();
-        // Draw text on screen with some debug info
-        DynamicBody debugWheel = leftWheel; // The wheel to show debug info for.
-        String debugInfo = String.format("Bike[%s, OnGrnd: %s %s, A: %.1f°, Tilt: %.1f, AX: %.1f, AY: %.1f]",
-                debugWheel.toString(),
-                leftWheel.isOnGround() ? "✓" : "✘", rightWheel.isOnGround() ? "✓" : "✘",
-                (Math.toDegrees(new Line(leftWheel.getPos(), rightWheel.getPos()).calcRotation())),
-                currentTiltForce, Accelerometer.x, Accelerometer.y, Accelerometer.z);
-        gameView.drawText(debugInfo, 20, 60, Color.WHITE);
+
+        if (Graphics.drawDebugInfo) {
+            // Draw text on screen with some debug info
+            DynamicBody debugWheel = leftWheel; // The wheel to show debug info for.
+            String debugInfo = String.format(
+                    "Bike[%s, OnGrnd: %s %s, A: %.1f°, Tilt: %.1f]",
+                    debugWheel.toString(),
+                    leftWheel.isOnGround() ? "✓" : "✘", rightWheel.isOnGround() ? "✓" : "✘",
+                    (Math.toDegrees(new Line(leftWheel.getPos(), rightWheel.getPos()).calcRotation())),
+                    currentTiltForce);
+            gameView.drawText(debugInfo, 20, 60, Color.WHITE);
+        }
     }
 
     /**
@@ -171,22 +186,28 @@ public class Bike implements GameObject {
         float updateFactor = Simulator.calcUpdateFactor(lastUpdate);
 
         // Handle tilting of the bike depending on the `currentTiltForce`.
-        if (Math.abs(currentTiltForce) > 0.01) {
+        boolean rotate = false;
+        if (Math.abs(currentTiltForce) > 0.08) {
             // This code is a tad magical. The Line constructor does not copy the wheels'
             // position vectors, so when the Line is rotated the position vectors belonging to the
             // wheel's are rotated directly.
             Line leftToRight = new Line(leftWheel.getPos(), rightWheel.getPos());
 
-            boolean rotate = true;
+            rotate = true;
             // Check if bike is on ground.
-            if (leftWheel.isOnGround() || rightWheel.isOnGround()) {
+            if (leftWheel.isOnGround()) {
                 // Check if bike reached max tilt.
                 float angle = (float) Math.toDegrees(leftToRight.calcRotation());
-                if (angle > 30 || angle < -30) {
+                if (angle < -30) {
                     // The bike may be above the threshold, in that case we want it to tilt if
                     // the tilting direction is away from its threshold (towards ground).
                     rotate = Math.abs(angle + tiltSensitivity * currentTiltForce) < Math.abs(angle);
                 }
+            }
+
+            if ((leftWheel.isOnGround() || rightWheel.isOnGround()) && currentTiltForce > 0) {
+                // Disallow lifting left wheel to prevent issues with no traction.
+                rotate = false;
             }
 
             if (rotate) {
@@ -197,10 +218,12 @@ public class Bike implements GameObject {
                 // from dropping to ground).
                 rightWheel.setHasGravity(!leftWheel.isOnGround());
                 leftWheel.setHasGravity(!rightWheel.isOnGround());
-            } else {
-                rightWheel.setHasGravity(true);
-                leftWheel.setHasGravity(true);
             }
+        }
+
+        if (!rotate) {
+            rightWheel.setHasGravity(true);
+            leftWheel.setHasGravity(true);
         }
 
         // Determine if Bike body collided with anything.
@@ -261,6 +284,15 @@ public class Bike implements GameObject {
         return bodyType;
     }
 
+    public CharacterType getCharacterType() {
+        return characterType;
+    }
+
+    public float getRotation() {
+        VectorF leftToRight = rightWheel.getPos().subtracted(leftWheel.getPos());
+        return leftToRight.angle();
+    }
+
     public void setPos(float x, float y) {
         leftWheel.setPos(x, y);
         rightWheel.setPos(x + wheelSeparation, y);
@@ -289,7 +321,38 @@ public class Bike implements GameObject {
     }
 
     public void setBodyType(BodyType bodyType) {
-        this.bodyType = bodyType;
-        setColor(color); // Refresh body image.
+        // No need to set the body when it hasn't changed.
+        if (this.bodyType != bodyType) {
+            this.bodyType = bodyType;
+            setColor(color); // Refresh body image.
+        }
+    }
+
+    public void setCharacterType(CharacterType characterType) {
+        this.characterType = characterType;
+        String characterKey = "bike/deedee.png";
+        switch (characterType) {
+            case Leslie:
+                characterKey = "bike/leslie.png";
+                break;
+            case DeeDee:
+                characterKey = "bike/deedee.png";
+                break;
+            case Wanita:
+                characterKey = "bike/wanita.png";
+                break;
+            case Jenny:
+                characterKey = "bike/jenny.png";
+                break;
+        }
+        character = currentLevel.getAssetLoader().getBitmapByName(characterKey);
+    }
+
+    public DynamicBody getLeftWheel() {
+        return leftWheel;
+    }
+
+    public DynamicBody getRightWheel() {
+        return rightWheel;
     }
 }

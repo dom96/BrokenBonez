@@ -5,6 +5,7 @@ import android.graphics.Rect;
 
 import com.dragonfruitstudios.brokenbonez.Game.Drawable;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
+import com.dragonfruitstudios.brokenbonez.Game.Graphics;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 import java.util.ArrayList;
@@ -65,6 +66,7 @@ public class Polygon extends Intersector implements Drawable {
             lines.add(new Line(vertices[i].copy(), vertices[i+1].copy()));
         }
         lines.add(new Line(vertices[vertices.length - 1], vertices[0].copy()));
+        recalculateBounds();
     }
 
     /**
@@ -89,7 +91,7 @@ public class Polygon extends Intersector implements Drawable {
         return result;
     }
 
-    public Manifold.Collection collisionTestWithPolygon(Polygon shape) {
+    private Manifold.Collection collisionTestWithPolygon(Polygon shape) {
         // To determine whether two Polygon's intersect we simply check each vertex inside each
         // Polygon and see if it is inside the other Polygon using `collisionTest`.
         // TODO: There is likely a more efficient way of testing whether two Polygons intersect.
@@ -224,12 +226,14 @@ public class Polygon extends Intersector implements Drawable {
      This method is used to show where the polygon is on the screen, for debugging purposes only.
      */
     public void draw(GameView view) {
-        for (Line l : lines) {
-            l.draw(view);
-        }
+        if (Graphics.drawDebugInfo) {
+            for (Line l : lines) {
+                l.draw(view);
+            }
 
-        // Draw the size of the polygon somewhere beside it.
-        view.drawText(getSize().x + "x" + getSize().y, lines.get(0).getPos().x - 5,
-                lines.get(0).getPos().y - 10, Color.RED);
+            // Draw the size of the polygon somewhere beside it.
+            view.drawText(getSize().x + "x" + getSize().y, lines.get(0).getPos().x - 5,
+                    lines.get(0).getPos().y - 10, Color.RED);
+        }
     }
 }

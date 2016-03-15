@@ -12,6 +12,8 @@ import com.dragonfruitstudios.brokenbonez.Math.Physics.Simulator;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
 import com.dragonfruitstudios.brokenbonez.HighScores.HighScore;
 
+import java.io.IOException;
+
 
 public class GameState {
     GameLevel currentLevel;
@@ -19,7 +21,8 @@ public class GameState {
     private AssetLoader assetLoader;
     private GameSceneManager gameSceneManager;
     private Simulator physicsSimulator;
-    public HighScore score;
+    private Ghost ghost;
+    private HighScore score;
 
     private Camera camera;
 
@@ -32,7 +35,8 @@ public class GameState {
         // Load assets.
         this.assetLoader = assetLoader;
         this.assetLoader.AddAssets(new String[] {"bike/wheel_basic.png", "bike/body_one.png",
-                "bike/body_two.png"});
+                "bike/body_two.png", "bike/deedee.png", "bike/jenny.png", "bike/leslie.png",
+                "bike/wanita.png"});
         this.assetLoader.AddAssets(new String[]{"bikeEngine.mp3", "bikeEngineRev.mp3",
                 "brokenboneztheme.ogg"});
 
@@ -42,20 +46,31 @@ public class GameState {
         camera = new Camera(0, 0);
 
         currentLevel = new GameLevel(this);
-        bike = new Bike(currentLevel, Bike.BodyType.Bike);
+        bike = new Bike(currentLevel, Bike.BodyType.Bike, Bike.CharacterType.Leslie);
 
         slowMotion = false;
         finishOverlay = new FinishOverlay(assetLoader);
         this.score = new HighScore(gameSceneManager.gameView);
+
+        // Create Ghost to show the player a Ghost bike of the last playthrough.
+        ghost = new Ghost(gameSceneManager.activity.getApplicationContext(), "level_flat",
+                currentLevel);
+
     }
 
-    public void newGame(Bike.BodyType bikeBodyType, int bikeColor) {
-        bike.setColor(bikeColor);
+    public void newGame(Bike.CharacterType characterType, Bike.BodyType bikeBodyType,
+                        int bikeColor) {
+        // TODO: Level selection.
+        bike.setCharacterType(characterType);
+        if (bike.getColor() != bikeColor) {
+            bike.setColor(bikeColor);
+        }
         bike.setBodyType(bikeBodyType);
         bike.reset();
         setSlowMotion(false);
         finishOverlay.disable();
         score.reset();
+        ghost.reset();
     }
 
     public void update(float lastUpdate) {
@@ -66,6 +81,8 @@ public class GameState {
         if (!finishOverlay.isEnabled()) {
             score.changeTimeBy(lastUpdate);
         }
+        ghost.createSlice(lastUpdate, bike.getLeftWheel().getPos(), bike.getRightWheel().getPos(),
+                bike.getLeftWheel().getRotation(), bike.getRightWheel().getRotation());
     }
 
     public void updateSize(int w, int h) {
@@ -77,10 +94,11 @@ public class GameState {
     public void draw(GameView view) {
         view.setCamera(camera);
         currentLevel.draw(view);
+        ghost.draw(view);
         bike.draw(view);
         physicsSimulator.draw(view);
-        finishOverlay.draw(view);
         score.draw(view);
+        finishOverlay.draw(view);
     }
 
     public void onTouchEvent(MotionEvent event) {
@@ -108,15 +126,24 @@ public class GameState {
             case Continue:
                 score.setCallbacks(new HighScore.HighScoreCallbacks() {
                     @Override
-                    public void onNameEntered(boolean enteredName) {
+                    public void onNameEntered(boolean enteredName, String name) {
                         // TODO: Choose next level.
-                        newGame(bike.getBodyType(), bike.getColor());
+                        if (enteredName) {
+                            try {
+                                ghost.save(name);
+                            }
+                            catch (IOException e) {
+                                Log.e("GameState", "Error saving Ghost: " + e.toString());
+                                throw new RuntimeException(e.toString());
+                            }
+                        }
+                        newGame(bike.getCharacterType(), bike.getBodyType(), bike.getColor());
                     }
                 });
                 score.askName(true);
                 break;
             case RestartLevel:
-                newGame(bike.getBodyType(), bike.getColor());
+                newGame(bike.getCharacterType(), bike.getBodyType(), bike.getColor());
                 break;
             case ShowMainMenu:
                 gameSceneManager.setScene("menuScene");

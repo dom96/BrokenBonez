@@ -115,6 +115,8 @@ public class CollisionTests {
 
     @Test
     public void bodySize_isCorrect() {
+        // TODO: This currently fails, use mockito to mock RectF
+        // https://github.com/soonick/conversion-graph/blob/master/tests/unit/src/com/ncona/conversiongraph/views/BarsViewTest.java#L103
         Rect rect = new Rect(new VectorF(50, 50), 500, 500);
         assertEquals(500, rect.getSize().x, 0.0001);
         assertEquals(500, rect.getSize().y, 0.0001);

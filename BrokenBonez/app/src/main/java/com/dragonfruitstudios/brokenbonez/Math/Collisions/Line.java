@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.dragonfruitstudios.brokenbonez.Game.Drawable;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
+import com.dragonfruitstudios.brokenbonez.Game.Graphics;
 import com.dragonfruitstudios.brokenbonez.Math.MathUtils;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
@@ -221,12 +222,13 @@ public class Line extends Intersector implements Drawable {
      This method is used to show where the line is on the screen, for debugging purposes only.
      */
     public void draw(GameView view) {
-        // Color the line differently if it was involved in a recent collision.
-        if (System.nanoTime() - timeOfLastCollision <= 1e8) {
-            view.drawLine(start, end, Color.parseColor("#00c80a"));
-        }
-        else {
-            view.drawLine(start, end, Color.parseColor("#ff1122"));
+        if (Graphics.drawDebugInfo) {
+            // Color the line differently if it was involved in a recent collision.
+            if (System.nanoTime() - timeOfLastCollision <= 1e8) {
+                view.drawLine(start, end, Color.parseColor("#00c80a"));
+            } else {
+                view.drawLine(start, end, Color.parseColor("#ff1122"));
+            }
         }
     }
 

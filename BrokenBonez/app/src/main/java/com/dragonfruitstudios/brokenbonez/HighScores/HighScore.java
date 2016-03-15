@@ -45,7 +45,7 @@ public class HighScore {
     }
 
     public interface HighScoreCallbacks{
-        void onNameEntered(boolean enteredName);
+        void onNameEntered(boolean enteredName, String username);
     }
 
     HighScoreCallbacks callbacks;
@@ -242,7 +242,7 @@ public class HighScore {
                 if (saveScore){
                     addHighScoreData();
                 }
-                callbacks.onNameEntered(true);
+                callbacks.onNameEntered(true, nameInputBox.getText().toString());
             }
         });
         nameAlert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -250,7 +250,7 @@ public class HighScore {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 setName("");
-                callbacks.onNameEntered(false);
+                callbacks.onNameEntered(false, "");
             }
         });
         AlertDialog nameAlertDialog = nameAlert.create();

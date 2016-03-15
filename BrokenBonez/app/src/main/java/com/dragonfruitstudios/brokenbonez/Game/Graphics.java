@@ -2,6 +2,7 @@ package com.dragonfruitstudios.brokenbonez.Game;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
@@ -16,6 +17,9 @@ import junit.framework.Assert;
 import java.util.HashMap;
 
 public class Graphics {
+
+    public static boolean drawDebugInfo = false;
+
     /**
      * Finds every pixel with the specified `toReplace` color and replaces it with the
      * specified `replaceWith` color.
@@ -31,6 +35,22 @@ public class Graphics {
             if (pixels[i] == toReplace) {
                 pixels[i] = replaceWith;
             }
+        }
+
+        img.setPixels(pixels, 0, img.getWidth(), 0, 0, img.getWidth(), img.getHeight());
+    }
+
+    /**
+     * Turns the image black and white and slightly transparent.
+     */
+    public static void ghostify(Bitmap img) {
+        int[] pixels = new int[img.getWidth()*img.getHeight()];
+        img.getPixels(pixels, 0, img.getWidth(), 0, 0, img.getWidth(), img.getHeight());
+
+        for (int i = 0; i < pixels.length; i++) {
+            float avg = Color.red(pixels[i]) + Color.green(pixels[i]) + Color.blue(pixels[i]);
+            avg /= 3;
+            pixels[i] = Color.argb(Color.alpha(pixels[i]), (int)avg, (int)avg, (int)avg);
         }
 
         img.setPixels(pixels, 0, img.getWidth(), 0, 0, img.getWidth(), img.getHeight());

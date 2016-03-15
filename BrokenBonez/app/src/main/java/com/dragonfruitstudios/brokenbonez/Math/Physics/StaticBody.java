@@ -1,6 +1,7 @@
 package com.dragonfruitstudios.brokenbonez.Math.Physics;
 
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
+import com.dragonfruitstudios.brokenbonez.Game.Graphics;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Circle;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Intersector;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Manifold;
@@ -37,7 +38,9 @@ public class StaticBody extends Body {
     }
 
     void draw(GameView view) {
-        boundingShape.draw(view);
+        if (Graphics.drawDebugInfo) {
+            boundingShape.draw(view);
+        }
     }
 
     Manifold.Collection collisionTest(DynamicBody dBody) {
