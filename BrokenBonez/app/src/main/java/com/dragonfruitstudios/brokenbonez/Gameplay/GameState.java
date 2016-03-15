@@ -24,7 +24,7 @@ public class GameState {
     private GameSceneManager gameSceneManager;
     private Simulator physicsSimulator;
     private Ghost ghost;
-    public HighScore score;
+    private HighScore score;
 
     private Camera camera;
 
