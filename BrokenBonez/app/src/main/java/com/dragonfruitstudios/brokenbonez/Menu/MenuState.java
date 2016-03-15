@@ -2,11 +2,14 @@ package com.dragonfruitstudios.brokenbonez.Menu;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.util.Log;
 import android.view.MotionEvent;
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.GameObject;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
+import com.dragonfruitstudios.brokenbonez.Game.Graphics;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
@@ -21,24 +24,20 @@ public class MenuState implements GameObject {
     boolean noiseWait;
     float waitTime = 0;
     Bitmap noise;
-    final Bitmap scaledNoise;
     VectorF pos;
     float rotation;
-    final Bitmap scaledBackground;
     GameSceneManager gameSceneManager;
 
     public MenuState(AssetLoader assetLoader, GameSceneManager gameSceneManager) {
         this.assetLoader = assetLoader;
         this.gameSceneManager = gameSceneManager;
         startGame = new ImageButton("menu/start.png", assetLoader, getScreenWidth() / 2 - getScreenWidth() / 4, getScreenHeight() / 4 + 60, 930, 270);
-        hiScore = new ImageButton("menu/hiscore.png", assetLoader, getScreenWidth() / 2 - getScreenWidth() / 4, getScreenHeight() / 4 * 2 + 120, 425, 120);
+        hiScore = new ImageButton("menu/highscore.png", assetLoader, getScreenWidth() / 2 - getScreenWidth() / 4, getScreenHeight() / 4 * 2 + 120, 425, 120);
         credits = new ImageButton("menu/credits.png", assetLoader,  getScreenWidth() / 4 * 2 + 25, getScreenHeight() / 4 * 2 + 120, 425, 120);
         settings = new ImageButton("menu/settings.png", assetLoader, (getScreenWidth() / 10) * 9 + 70, (getScreenHeight() / 10) * 9 + 15, 120, 100);
         this.assetLoader.AddAssets(new String[]{"menu/tv.png", "menu/tvnoise.png"});
         noise = assetLoader.getBitmapByName("menu/tvnoise.png");
         background = assetLoader.getBitmapByName("menu/tv.png");
-        scaledNoise = noise.createScaledBitmap(noise, getScreenWidth(), getScreenHeight(), false);
-        scaledBackground = background.createScaledBitmap(background, getScreenWidth(), getScreenHeight(), false);
         pos = new VectorF(0, 0);
         rotation = 0;
     }
@@ -73,13 +72,13 @@ public class MenuState implements GameObject {
 
     @Override
     public void draw(GameView view) {
-        view.drawImage(scaledBackground, pos, rotation, GameView.ImageOrigin.TopLeft);
+        view.drawImage(background, new Rect(0,0, 1200, 920), new RectF(0,0,Graphics.getScreenWidth(), Graphics.getScreenHeight()), 0);
         startGame.draw(view);
         hiScore.draw(view);
         credits.draw(view);
         settings.draw(view);
         if(getNoiseOn() == true){
-            view.drawImage(scaledNoise, pos, rotation, GameView.ImageOrigin.TopLeft);
+            view.drawImage(noise, new Rect(0,0, 1200, 920), new RectF(0,0,Graphics.getScreenWidth(), Graphics.getScreenHeight()), 0);
         }
     }
 

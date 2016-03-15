@@ -3,11 +3,14 @@ package com.dragonfruitstudios.brokenbonez.Menu;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.view.MotionEvent;
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.Camera;
 import com.dragonfruitstudios.brokenbonez.Game.GameObject;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
+import com.dragonfruitstudios.brokenbonez.Game.Graphics;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.GameScene;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
 import com.dragonfruitstudios.brokenbonez.Gameplay.Bike;
@@ -20,7 +23,6 @@ public class BikeSelectionState implements GameObject {
     private GameSceneManager gameSceneManager;
     private Simulator physicsSimulator;
     Bitmap background;
-    final Bitmap scaledBackground;
     VectorF pos;
     VectorF textPos;
     VectorF charNamePos;
@@ -83,7 +85,6 @@ public class BikeSelectionState implements GameObject {
         textList = new Bitmap[]{dirtbike, bmx};
         charNameList = new Bitmap[]{leslietext, deedeetext, jennytext, wanitatext};
         charImageList = new Bitmap[]{leslie, deedee, jenny, wanita};
-        scaledBackground = background.createScaledBitmap(background, getScreenWidth(), getScreenHeight(), false);
         pos = new VectorF(0, 0);
         textPos = new VectorF((getScreenWidth() / 10) * 2, (getScreenHeight() / 10) * 4 - 60);
         charNamePos = new VectorF((getScreenWidth() / 10) * 2, (getScreenHeight() / 10) * 8 - 60);
@@ -129,7 +130,7 @@ public class BikeSelectionState implements GameObject {
 
     @Override
     public void draw(GameView view) {
-        view.drawImage(scaledBackground, pos, rotation, GameView.ImageOrigin.TopLeft);
+        view.drawImage(background, new Rect(0,0, 1200, 920), new RectF(0,0, Graphics.getScreenWidth(), Graphics.getScreenHeight()), 0);
         view.drawRect((getScreenHeight() / 10) * 3 + 100, 580, (getScreenWidth() / 10) * 3 + 30, 680, color);
         view.drawImage(text, textPos, rotation, GameView.ImageOrigin.TopLeft);
         view.drawImage(charName, charNamePos, rotation, GameView.ImageOrigin.TopLeft);

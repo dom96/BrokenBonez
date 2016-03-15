@@ -2,9 +2,13 @@ package com.dragonfruitstudios.brokenbonez.Menu;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
+import android.graphics.RectF;
+
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.GameObject;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
+import com.dragonfruitstudios.brokenbonez.Game.Graphics;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.BikeSelectionScene;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.CreditsScene;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.GameScene;
@@ -19,7 +23,6 @@ public class SplashState implements GameObject {
     AssetLoader assetLoader;
     GameSceneManager gameSceneManager;
     Bitmap splashScreen;
-    final Bitmap scaledSplashScreen;
     boolean splashOn = true;
     boolean splashWait = true;
     float waitTime = 0;
@@ -34,7 +37,6 @@ public class SplashState implements GameObject {
         this.gameSceneManager = gameSceneManager;
         this.assetLoader.AddAssets(new String[]{"menu/dragonfruitstudiossplash.png"});
         splashScreen = assetLoader.getBitmapByName("menu/dragonfruitstudiossplash.png");
-        scaledSplashScreen = splashScreen.createScaledBitmap(splashScreen, getScreenWidth(), getScreenHeight(), false);
         pos = new VectorF(0, 0);
         rotation = 0;
     }
@@ -85,7 +87,7 @@ public class SplashState implements GameObject {
 
     @Override
     public void draw(GameView view) {
-        view.drawImage(scaledSplashScreen, pos, rotation, GameView.ImageOrigin.TopLeft);
+        view.drawImage(splashScreen, new Rect(0,0, 1200, 920), new RectF(0,0, Graphics.getScreenWidth(), Graphics.getScreenHeight()), 0);
         hasDrawn = true;
     }
 
