@@ -83,4 +83,6 @@ class Particle {
     public void doDraw(GameView view) {
         view.drawImage(bitmap, pos, rotation, GameView.ImageOrigin.TopLeft);
     }
+
+
 }
