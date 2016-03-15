@@ -35,7 +35,7 @@ public class SettingsState implements GameObject {
         accelerometerDisabled = new ImageButton("menu/unchecked.png", assetLoader, (getScreenWidth() / 4), (getScreenHeight() / 2), 150, 150);
         particlesEnabled = new ImageButton("menu/checked.png", assetLoader, (getScreenWidth() / 4), (getScreenHeight() / 4 * 3), 150, 150);
         particlesDisabled = new ImageButton("menu/unchecked.png", assetLoader, (getScreenWidth() / 4), (getScreenHeight() / 4 * 3), 150, 150);
-        settings = new Settings(true, true, true);
+        createDefaultSettings();
         settings = SettingsState.load(gameSceneManager.gameView.getContext());
     }
 
@@ -148,13 +148,17 @@ public class SettingsState implements GameObject {
             ObjectInputStream deserialiseStream = new ObjectInputStream(stream);
             Settings load = (Settings)deserialiseStream.readObject();
             if(load == null){
-                load = new Settings(true, true, true);
+                load = createDefaultSettings();
             }
             return load;
         }
         catch (Exception exc) {
             Log.e("Setting", "Exception in load: " + exc.toString());
+            return createDefaultSettings();
         }
-        return null;
+    }
+
+    public static Settings createDefaultSettings(){
+        return new Settings(true, true, true);
     }
 }
