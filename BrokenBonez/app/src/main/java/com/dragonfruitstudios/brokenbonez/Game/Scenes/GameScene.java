@@ -12,11 +12,16 @@ import com.dragonfruitstudios.brokenbonez.Gameplay.GameState;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Input.Accelerometer;
 import com.dragonfruitstudios.brokenbonez.Input.TouchHandler;
+import com.dragonfruitstudios.brokenbonez.Menu.Settings;
+import com.dragonfruitstudios.brokenbonez.Menu.SettingsState;
+
+import java.io.IOException;
 
 /**
  * Implements the game scene in which the bulk of the gameplay occurs.
  */
 public class GameScene extends Scene {
+    Settings settings;
     GameState state;
     Accelerometer accelerometer;
 
@@ -76,11 +81,15 @@ public class GameScene extends Scene {
 
     @Override
     public void activate() {
-        state.getAssetLoader().getSoundByName("bikeEngine.mp3").play(true);
-        state.getAssetLoader().getSoundByName("bikeEngine.mp3").setVolume(0.5f);
-        state.getAssetLoader().getSoundByName("brokenboneztheme.ogg").setVolume(1f);
-        state.getAssetLoader().getSoundByName("brokenboneztheme.ogg").play(true);
-        state.score.reset();
+        settings = SettingsState.load(gameSceneManager.gameView.getContext());
+        if(settings.boolSoundEnabled == true) {
+            state.getAssetLoader().getSoundByName("bikeEngine.mp3").play(true);
+            state.getAssetLoader().getSoundByName("bikeEngine.mp3").setVolume(0.5f);
+            state.getAssetLoader().getSoundByName("brokenboneztheme.ogg").setVolume(1f);
+            state.getAssetLoader().getSoundByName("brokenboneztheme.ogg").play(true);
+            state.score.reset();
+        }
+
     }
 
     @Override
@@ -88,21 +97,22 @@ public class GameScene extends Scene {
             accelerometer.onSensorChanged(event);
             //Log.d("RETURN VALUE", "" + Accelerometer.getReturnValue());
             // TODO: Test this when bike method is created.
-            Accelerometer.getReturnValue();
-            if (Accelerometer.isLeft()) {
-                state.setBikeTilt(Accelerometer.getReturnValue());
-            }
-            else {
-                state.setBikeTilt(-Accelerometer.getReturnValue());
-            }
-            if(Accelerometer.isFlat()){
-                state.setBikeTilt(Accelerometer.bikeStill());
-            }
-            if(Accelerometer.isDown()){
-                state.setBikeTilt(Accelerometer.bikeStill());
-            }
-            if(Accelerometer.getReturnValue() == 0){
-                state.setBikeTilt(Accelerometer.bikeStill());
+            if(settings.boolAccelEnabled == true) {
+                Accelerometer.getReturnValue();
+                if (Accelerometer.isLeft()) {
+                    state.setBikeTilt(Accelerometer.getReturnValue());
+                } else {
+                    state.setBikeTilt(-Accelerometer.getReturnValue());
+                }
+                if (Accelerometer.isFlat()) {
+                    state.setBikeTilt(Accelerometer.bikeStill());
+                }
+                if (Accelerometer.isDown()) {
+                    state.setBikeTilt(Accelerometer.bikeStill());
+                }
+                if (Accelerometer.getReturnValue() == 0) {
+                    state.setBikeTilt(Accelerometer.bikeStill());
+                }
             }
     }
 }

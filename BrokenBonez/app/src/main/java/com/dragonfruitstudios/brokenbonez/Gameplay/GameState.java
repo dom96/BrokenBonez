@@ -94,9 +94,9 @@ public class GameState {
             }
             j = 4;
         }
-        this.smokeParticleSystem = new ParticleSystem((int) bike.getPos().y - 25, 1030, 100, 10, 100, smokeParticles[i], j);
+        this.smokeParticleSystem = new ParticleSystem((int) bike.getPos().y - 25, 1030, 100, 10, 100, smokeParticles[i], j, gameSceneManager);
         smokeParticleSystem.updatePhysics((int) lastUpdate);
-        this.mudParticleSystem = new ParticleSystem(720, 1280, 100, 10, 100, mudParticles, 4);
+        this.mudParticleSystem = new ParticleSystem(720, 1280, 100, 10, 100, mudParticles, 4, gameSceneManager);
         mudParticleSystem.updatePhysics((int) lastUpdate);
         score.changeTimeBy(lastUpdate);
     }

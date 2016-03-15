@@ -1,12 +1,16 @@
 package com.dragonfruitstudios.brokenbonez.ParticleSystem;
 
 import android.graphics.Bitmap;
-
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
+import com.dragonfruitstudios.brokenbonez.GameSceneManager;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
+import com.dragonfruitstudios.brokenbonez.Menu.Settings;
+import com.dragonfruitstudios.brokenbonez.Menu.SettingsState;
 
 public class ParticleSystem {
     private Particle particles[];
+    Settings settings;
+    GameSceneManager gameSceneManager;
 
     private int startYPos;
     private int startXPos;
@@ -14,18 +18,18 @@ public class ParticleSystem {
     private int minSpeed;
     private int speedRange;
     private Bitmap bitmap;
-    public static boolean particlesEnabled;
 
     public ParticleSystem(int startYPos, int startXPos,
                           int xPosRange, int minSpeed, int speedRange,
-                          Bitmap bitmap, int numParticles) {
+                          Bitmap bitmap, int numParticles, GameSceneManager gameSceneManager) {
+        this.gameSceneManager = gameSceneManager;
         this.startYPos = startYPos;
         this.startXPos = startXPos;
         this.xPosRange = xPosRange;
         this.minSpeed = minSpeed;
         this.bitmap = bitmap;
         this.speedRange = speedRange;
-
+        settings = SettingsState.load(gameSceneManager.gameView.getContext());
         particles = new Particle[numParticles];
 
         for (int i = 0; i < particles.length; i++) {
@@ -36,13 +40,11 @@ public class ParticleSystem {
     }
 
     public void doDraw(GameView view) {
-        if(particlesEnabled == true){
+        if(settings.boolParticlesEnabled == true){
         for(int i = 0; i < particles.length; i++) {
             Particle particle = particles[i];
                 particle.doDraw(view);
             }
-            } else {
-
         }
     }
 

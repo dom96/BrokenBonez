@@ -2,7 +2,6 @@ package com.dragonfruitstudios.brokenbonez.Input;
 
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
-import android.util.Log;
 
 public class Accelerometer {
     long lastUpdate = System.currentTimeMillis();
