@@ -222,7 +222,7 @@ public class GameLoop implements Runnable {
             case KeyEvent.KEYCODE_D:
                 gameSceneManager.setScene("gameScene");
                 GameScene gameScene = (GameScene)gameSceneManager.getGameSceneByName("gameScene");
-                gameScene.newGame(Bike.BodyType.Bike,Color.BLUE);
+                gameScene.newGame(Bike.CharacterType.Leslie, Bike.BodyType.Bike, Color.BLUE);
                 break;
         }
 

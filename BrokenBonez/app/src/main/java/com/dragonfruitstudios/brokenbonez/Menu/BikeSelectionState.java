@@ -160,7 +160,7 @@ public class BikeSelectionState implements GameObject {
 
         if(select.onTouchEvent(event) == true){
             GameScene gameScene = (GameScene)this.gameSceneManager.getGameSceneByName("gameScene");
-            gameScene.newGame(bike.getBodyType(), bike.getColor());
+            gameScene.newGame(bike.getCharacterType(), bike.getBodyType(), bike.getColor());
             this.gameSceneManager.setScene("levelSelectionScene");
         }
         // bike model

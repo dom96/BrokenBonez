@@ -27,11 +27,11 @@ public class GameScene extends Scene {
     public GameScene(AssetLoader assetLoader, GameSceneManager gameSceneManager) {
         super(assetLoader, gameSceneManager);
         this.state = new GameState(assetLoader, this.gameSceneManager);
-        newGame(Bike.BodyType.Bike, Color.BLUE);
+        newGame(Bike.CharacterType.Leslie, Bike.BodyType.Bike, Color.BLUE);
     }
 
-    public void newGame(Bike.BodyType bikeBodyType, int bikeColor) {
-        this.state.newGame(Bike.CharacterType.Leslie, bikeBodyType, bikeColor);
+    public void newGame(Bike.CharacterType characterType, Bike.BodyType bikeBodyType, int bikeColor) {
+        this.state.newGame(characterType, bikeBodyType, bikeColor);
     }
 
     public void draw(GameView view) {
