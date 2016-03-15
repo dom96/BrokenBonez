@@ -7,7 +7,7 @@ import android.view.MotionEvent;
 public class TouchHandler {
     static float accel;
     public enum ControlIsActive {ACTION_GAS_DOWN, ACTION_GAS_UP, ACTION_BRAKE_DOWN, ACTION_BRAKE_UP, ACTION_NONE}
-    static ControlIsActive cIA = ControlIsActive.ACTION_NONE;
+    public static ControlIsActive cIA = ControlIsActive.ACTION_NONE;
     static boolean gasIsDown;
     static boolean gasIsUp;
     static boolean brakeIsDown;

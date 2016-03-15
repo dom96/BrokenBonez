@@ -33,7 +33,7 @@ public class ImageButton {
         view.drawImage(scaledImage, pos, rotation, GameView.ImageOrigin.TopLeft);
     }
 
-    public void onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(MotionEvent event) {
         int pointerIndex = event.getActionIndex();
         int maskedAction = event.getActionMasked();
         switch (maskedAction) {
@@ -46,15 +46,15 @@ public class ImageButton {
                 if(rectangle.collidesWith(posCollide)) {
                     if(f.x > pos.x && f.x < pos.x + scaledImage.getWidth() - 1){
                         if(f.y > pos.y && f.y < pos.y + scaledImage.getHeight() - 1) {
-                            isTouched = true;
+                            return true;
+                        } else {
+                            return false;
                         }
                     }
                 }
                 break;
             }
         }
+        return false;
     }
-        public boolean isTouched(){
-            return isTouched;
-        }
-    }
+}

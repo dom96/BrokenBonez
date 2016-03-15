@@ -12,11 +12,16 @@ import com.dragonfruitstudios.brokenbonez.Gameplay.GameState;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Input.Accelerometer;
 import com.dragonfruitstudios.brokenbonez.Input.TouchHandler;
+import com.dragonfruitstudios.brokenbonez.Menu.Settings;
+import com.dragonfruitstudios.brokenbonez.Menu.SettingsState;
+
+import java.io.IOException;
 
 /**
  * Implements the game scene in which the bulk of the gameplay occurs.
  */
 public class GameScene extends Scene {
+    Settings settings;
     GameState state;
 
     public GameScene(AssetLoader assetLoader, GameSceneManager gameSceneManager) {
@@ -47,14 +52,19 @@ public class GameScene extends Scene {
 
     @Override
     public void activate() {
-        state.getAssetLoader().getSoundByName("bikeEngine.mp3").play(true);
-        state.getAssetLoader().getSoundByName("bikeEngine.mp3").setVolume(0.5f);
-        state.getAssetLoader().getSoundByName("brokenboneztheme.ogg").setVolume(1f);
-        state.getAssetLoader().getSoundByName("brokenboneztheme.ogg").play(true);
+        settings = SettingsState.load(gameSceneManager.gameView.getContext());
+        if(settings.boolSoundEnabled == true) {
+            state.getAssetLoader().getSoundByName("bikeEngine.mp3").play(true);
+            state.getAssetLoader().getSoundByName("bikeEngine.mp3").setVolume(0.5f);
+            state.getAssetLoader().getSoundByName("brokenboneztheme.ogg").setVolume(1f);
+            state.getAssetLoader().getSoundByName("brokenboneztheme.ogg").play(true);
+        }
     }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        state.setBikeTilt(Accelerometer.calculateTiltStrength(event));
+        if (settings.boolAccelEnabled == true) {
+            state.setBikeTilt(Accelerometer.calculateTiltStrength(event));
+        }
     }
 }

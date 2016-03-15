@@ -157,15 +157,13 @@ public class BikeSelectionState implements GameObject {
         prevPrevPrev.onTouchEvent(event);
         select.onTouchEvent(event);
 
-        if(select.isTouched() == true){
-            select.isTouched = false;
+        if(select.onTouchEvent(event) == true){
             GameScene gameScene = (GameScene)this.gameSceneManager.getGameSceneByName("gameScene");
             gameScene.newGame(bike.getBodyType(), bike.getColor());
             this.gameSceneManager.setScene("levelSelectionScene");
         }
         // bike model
-        if(next.isTouched() == true){
-            next.isTouched = false;
+        if(next.onTouchEvent(event) == true){
             j++;
             if(j > 1){
                 j = 0;
@@ -183,8 +181,7 @@ public class BikeSelectionState implements GameObject {
             }
         }
         // bike model
-        if(prev.isTouched() == true){
-            prev.isTouched = false;
+        if(prev.onTouchEvent(event) == true){
             j--;
             if(j < 0){
                 j = 1;
@@ -202,8 +199,7 @@ public class BikeSelectionState implements GameObject {
             }
         }
         // color
-        if(nextNext.isTouched() == true){
-            nextNext.isTouched = false;
+        if(nextNext.onTouchEvent(event) == true){
             i++;
             if(i > 6){
                 i = 0;
@@ -234,8 +230,7 @@ public class BikeSelectionState implements GameObject {
             }
         }
         // color
-        if(prevPrev.isTouched() == true){
-            prevPrev.isTouched = false;
+        if(prevPrev.onTouchEvent(event) == true){
             i--;
             if(i < 0){
                 i = 6;
@@ -273,8 +268,7 @@ public class BikeSelectionState implements GameObject {
             }
         }
 
-        if(nextNextNext.isTouched() == true){
-            nextNextNext.isTouched = false;
+        if(nextNextNext.onTouchEvent(event) == true){
             k++;
             if(k > 3){
                 k = 0;
@@ -297,8 +291,7 @@ public class BikeSelectionState implements GameObject {
             }
         }
 
-        if(prevPrevPrev.isTouched() == true) {
-            prevPrevPrev.isTouched = false;
+        if(prevPrevPrev.onTouchEvent(event) == true) {
             k--;
             if (k < 0) {
                 k = 3;

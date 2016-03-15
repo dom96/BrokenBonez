@@ -27,4 +27,5 @@ public class SettingsScene extends Scene {
     public void onTouchEvent(MotionEvent event) {
         state.onTouchEvent(event);
     }
+
 }

@@ -1,5 +1,4 @@
 package com.dragonfruitstudios.brokenbonez.Gameplay;
-
 import android.util.Log;
 import android.view.MotionEvent;
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
@@ -11,9 +10,9 @@ import com.dragonfruitstudios.brokenbonez.Input.TouchHandler;
 import com.dragonfruitstudios.brokenbonez.Math.Physics.Simulator;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
 import com.dragonfruitstudios.brokenbonez.HighScores.HighScore;
-
 import java.io.IOException;
 
+import com.dragonfruitstudios.brokenbonez.ParticleSystem.ParticleManager;
 
 public class GameState {
     GameLevel currentLevel;
@@ -22,13 +21,14 @@ public class GameState {
     private GameSceneManager gameSceneManager;
     private Simulator physicsSimulator;
     private Ghost ghost;
-    private HighScore score;
-
+    private ParticleManager particleManager;
+    public HighScore score;
     private Camera camera;
 
     private FinishOverlay finishOverlay;
     private boolean slowMotion;
     private boolean askingForHighScore; // determines whether the `askName` dialog is shown.
+
 
     public GameState(AssetLoader assetLoader, GameSceneManager gameSceneManager) {
         this.gameSceneManager = gameSceneManager;
@@ -45,7 +45,6 @@ public class GameState {
         this.physicsSimulator = new Simulator();
 
         camera = new Camera(0, 0);
-
         currentLevel = new GameLevel(this);
         bike = new Bike(currentLevel, Bike.BodyType.Bike, Bike.CharacterType.Leslie);
 
@@ -57,6 +56,7 @@ public class GameState {
         ghost = new Ghost(gameSceneManager.activity.getApplicationContext(), "level_flat",
                 currentLevel);
 
+        this.particleManager = new ParticleManager(assetLoader, gameSceneManager);
     }
 
     public void newGame(Bike.CharacterType characterType, Bike.BodyType bikeBodyType,
@@ -78,12 +78,14 @@ public class GameState {
         bike.update(lastUpdate);
         physicsSimulator.update(lastUpdate);
         currentLevel.update(lastUpdate, bike.getPos());
+        particleManager.update(lastUpdate, bike.getPos());
         camera.centerHorizontally(bike.getPos().x);
         if (!finishOverlay.isEnabled()) {
             score.changeTimeBy(lastUpdate);
         }
         ghost.createSlice(lastUpdate, bike.getLeftWheel().getPos(), bike.getRightWheel().getPos(),
                 bike.getLeftWheel().getRotation(), bike.getRightWheel().getRotation());
+        score.changeTimeBy(lastUpdate);
     }
 
     public void updateSize(int w, int h) {
@@ -100,6 +102,7 @@ public class GameState {
         physicsSimulator.draw(view);
         score.draw(view);
         finishOverlay.draw(view);
+        particleManager.draw(view);
     }
 
     public void onTouchEvent(MotionEvent event) {

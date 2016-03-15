@@ -101,17 +101,13 @@ public class FinishOverlay {
         // Only test for touch events if the overlay is enabled.
         if (enabled && continueBtn != null) {
             if (!crashed) {
-                continueBtn.onTouchEvent(event);
+                if (continueBtn.onTouchEvent(event)) {
+                    return OverlayResult.Continue;
+                }
             }
-            mainMenuBtn.onTouchEvent(event);
-            restartLevelBtn.onTouchEvent(event);
-
-            if (continueBtn.isTouched()) {
-                return OverlayResult.Continue;
-            }
-            else if (mainMenuBtn.isTouched()) {
+            if (mainMenuBtn.onTouchEvent(event)) {
                 return OverlayResult.ShowMainMenu;
-            } else if (restartLevelBtn.isTouched()) {
+            } else if (restartLevelBtn.onTouchEvent(event)) {
                 return OverlayResult.RestartLevel;
             }
         }
