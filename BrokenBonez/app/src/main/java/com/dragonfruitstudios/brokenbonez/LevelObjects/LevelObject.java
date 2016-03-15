@@ -1,34 +1,34 @@
 package com.dragonfruitstudios.brokenbonez.LevelObjects;
 
-
-import android.app.Activity;
-
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.GameObject;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
+import com.dragonfruitstudios.brokenbonez.Gameplay.Bike;
+import com.dragonfruitstudios.brokenbonez.Gameplay.GameState;
+import com.dragonfruitstudios.brokenbonez.HighScores.HighScore;
+import com.dragonfruitstudios.brokenbonez.Math.Collisions.Rect;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
-public abstract class LevelObject implements GameObject {
+public abstract class LevelObject {
 
     AssetLoader assets;
     boolean visible = true;
-    boolean solid;
-    GameView gameView;
-    Activity activity;
-    protected VectorF v = new VectorF(this.getX(), this.getY());
+    protected VectorF v;
     float rotation;
+    //GameState gameState;
 
+    public abstract void draw(GameView view);
 
-    public abstract void onHit();
+    public abstract void update(float lastUpdate, Bike bike, HighScore score);
+
+    public abstract void updateSize(int width, int height);
+
+    public abstract void onHit(Bike bike, HighScore score);
 
     public abstract void playSound();
 
-    public boolean isSolid(){
-        return this.solid;
-    }
-
     public float getX(){
-        return v.getX();
+        return this.v.getX();
     }
 
     public float getY(){
@@ -53,11 +53,6 @@ public abstract class LevelObject implements GameObject {
 
     public void setVisible(boolean visible){
         this.visible = visible;
-    }
-
-    protected void setupAssets(String[] s){
-        Activity activity = (Activity) gameView.getContext();
-        this.assets = new AssetLoader(activity, s);
     }
 
 

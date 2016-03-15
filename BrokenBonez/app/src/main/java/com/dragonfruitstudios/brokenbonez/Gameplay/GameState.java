@@ -7,6 +7,8 @@ import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Game.Graphics;
 import com.dragonfruitstudios.brokenbonez.GameLoop;
 import com.dragonfruitstudios.brokenbonez.Input.TouchHandler;
+import com.dragonfruitstudios.brokenbonez.Math.Collisions.Rect;
+import com.dragonfruitstudios.brokenbonez.Math.Physics.DynamicBody;
 import com.dragonfruitstudios.brokenbonez.Math.Physics.Simulator;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
 import com.dragonfruitstudios.brokenbonez.HighScores.HighScore;

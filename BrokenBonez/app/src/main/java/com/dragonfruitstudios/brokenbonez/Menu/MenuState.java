@@ -34,7 +34,7 @@ public class MenuState implements GameObject {
         hiScore = new ImageButton("menu/hiscore.png", assetLoader, getScreenWidth() / 2 - getScreenWidth() / 4, getScreenHeight() / 4 * 2 + 120, 425, 120);
         credits = new ImageButton("menu/credits.png", assetLoader,  getScreenWidth() / 4 * 2 + 25, getScreenHeight() / 4 * 2 + 120, 425, 120);
         settings = new ImageButton("menu/settings.png", assetLoader, (getScreenWidth() / 10) * 9 + 70, (getScreenHeight() / 10) * 9 + 15, 120, 100);
-        this.assetLoader.AddAssets(new String[]{"menu/tv.png", "menu/tvnoise.png"});
+        this.assetLoader.AddAssets(new String[]{"menu/tv.png", "menu/tvnoise.png", "staticnoise.mp3"});
         noise = assetLoader.getBitmapByName("menu/tvnoise.png");
         background = assetLoader.getBitmapByName("menu/tv.png");
         scaledNoise = noise.createScaledBitmap(noise, getScreenWidth(), getScreenHeight(), false);
@@ -51,6 +51,7 @@ public class MenuState implements GameObject {
                     noiseOn = false;
                     noiseWait = false;
                     waitTime = 0;
+                    this.assetLoader.getSoundByName("staticnoise.mp3").stop();
                     startBikeSelectionScreen();
             }
         }
@@ -98,6 +99,7 @@ public class MenuState implements GameObject {
         settings.onTouchEvent(event);
 
         if(startGame.onTouchEvent(event) == true){
+            assetLoader.getSoundByName("staticnoise.mp3").play(false);
             setNoiseOn();
             setNoiseWait();
         }
