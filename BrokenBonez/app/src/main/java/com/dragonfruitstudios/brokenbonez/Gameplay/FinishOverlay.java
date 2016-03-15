@@ -24,24 +24,20 @@ public class FinishOverlay {
         assetLoader.AddAssets(new String[]{"menu/deathoverlay/continue.png",
                 "menu/deathoverlay/main_menu.png",
                 "menu/deathoverlay/restart_level.png"});
+
+        Bitmap btnImg = assetLoader.getBitmapByName("menu/deathoverlay/main_menu.png");
+        float buttonsX = (Graphics.getScreenWidth() / 2) - (btnImg.getWidth() / 2);
+        continueBtn = new ImageButton("menu/deathoverlay/continue.png", assetLoader, buttonsX,
+                400, btnImg.getWidth(), btnImg.getHeight());
+        mainMenuBtn = new ImageButton("menu/deathoverlay/main_menu.png", assetLoader, buttonsX,
+                480, btnImg.getWidth(), btnImg.getHeight());
+        restartLevelBtn = new ImageButton("menu/deathoverlay/restart_level.png", assetLoader, buttonsX,
+                560, btnImg.getWidth(), btnImg.getHeight());
     }
 
     public void enable(boolean crashed) {
         this.crashed = crashed;
-        if (!enabled) {
-            enabled = true;
-
-            // Create new buttons to reset their state. The ImageButton's onTouchEvent method should
-            // do this really, so this is a workaround (TODO).
-            Bitmap btnImg = assetLoader.getBitmapByName("menu/deathoverlay/main_menu.png");
-            float buttonsX = (Graphics.getScreenWidth() / 2) - (btnImg.getWidth() / 2);
-            continueBtn = new ImageButton("menu/deathoverlay/continue.png", assetLoader, buttonsX,
-                    400, btnImg.getWidth(), btnImg.getHeight());
-            mainMenuBtn = new ImageButton("menu/deathoverlay/main_menu.png", assetLoader, buttonsX,
-                    480, btnImg.getWidth(), btnImg.getHeight());
-            restartLevelBtn = new ImageButton("menu/deathoverlay/restart_level.png", assetLoader, buttonsX,
-                    560, btnImg.getWidth(), btnImg.getHeight());
-        }
+        enabled = true;
     }
 
     public void disable() {

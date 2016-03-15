@@ -48,7 +48,7 @@ public class Ghost extends Bike  {
     }
 
     public void reset() {
-        currentRun = new GhostInfo("Anonymous");
+        currentRun.reset();
 
         try {
             load(levelName);
@@ -117,8 +117,6 @@ public class Ghost extends Bike  {
 
     @Override
     public void draw(GameView view) {
-        // TODO: Change the bike model to look more ghost-like.
-        // TODO: Display name of player above the ghost.
         if (prevRun != null) {
             super.draw(view);
 

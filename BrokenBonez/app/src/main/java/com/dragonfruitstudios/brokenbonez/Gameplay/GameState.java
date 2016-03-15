@@ -62,7 +62,9 @@ public class GameState {
                         int bikeColor) {
         // TODO: Level selection.
         bike.setCharacterType(characterType);
-        bike.setColor(bikeColor);
+        if (bike.getColor() != bikeColor) {
+            bike.setColor(bikeColor);
+        }
         bike.setBodyType(bikeBodyType);
         bike.reset();
         setSlowMotion(false);

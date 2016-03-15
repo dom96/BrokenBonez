@@ -321,8 +321,11 @@ public class Bike implements GameObject {
     }
 
     public void setBodyType(BodyType bodyType) {
-        this.bodyType = bodyType;
-        setColor(color); // Refresh body image.
+        // No need to set the body when it hasn't changed.
+        if (this.bodyType != bodyType) {
+            this.bodyType = bodyType;
+            setColor(color); // Refresh body image.
+        }
     }
 
     public void setCharacterType(CharacterType characterType) {

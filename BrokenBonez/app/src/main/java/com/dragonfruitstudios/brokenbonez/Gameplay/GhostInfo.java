@@ -94,4 +94,9 @@ public class GhostInfo implements Serializable {
     public void setUsername(String username) {
         this.username = username;
     }
+
+    public void reset() {
+        this.username = "Anonymous";
+        this.slices.clear();
+    }
 }
