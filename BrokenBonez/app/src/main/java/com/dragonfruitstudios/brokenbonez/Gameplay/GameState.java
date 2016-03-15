@@ -1,13 +1,13 @@
 package com.dragonfruitstudios.brokenbonez.Gameplay;
 
-import android.graphics.Canvas;
-import android.graphics.ColorFilter;
-import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.MotionEvent;
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.Camera;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
+import com.dragonfruitstudios.brokenbonez.Game.Graphics;
 import com.dragonfruitstudios.brokenbonez.GameLoop;
+import com.dragonfruitstudios.brokenbonez.Input.TouchHandler;
 import com.dragonfruitstudios.brokenbonez.Math.Physics.Simulator;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
 import com.dragonfruitstudios.brokenbonez.HighScores.HighScore;
@@ -23,7 +23,7 @@ public class GameState {
 
     private Camera camera;
 
-    private DeathOverlay deathOverlay;
+    private FinishOverlay finishOverlay;
     private boolean slowMotion;
 
     public GameState(AssetLoader assetLoader, GameSceneManager gameSceneManager) {
@@ -45,7 +45,7 @@ public class GameState {
         bike = new Bike(currentLevel, Bike.BodyType.Bike);
 
         slowMotion = false;
-
+        finishOverlay = new FinishOverlay(assetLoader);
         this.score = new HighScore(gameSceneManager.gameView);
     }
 
@@ -54,11 +54,8 @@ public class GameState {
         bike.setBodyType(bikeBodyType);
         bike.reset();
         setSlowMotion(false);
-
-        // Ensure that deathOverlay has been created.
-        if (deathOverlay != null) {
-            deathOverlay.disable();
-        }
+        finishOverlay.disable();
+        score.reset();
     }
 
     public void update(float lastUpdate) {
@@ -66,16 +63,15 @@ public class GameState {
         physicsSimulator.update(lastUpdate);
         currentLevel.update(lastUpdate, bike.getPos());
         camera.centerHorizontally(bike.getPos().x);
-        score.changeTimeBy(lastUpdate);
+        if (!finishOverlay.isEnabled()) {
+            score.changeTimeBy(lastUpdate);
+        }
     }
 
     public void updateSize(int w, int h) {
         currentLevel.updateSize(w, h);
         bike.updateSize(w, h);
         camera.updateSize(w, h);
-
-        // Create the DeathOverlay once the size of the GameView is known.
-        deathOverlay = new DeathOverlay(assetLoader, w, h);
     }
 
     public void draw(GameView view) {
@@ -83,15 +79,54 @@ public class GameState {
         currentLevel.draw(view);
         bike.draw(view);
         physicsSimulator.draw(view);
-        deathOverlay.draw(view);
+        finishOverlay.draw(view);
         score.draw(view);
     }
 
     public void onTouchEvent(MotionEvent event) {
-        deathOverlay.onTouchEvent(event);
+        if (!finishOverlay.isEnabled()) {
+            // Determine what action the user performed.
+            TouchHandler.ControlIsActive action = TouchHandler.determineAction(event,
+                    Graphics.getScreenWidth() / 2);
+            switch (action) {
+                case ACTION_GAS_UP:
+                case ACTION_BRAKE_UP:
+                case ACTION_NONE:
+                    setBikeAcceleration(0);
+                    break;
+                case ACTION_GAS_DOWN:
+                case ACTION_BRAKE_DOWN:
+                    setBikeAcceleration(TouchHandler.getAccel());
+                    getAssetLoader().getSoundByName("bikeEngineRev.mp3").play(false);   //Nearly ready, still little more test
+                    break;
+            }
+        }
+
+        FinishOverlay.OverlayResult result = finishOverlay.onTouchEvent(event);
+        Log.d("GS", "FinishOverlay wants: " + result.toString());
+        switch (result) {
+            case Continue:
+                score.setCallbacks(new HighScore.HighScoreCallbacks() {
+                    @Override
+                    public void onNameEntered(boolean enteredName) {
+                        // TODO: Choose next level.
+                        newGame(bike.getBodyType(), bike.getColor());
+                    }
+                });
+                score.askName(true);
+                break;
+            case RestartLevel:
+                newGame(bike.getBodyType(), bike.getColor());
+                break;
+            case ShowMainMenu:
+                gameSceneManager.setScene("menuScene");
+                break;
+            case None:
+                break;
+        }
     }
 
-    public void setBikeAcceleration(float strength) {
+    private void setBikeAcceleration(float strength) {
         bike.setTorque(strength);
     }
 
@@ -125,8 +160,8 @@ public class GameState {
         }
     }
 
-    public void endGame() {
-        deathOverlay.enable();
+    public void endGame(boolean crashed) {
+        finishOverlay.enable(crashed);
         setSlowMotion(true);
     }
 }

@@ -177,6 +177,13 @@ public class Line extends Intersector implements Drawable {
         return new VectorF((this.start.x + this.end.x) / 2, (this.start.y + this.end.y) / 2);
     }
 
+    /**
+     * Determines whether this Line starts and ends at the same point.
+     */
+    public boolean isPoint() {
+        return this.start.x == this.end.x && this.start.y == this.end.y;
+    }
+
     // <editor-fold desc="Getters/Setters">
 
     public ArrayList<Line> getLines() {

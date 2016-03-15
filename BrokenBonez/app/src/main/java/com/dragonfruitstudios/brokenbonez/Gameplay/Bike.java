@@ -71,7 +71,7 @@ public class Bike implements GameObject {
         setColor(Color.parseColor("#4d27f6"));
 
         // Create bounding rectangle around Bike body.
-        bodyRect = new Rect(new VectorF(0, 0), 118, 43);
+        bodyRect = new Rect(new VectorF(0, 0), 1, 1);
     }
 
     private void updateBodyRect(VectorF bodyRotation, VectorF bodyNormal) {
@@ -204,7 +204,7 @@ public class Bike implements GameObject {
         }
 
         // Determine if Bike body collided with anything.
-        if (currentLevel.collidesWith(bodyRect)) {
+        if (currentLevel.collidesWith(bodyRect) && !dead) {
             // The bike collided with something, so let's remove the constraint between the wheels
             // and make it fall apart.
             currentLevel.getPhysicsSimulator().removeConstraint(wheelConstraint);
@@ -227,6 +227,8 @@ public class Bike implements GameObject {
 
         currentLevel.getPhysicsSimulator().addConstraint(wheelConstraint);
         dead = false;
+
+        bodyRect = new Rect(new VectorF(0, 0), 1, 1);
     }
 
     /**

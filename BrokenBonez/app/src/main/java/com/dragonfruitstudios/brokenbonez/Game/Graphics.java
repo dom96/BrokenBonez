@@ -1,15 +1,19 @@
 package com.dragonfruitstudios.brokenbonez.Game;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
 
+import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Line;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Polygon;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 import junit.framework.Assert;
+
+import java.util.HashMap;
 
 public class Graphics {
     /**
@@ -58,6 +62,14 @@ public class Graphics {
             // Increment `drawnWidth` by the width that was drawn.
             drawnWidth += maxWidth;
         }
+    }
+
+    public static int getScreenWidth() {
+        return Resources.getSystem().getDisplayMetrics().widthPixels;
+    }
+
+    public static int getScreenHeight() {
+        return Resources.getSystem().getDisplayMetrics().heightPixels;
     }
 
     // <editor-fold desc="Methods for scaling to screen resolution">

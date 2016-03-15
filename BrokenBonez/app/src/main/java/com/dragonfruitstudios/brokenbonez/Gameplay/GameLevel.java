@@ -41,7 +41,7 @@ public class GameLevel extends Level {
         bikePos = new VectorF(0, 0);
 
         // Create a default level info object (TODO: This should be loaded from LevelInfo text file).
-        info = new LevelInfo("level1", "surface.png", "ground.png");
+        info = new LevelInfo("level1", "surface.png", "ground.png", "finish.png");
         // Parameters to constructors:
         // Y position (based on 768 high screen), scroll factor, image origin
         // (For ColorLayer):
@@ -54,8 +54,6 @@ public class GameLevel extends Level {
                 GameView.ImageOrigin.BottomLeft, 20f, Color.TRANSPARENT, Color.BLACK));
         info.layers.add(new LevelInfo.Layer("bushes.png", 518f, 0.8f,
                 GameView.ImageOrigin.BottomLeft));
-        //info.layers.add(new LevelInfo.Layer("ground.png", 768f, 1f,
-        //        GameView.ImageOrigin.BottomLeft));
 
         // Load the SVG file which defines the level's geometry.
         info.loadSVG(state.getAssetLoader(), "level_flat.svg", new VectorF(-600, 0));
@@ -77,6 +75,8 @@ public class GameLevel extends Level {
         for (LevelInfo.SolidLayer sl : info.solids) {
             physicsSimulator.addStaticShape(sl);
         }
+
+
 
         /*
         // TODO: Hardcoded for now.
@@ -190,11 +190,17 @@ public class GameLevel extends Level {
             }
         }
 
-        // Draw solid layers.
+
         gameView.enableCamera();
+        // Draw solid layers.
         for (LevelInfo.SolidLayer sl : info.solids) {
             drawSolidLayer(sl, gameView);
         }
+
+        // Draw the finish line.
+        // The finish line's class is "finish".
+        drawFinishLine(info.objects.get("finish"), gameView);
+
         gameView.disableCamera();
 
         // Draw debug info.
@@ -301,8 +307,24 @@ public class GameLevel extends Level {
         }
     }
 
+    private void drawFinishLine(LevelInfo.SolidObject so, GameView view) {
+        String finishLineKey = info.getFinishLineKey();
+        Bitmap finishLine = scaledBitmaps.get(finishLineKey);
+        VectorF pos = so.pos.copy();
+        Graphics.scalePos(pos, view.getWidth(), view.getHeight());
+        view.drawImage(finishLine, pos, 0, GameView.ImageOrigin.TopLeft);
+    }
+
     public void update(float lastUpdate, VectorF bikePos) {
         this.bikePos = bikePos;
+
+        // Determine if Bike passed the finish line.
+        LevelInfo.SolidObject finishLine = info.objects.get("finish");
+        VectorF pos = finishLine.pos.copy();
+        Graphics.scalePos(pos, Graphics.getScreenWidth(), Graphics.getScreenWidth());
+        if (bikePos.x >= pos.x) {
+            gameState.endGame(false);
+        }
     }
 
     public AssetLoader getAssetLoader() {
@@ -333,6 +355,6 @@ public class GameLevel extends Level {
 
     @Override
     public void onBikeCrash() {
-        gameState.endGame();
+        gameState.endGame(true);
     }
 }

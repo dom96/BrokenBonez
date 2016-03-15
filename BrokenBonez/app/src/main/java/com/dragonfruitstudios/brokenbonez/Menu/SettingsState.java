@@ -56,8 +56,8 @@ public class SettingsState implements GameObject {
     }
 
     public void onTouchEvent(MotionEvent event) {
-        soundEnabled.onTouchEvent(event, (getScreenWidth() / 2), (getScreenHeight() / 2), (getScreenWidth() / 2) + 59, (getScreenHeight() / 2) + 49);
-        accelerometerEnabled.onTouchEvent(event, (getScreenWidth() / 2), (getScreenHeight() / 4 * 3), (getScreenWidth() / 2) + 59, (getScreenHeight() / 4 * 3) + 49);
+        soundEnabled.onTouchEvent(event);
+        accelerometerEnabled.onTouchEvent(event);
         if (soundEnabled.isTouched == true) {
             if(i == 0){
                 i++;

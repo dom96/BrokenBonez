@@ -41,7 +41,9 @@ public class LevelInfo {
     public ArrayList<Layer> layers;
     public String surfacePath; // Path to the image which is drawn for the bike to ride on.
     public String groundPath; // Path to the image which can be drawn below surface.
+    public String finishPath; // Path to the image which signifies the finish line.
     public ArrayList<SolidLayer> solids;
+    public HashMap<String,SolidObject> objects;
     // Specifies the assets to use for a specific solidLayer class.
     private HashMap<String,SolidLayer.Info> slAssets;
 
@@ -121,6 +123,16 @@ public class LevelInfo {
         }
     }
 
+    public static class SolidObject {
+        public VectorF pos;
+        public String theClass;
+
+        public SolidObject(VectorF pos, String theClass) {
+            this.pos = pos;
+            this.theClass = theClass;
+        }
+    }
+
     public static class Layer {
         public String path; // Relative to level image dir.
         public float yPos; // Resolution independent factors used to place this layer along the vertical.
@@ -163,12 +175,14 @@ public class LevelInfo {
         }
     }
 
-    public LevelInfo(String name, String surfacePath, String groundPath) {
+    public LevelInfo(String name, String surfacePath, String groundPath, String finishPath) {
         this.name = name;
         this.surfacePath = surfacePath;
         this.groundPath = groundPath;
+        this.finishPath = finishPath;
         this.layers = new ArrayList<Layer>();
         this.solids = new ArrayList<SolidLayer>();
+        this.objects = new HashMap<String, SolidObject>();
         this.slAssets = new HashMap<String,SolidLayer.Info>();
     }
 
@@ -181,6 +195,7 @@ public class LevelInfo {
         HashMap<String, Bitmap> result = new HashMap<>();
         loadAsset(loader, result, getSurfaceKey());
         loadAsset(loader, result, getGroundKey());
+        loadAsset(loader, result, getFinishLineKey());
         // Add the background layer's assets.
         for (Layer l : layers) {
             loadAsset(loader, result, getLayerKey(l));
@@ -232,6 +247,10 @@ public class LevelInfo {
 
     public String getGroundKey() {
         return getLevelPath() + groundPath;
+    }
+
+    public String getFinishLineKey() {
+        return getLevelPath() + finishPath;
     }
 
     public String getTransparentKey() {
@@ -335,6 +354,7 @@ public class LevelInfo {
                     break;
                 case 'C':
                     pathStarted = true;
+                    mStarted = false;
                     if (path.charAt(i+1) == ' ') {
                         i++; // Skip whitespace.
                     }
@@ -377,11 +397,70 @@ public class LevelInfo {
         if (coords[0].length() > 0) {
             VectorF end = new VectorF(Float.valueOf(coords[0]) + pos.x,
                     Float.valueOf(coords[1]) + pos.y);
-            Assert.assertTrue("Found line which starts and ends in the same place.",
-                    end.subtracted(currentPoint).magnitude() != 0);
-            result.add(new Line(currentPoint.copy(), end));
+            if (!mStarted) {
+                Assert.assertTrue("Found line which starts and ends in the same place.",
+                        end.subtracted(currentPoint).magnitude() != 0);
+                result.add(new Line(currentPoint.copy(), end));
+            }
+            else {
+                // Create a Point line (line which starts and ends at the same point).
+                // This type of line is used to designate the position of Level objects, finish
+                // flag and more.
+                result.add(new Line(end.copy(), end));
+            }
         }
         return result;
+    }
+
+    private SolidLayer generateSolidLayer(ArrayList<Line> lines, String theClass) {
+        // Assume all the lines in path are surface paths.
+        // Create an AssetKey which specifies that the lines in Path should be drawn as the surface.
+        SolidLayer.AssetKey surfaceKey = new SolidLayer.AssetKey(
+                AssetType.Surface, 0, lines.size()-1);
+
+        // Define a variable to hold the array of AssetKeys.
+        SolidLayer.AssetKey[] keys;
+        // Define a variable which determines whether this path is closed (and does not need
+        // to be closed automatically).
+        boolean selfClosed = false;
+
+        // Check if the lines form a closed Polygon.
+        VectorF firstPoint = lines.get(0).getStart();
+        VectorF lastPoint = lines.get(lines.size()-1).getFinish();
+        float distSq = firstPoint.distSquared(lastPoint);
+        // If the distance between the first lines start point and the last lines finish point is
+        // close enough then we assume that the Path forms a closed Polygon.
+        if (distSq < Math.pow(5, 2)) {
+            keys = new SolidLayer.AssetKey[] {
+                    surfaceKey
+            };
+            selfClosed = true;
+        }
+        else {
+            // Otherwise we quickly close the Polygon.
+            Line left = new Line(lines.get(0).getStart().copy(),
+                    lines.get(0).getStart().added(new VectorF(0, 400)));
+            Line right = new Line(lines.get(lines.size() - 1).getFinish().copy(),
+                    lines.get(lines.size() - 1).getFinish().added(new VectorF(0, 400)));
+            Line bottom = new Line(left.getFinish().copy(), right.getFinish().copy());
+            lines.add(right);
+            lines.add(bottom);
+            lines.add(left);
+            keys = new SolidLayer.AssetKey[]{
+                    surfaceKey,
+                    new SolidLayer.AssetKey(AssetType.Transparent,
+                            surfaceKey.indexEnd + 1, surfaceKey.indexEnd + 4)
+            };
+        }
+        // Create a new SolidLayer using the specified `lines` and asset keys `keys`.
+        SolidLayer newLayer = SolidLayer.createPolygon(lines, keys);
+        newLayer.selfClosed = selfClosed;
+        newLayer.theClass = theClass;
+        return newLayer;
+    }
+
+    private SolidObject generateSolidObject(ArrayList<Line> lines, String theClass) {
+        return new SolidObject(lines.get(0).getStart(), theClass);
     }
 
     /**
@@ -405,44 +484,18 @@ public class LevelInfo {
                 NamedNodeMap attrs = elements.item(i).getAttributes();
                 Node d = attrs.getNamedItem("d");
                 ArrayList<Line> lines = parsePath(d.getNodeValue(), pos);
-                // Assume all the lines in path are surface paths.
-                SolidLayer.AssetKey surfaceKey = new SolidLayer.AssetKey(
-                        AssetType.Surface, 0, lines.size()-1);
-
-                SolidLayer.AssetKey[] keys;
-                boolean selfClosed = false;
-                // Check if the lines form a closed Polygon.
-                VectorF firstPoint = lines.get(0).getStart();
-                VectorF lastPoint = lines.get(lines.size()-1).getFinish();
-                float distSq = firstPoint.distSquared(lastPoint);
-                if (distSq < Math.pow(5, 2)) {
-                    keys = new SolidLayer.AssetKey[] {
-                            surfaceKey
-                    };
-                    selfClosed = true;
+                if (lines.size() > 0) {
+                    // TODO: Error checking for `class`.
+                    String theClass = attrs.getNamedItem("class").getNodeValue();
+                    if (lines.get(0).isPoint()) {
+                        SolidObject newObject = generateSolidObject(lines, theClass);
+                        objects.put(newObject.theClass, newObject);
+                    }
+                    else {
+                        SolidLayer newLayer = generateSolidLayer(lines, theClass);
+                        solids.add(newLayer);
+                    }
                 }
-                else {
-                    // TODO: Quick way to close the Polygon.
-                    Line left = new Line(lines.get(0).getStart().copy(),
-                            lines.get(0).getStart().added(new VectorF(0, 400)));
-                    Line right = new Line(lines.get(lines.size() - 1).getFinish().copy(),
-                            lines.get(lines.size() - 1).getFinish().added(new VectorF(0, 400)));
-                    Line bottom = new Line(left.getFinish().copy(), right.getFinish().copy());
-                    lines.add(right);
-                    lines.add(bottom);
-                    lines.add(left);
-                    keys = new SolidLayer.AssetKey[]{
-                            surfaceKey,
-                            new SolidLayer.AssetKey(AssetType.Transparent,
-                                    surfaceKey.indexEnd + 1, surfaceKey.indexEnd + 4)
-                    };
-                }
-                SolidLayer newLayer = SolidLayer.createPolygon(lines, keys);
-                newLayer.selfClosed = selfClosed;
-                solids.add(newLayer);
-
-                // Set the SolidLayer's id.
-                newLayer.theClass = attrs.getNamedItem("class").getNodeValue();
             }
         }
         catch (ParserConfigurationException | IOException | SAXException exc) {
