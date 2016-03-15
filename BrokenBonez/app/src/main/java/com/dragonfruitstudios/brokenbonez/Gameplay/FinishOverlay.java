@@ -69,20 +69,21 @@ public class FinishOverlay {
             // Draw extra information.
             String smallText = "";
             if (crashed) {
-                smallText = "You have crashed after " + finishTime + " seconds!";
+                smallText = String.format("You have crashed after %.1f seconds!", finishTime);
             }
             else {
-                smallText = "You have finished in " + finishTime + " seconds, ";
+                smallText = String.format("You have finished in %.1f seconds. ", finishTime);
                 if (ghostTimeDiff < 0) {
-                    smallText += String.format("but lost against the Ghost by %.1f seconds.",
+                    smallText += String.format("But lost against the Ghost by %.1f seconds.",
                         Math.abs(ghostTimeDiff));
                 }
                 else if (ghostTimeDiff > 0) {
-                    smallText += String.format("and won against the Ghost by %.1f seconds!",
+                    smallText += String.format("And won against the Ghost by %.1f seconds!",
                         ghostTimeDiff);
                 }
             }
-            view.drawTextCenter(smallText, view.getWidth() / 2, 300, Color.WHITE, 40);
+            view.drawTextCenter(smallText, view.getWidth() / 2, 300, Color.WHITE,
+                    (int)Graphics.scaleX(30, Graphics.getScreenWidth()));
 
             // Draw the buttons.
             if (!crashed) {
