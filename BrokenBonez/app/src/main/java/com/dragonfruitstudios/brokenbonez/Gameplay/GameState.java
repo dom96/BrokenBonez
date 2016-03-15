@@ -85,7 +85,6 @@ public class GameState {
         }
         ghost.createSlice(lastUpdate, bike.getLeftWheel().getPos(), bike.getRightWheel().getPos(),
                 bike.getLeftWheel().getRotation(), bike.getRightWheel().getRotation());
-        score.changeTimeBy(lastUpdate);
     }
 
     public void updateSize(int w, int h) {
