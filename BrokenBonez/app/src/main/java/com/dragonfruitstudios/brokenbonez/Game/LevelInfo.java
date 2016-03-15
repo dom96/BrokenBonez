@@ -43,7 +43,8 @@ public class LevelInfo {
     public String groundPath; // Path to the image which can be drawn below surface.
     public String finishPath; // Path to the image which signifies the finish line.
     public ArrayList<SolidLayer> solids;
-    public HashMap<String,SolidObject> objects;
+    // A mapping between a class name and a list of Solid objects with that class specified in SVG.
+    public HashMap<String,ArrayList<SolidObject>> objects;
     // Specifies the assets to use for a specific solidLayer class.
     private HashMap<String,SolidLayer.Info> slAssets;
 
@@ -184,7 +185,7 @@ public class LevelInfo {
         this.finishPath = finishPath;
         this.layers = new ArrayList<Layer>();
         this.solids = new ArrayList<SolidLayer>();
-        this.objects = new HashMap<String, SolidObject>();
+        this.objects = new HashMap<String, ArrayList<SolidObject>>();
         this.slAssets = new HashMap<String,SolidLayer.Info>();
     }
 
@@ -283,6 +284,29 @@ public class LevelInfo {
 
     public SolidLayer.Info getSolidLayerInfo(SolidLayer sl) {
         return slAssets.get(sl.theClass);
+    }
+
+    /**
+     * Gets the first SolidObject with the specified class. If none such exists then an exception
+     * is raised.
+     */
+    public SolidObject getSolidObject(String theClass) {
+        if (!objects.containsKey(theClass)) {
+            throw new RuntimeException("Could not find solid object: " + theClass);
+        }
+
+        return objects.get(theClass).get(0);
+    }
+
+    /**
+     * Returns a list of the SolidObjects with the specified class. Returns an empty list if
+     * there is no SolidObjects with that class.
+     */
+    public ArrayList<SolidObject> findSolidObjects(String theClass) {
+        if (!objects.containsKey(theClass)) {
+            return new ArrayList<>();
+        }
+        return objects.get(theClass);
     }
 
     public float calcGroundHeight(AssetLoader loader, int height) {
@@ -470,6 +494,17 @@ public class LevelInfo {
         return new SolidObject(lines.get(0).getStart(), theClass);
     }
 
+    private void addSolidObject(SolidObject so) {
+        if (objects.containsKey(so.theClass)) {
+            objects.get(so.theClass).add(so);
+        }
+        else {
+            ArrayList<SolidObject> classObjects = new ArrayList<SolidObject>();
+            classObjects.add(so);
+            objects.put(so.theClass, classObjects);
+        }
+    }
+
     /**
      * Parses the SVG file at `levels/<path>` and adds the paths defined in it into
      * this LevelInfo's solid layer's list. The `pos` parameter specifies the starting position
@@ -496,7 +531,7 @@ public class LevelInfo {
                     String theClass = attrs.getNamedItem("class").getNodeValue();
                     if (lines.get(0).isPoint()) {
                         SolidObject newObject = generateSolidObject(lines, theClass);
-                        objects.put(newObject.theClass, newObject);
+                        addSolidObject(newObject);
                     }
                     else {
                         SolidLayer newLayer = generateSolidLayer(lines, theClass);

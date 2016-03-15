@@ -121,4 +121,13 @@
 <path id="FinishLine" class="finish"
         fill="none" stroke="black" stroke-width="1"
         d="M 5420.00,518.00" />
+
+<path id="coin1" class="coin"
+        fill="none" stroke="black" stroke-width="1"
+        d="M 1580,518.00" />
+
+<path id="booster1" class="booster"
+        fill="none" stroke="black" stroke-width="1"
+        d="M 3280,518.00" />
+
 </svg>

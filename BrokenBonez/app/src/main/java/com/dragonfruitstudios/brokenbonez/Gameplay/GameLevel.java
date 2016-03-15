@@ -10,6 +10,10 @@ import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.Graphics;
 import com.dragonfruitstudios.brokenbonez.Game.Level;
 import com.dragonfruitstudios.brokenbonez.Game.LevelInfo;
+import com.dragonfruitstudios.brokenbonez.HighScores.HighScore;
+import com.dragonfruitstudios.brokenbonez.LevelObjects.LevelBoost;
+import com.dragonfruitstudios.brokenbonez.LevelObjects.LevelCoin;
+import com.dragonfruitstudios.brokenbonez.LevelObjects.LevelObject;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Line;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Math.Physics.Simulator;
@@ -34,6 +38,8 @@ public class GameLevel extends Level {
     boolean layersScaled = false;
     boolean bitmapsScaled = false;
     HashMap<String,Bitmap> scaledBitmaps;
+
+    ArrayList<LevelObject> levelObjects;
 
     public GameLevel(GameState state) {
         gameState = state;
@@ -82,6 +88,20 @@ public class GameLevel extends Level {
         }
 
 
+        // Initialise the LevelObjects based on the ones specified in LevelInfo.
+        levelObjects = new ArrayList<>();
+        ArrayList<LevelInfo.SolidObject> coins = info.findSolidObjects("coin");
+        ArrayList<LevelInfo.SolidObject> boosters = info.findSolidObjects("booster");
+        for (LevelInfo.SolidObject coin : coins) {
+            VectorF pos = coin.pos.copy();
+            Graphics.scalePos(pos, Graphics.getScreenWidth(), Graphics.getScreenHeight());
+            levelObjects.add(new LevelCoin(getAssetLoader(), pos.x, pos.y, 0));
+        }
+        for (LevelInfo.SolidObject booster : boosters) {
+            VectorF pos = booster.pos.copy();
+            Graphics.scalePos(pos, Graphics.getScreenWidth(), Graphics.getScreenHeight());
+            levelObjects.add(new LevelBoost(getAssetLoader(), pos.x, pos.y, 0));
+        }
 
         /*
         // TODO: Hardcoded for now.
@@ -202,7 +222,12 @@ public class GameLevel extends Level {
 
         // Draw the finish line.
         // The finish line's class is "finish".
-        drawFinishLine(info.objects.get("finish"), gameView);
+        drawFinishLine(info.getSolidObject("finish"), gameView);
+
+        // Draw the level objects.
+        for (LevelObject obj : levelObjects) {
+            obj.draw(gameView);
+        }
 
         gameView.disableCamera();
 
@@ -355,11 +380,11 @@ public class GameLevel extends Level {
         view.drawImage(finishLine, pos, 0, GameView.ImageOrigin.TopLeft);
     }
 
-    public void update(float lastUpdate, VectorF bikePos) {
-        this.bikePos = bikePos;
+    public void update(float lastUpdate, Bike bike, HighScore score) {
+        this.bikePos = bike.getPos();
 
         // Determine if Bike passed the finish line.
-        LevelInfo.SolidObject finishLine = info.objects.get("finish");
+        LevelInfo.SolidObject finishLine = info.getSolidObject("finish");
         if (finishLine == null) {
             throw new RuntimeException("Level doesn't define a finish line.");
         }
@@ -367,6 +392,11 @@ public class GameLevel extends Level {
         Graphics.scalePos(pos, Graphics.getScreenWidth(), Graphics.getScreenWidth());
         if (bikePos.x >= pos.x) {
             gameState.endGame(false);
+        }
+
+        // Update the level objects.
+        for (LevelObject obj : levelObjects) {
+            obj.update(lastUpdate, bike, score);
         }
     }
 
