@@ -104,6 +104,10 @@ public class GameState {
         bike.setTilt(value);
     }
 
+    public Rect getBikeRect(){
+        return bike.bodyRect;
+    }
+
     public AssetLoader getAssetLoader() {
         return assetLoader;
     }
