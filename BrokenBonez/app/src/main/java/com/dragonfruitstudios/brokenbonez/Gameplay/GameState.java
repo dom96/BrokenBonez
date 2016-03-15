@@ -28,6 +28,7 @@ public class GameState {
 
     private FinishOverlay finishOverlay;
     private boolean slowMotion;
+    private boolean askingForHighScore; // determines whether the `askName` dialog is shown.
 
     public GameState(AssetLoader assetLoader, GameSceneManager gameSceneManager) {
         this.gameSceneManager = gameSceneManager;
@@ -124,23 +125,26 @@ public class GameState {
         Log.d("GS", "FinishOverlay wants: " + result.toString());
         switch (result) {
             case Continue:
-                score.setCallbacks(new HighScore.HighScoreCallbacks() {
-                    @Override
-                    public void onNameEntered(boolean enteredName, String name) {
-                        // TODO: Choose next level.
-                        if (enteredName) {
-                            try {
-                                ghost.save(name);
+                if (!askingForHighScore) {
+                    score.setCallbacks(new HighScore.HighScoreCallbacks() {
+                        @Override
+                        public void onNameEntered(boolean enteredName, String name) {
+                            askingForHighScore = false;
+                            // TODO: Choose next level.
+                            if (enteredName) {
+                                try {
+                                    ghost.save(name);
+                                } catch (IOException e) {
+                                    Log.e("GameState", "Error saving Ghost: " + e.toString());
+                                    throw new RuntimeException(e.toString());
+                                }
                             }
-                            catch (IOException e) {
-                                Log.e("GameState", "Error saving Ghost: " + e.toString());
-                                throw new RuntimeException(e.toString());
-                            }
+                            newGame(bike.getCharacterType(), bike.getBodyType(), bike.getColor());
                         }
-                        newGame(bike.getCharacterType(), bike.getBodyType(), bike.getColor());
-                    }
-                });
-                score.askName(true);
+                    });
+                    score.askName(true);
+                    askingForHighScore = true;
+                }
                 break;
             case RestartLevel:
                 newGame(bike.getCharacterType(), bike.getBodyType(), bike.getColor());
