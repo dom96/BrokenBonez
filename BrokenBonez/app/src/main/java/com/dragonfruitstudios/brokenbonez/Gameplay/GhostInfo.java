@@ -31,7 +31,8 @@ public class GhostInfo implements Serializable {
         }
     }
 
-    private float time;
+    private float currentTime;
+    private float finishTime; // Stores the time when the Ghost finished the level. By default -1.
     private ArrayList<TimeSlice> slices;
 
     // Only used when reading slices. Holds the index of the last returned slice.
@@ -40,51 +41,46 @@ public class GhostInfo implements Serializable {
     // Only used when writing slices. Holds the time when the last slice was stored.
     private float lastSliceCreation;
 
-    /**
-     * Returns the total time passed in miliseconds.
-     */
-    public float getTotalTime() {
-        if (slices.size() > 0) {
-            return slices.get(slices.size()-1).time;
-        }
-        else {
-            return 0;
-        }
-    }
-
     public GhostInfo(String username) {
         this.username = username;
         this.slices = new ArrayList<TimeSlice>();
+        this.finishTime = -1;
     }
 
     public void createSlice(float msPassed, VectorF leftWheelPos, VectorF rightWheelPos,
                             float leftWheelRotation, float rightWheelRotation) {
         // Create a slice every specified number of miliseconds, not each frame to save space.
-        if (time - lastSliceCreation > sliceEvery) {
-            slices.add(new TimeSlice(time + msPassed, leftWheelPos, rightWheelPos,
+        if (currentTime - lastSliceCreation > sliceEvery) {
+            slices.add(new TimeSlice(currentTime + msPassed, leftWheelPos, rightWheelPos,
                     leftWheelRotation, rightWheelRotation));
-            lastSliceCreation = time;
+            lastSliceCreation = currentTime;
         }
-        time += msPassed;
+        currentTime += msPassed;
     }
 
     public TimeSlice getSlice(float msPassed) {
         // Find the next slice.
-        time += msPassed;
+        currentTime += msPassed;
         TimeSlice result = slices.get(lastSliceIndex);
         for (int i = lastSliceIndex; i < slices.size()-1; i++) {
-            if (slices.get(i).time > time) {
+            if (slices.get(i).time > currentTime) {
                 break;
             }
             else {
                 result = slices.get(i);
+                lastSliceIndex = i;
             }
         }
         return result;
     }
 
-    public void enableReading() {
-        time = 0;
+    /**
+     * Restarts the GhostInfo to its starting TimeSlice. This is useful when wanting to read the
+     * TimeSlices from the beginning.
+     */
+    public void rewind() {
+        currentTime = 0;
+        lastSliceIndex = 0;
     }
 
     public String getUsername() {
@@ -95,8 +91,34 @@ public class GhostInfo implements Serializable {
         this.username = username;
     }
 
+    public void finish() {
+        if (isFinished()) {
+            throw new RuntimeException("GhostInfo already has been finished.");
+        }
+        this.finishTime = currentTime;
+    }
+
+    public float getFinishTime() {
+        if (finishTime == -1) {
+            throw new RuntimeException("Finish time not set.");
+        }
+
+        return finishTime;
+    }
+
+    public boolean isFinished() {
+        return finishTime != -1;
+    }
+
+    public boolean hasSlices() {
+        return slices.size() != 0;
+    }
+
     public void reset() {
         this.username = "Anonymous";
         this.slices.clear();
+        this.currentTime = 0;
+        this.finishTime = -1;
+        this.lastSliceCreation = 0;
     }
 }

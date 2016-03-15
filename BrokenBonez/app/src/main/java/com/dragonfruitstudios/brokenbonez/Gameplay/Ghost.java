@@ -15,8 +15,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.util.ArrayList;
 
 /**
  * This class implements a Ghost Bike. This Bike tracks the player's fastest time for a specific
@@ -66,7 +64,7 @@ public class Ghost extends Bike  {
             ObjectInputStream deserialiseStream = new ObjectInputStream(stream);
             prevRun = (GhostInfo)deserialiseStream.readObject();
             deserialiseStream.close();
-            prevRun.enableReading();
+            prevRun.rewind();
         }
         catch (FileNotFoundException exc) {
             Log.d("Ghost", "Could not find Ghost file for previous run, likely no old runs.");
@@ -75,7 +73,11 @@ public class Ghost extends Bike  {
 
     public void save(String username) throws IOException {
         // Don't save if the last run was faster than the current one.
-        if (prevRun != null && prevRun.getTotalTime() < currentRun.getTotalTime()) {
+        if (prevRun != null) {
+            Log.w("Ghost", "Time diff: " + (prevRun.getFinishTime() - currentRun.getFinishTime()));
+        }
+        //Log.w("Ghost", "Prec: " + prevRun.getFinishTime() + " Curr: " + currentRun.getFinishTime());
+        if (prevRun != null && prevRun.getFinishTime() < currentRun.getFinishTime()) {
             return;
         }
 
@@ -90,15 +92,25 @@ public class Ghost extends Bike  {
 
     public void createSlice(float msPassed, VectorF leftWheelPos, VectorF rightWheelPos,
                             float leftRotation, float rightRotation) {
-        currentRun.createSlice(msPassed, leftWheelPos, rightWheelPos, leftRotation, rightRotation);
+        if (!currentRun.isFinished()) {
+            currentRun.createSlice(msPassed, leftWheelPos, rightWheelPos, leftRotation, rightRotation);
+        }
 
-        if (prevRun != null) {
+        if (prevRun != null && prevRun.hasSlices()) {
             GhostInfo.TimeSlice slice = prevRun.getSlice(msPassed);
             leftWheel.setPos(slice.leftWheelPos.x, slice.leftWheelPos.y);
             rightWheel.setPos(slice.rightWheelPos.x, slice.rightWheelPos.y);
             leftWheel.setRotation(slice.leftWheelRotation);
             rightWheel.setRotation(slice.rightWheelRotation);
         }
+    }
+
+    public void finish() {
+        currentRun.finish();
+    }
+
+    public boolean isFinished() {
+        return currentRun.isFinished();
     }
 
     @Override

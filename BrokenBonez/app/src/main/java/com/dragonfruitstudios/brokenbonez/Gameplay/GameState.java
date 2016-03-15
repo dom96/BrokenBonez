@@ -190,6 +190,9 @@ public class GameState {
     public void endGame(boolean crashed) {
         finishOverlay.enable(crashed);
         setSlowMotion(true);
+        if (!crashed && !ghost.isFinished()) {
+            ghost.finish();
+        }
     }
 }
 
