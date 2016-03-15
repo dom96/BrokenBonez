@@ -106,6 +106,10 @@ public class GhostInfo implements Serializable {
         return finishTime;
     }
 
+    public float getCurrentTime() {
+        return currentTime;
+    }
+
     public boolean isFinished() {
         return finishTime != -1;
     }

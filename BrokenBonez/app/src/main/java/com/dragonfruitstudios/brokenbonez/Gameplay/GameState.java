@@ -188,10 +188,15 @@ public class GameState {
     }
 
     public void endGame(boolean crashed) {
-        finishOverlay.enable(crashed);
         setSlowMotion(true);
-        if (!crashed && !ghost.isFinished()) {
-            ghost.finish();
+        if (!crashed) {
+            if (!ghost.isFinished()) {
+                ghost.finish();
+            }
+            finishOverlay.enable(false, ghost.getCurrentTime(), ghost.getTimeDiff());
+        }
+        else {
+            finishOverlay.enable(true, ghost.getCurrentTime(), -1);
         }
     }
 }

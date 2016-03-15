@@ -113,6 +113,27 @@ public class Ghost extends Bike  {
         return currentRun.isFinished();
     }
 
+    /**
+     * Returns the time difference between the previous run and the current run. Negative value
+     * means that the current run took longer than the previous run. Returns 0 when previous run
+     * is null.
+     * Will raise an exception when both are not finished!
+     */
+    public float getTimeDiff() {
+        if (prevRun == null) {
+            return 0;
+        }
+        if (!prevRun.isFinished() || !currentRun.isFinished()) {
+            throw new RuntimeException("Couldn't get time difference, one of the runs in progress.");
+        }
+
+        return prevRun.getFinishTime() - currentRun.getFinishTime();
+    }
+
+    public float getCurrentTime() {
+        return currentRun.getCurrentTime();
+    }
+
     @Override
     public void setColor(int color) {
         super.setColor(color);

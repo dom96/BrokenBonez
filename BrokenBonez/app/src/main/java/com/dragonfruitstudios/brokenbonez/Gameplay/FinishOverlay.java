@@ -2,6 +2,7 @@ package com.dragonfruitstudios.brokenbonez.Gameplay;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.text.format.Time;
 import android.view.MotionEvent;
 
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
@@ -9,11 +10,16 @@ import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Game.Graphics;
 import com.dragonfruitstudios.brokenbonez.Menu.ImageButton;
 
+import java.util.Date;
+
 public class FinishOverlay {
     AssetLoader assetLoader;
 
     private boolean enabled;
-    private boolean crashed;
+    // Information which determines what is displayed to the user.
+    private boolean crashed; // Whether the bike crashed or finished successfully.
+    private float finishTime; // How long the bike rode for (in seconds).
+    private float ghostTimeDiff; // The difference between the fastest bike ride and this ride.
 
     ImageButton continueBtn;
     ImageButton mainMenuBtn;
@@ -35,8 +41,10 @@ public class FinishOverlay {
                 560, btnImg.getWidth(), btnImg.getHeight());
     }
 
-    public void enable(boolean crashed) {
+    public void enable(boolean crashed, float finishTime, float ghostTimeDiff) {
         this.crashed = crashed;
+        this.finishTime = finishTime / 1000;
+        this.ghostTimeDiff = ghostTimeDiff / 1000;
         enabled = true;
     }
 
@@ -57,6 +65,24 @@ public class FinishOverlay {
             String text = crashed ? "Game Over!" : "Level Finished!";
             view.drawTextCenter(text, view.getWidth() / 2, 200, Color.parseColor("#ffffff"),
                     150);
+
+            // Draw extra information.
+            String smallText = "";
+            if (crashed) {
+                smallText = "You have crashed after " + finishTime + " seconds!";
+            }
+            else {
+                smallText = "You have finished in " + finishTime + " seconds, ";
+                if (ghostTimeDiff < 0) {
+                    smallText += String.format("but lost against the Ghost by %.1f seconds.",
+                        Math.abs(ghostTimeDiff));
+                }
+                else if (ghostTimeDiff > 0) {
+                    smallText += String.format("and won against the Ghost by %.1f seconds!",
+                        ghostTimeDiff);
+                }
+            }
+            view.drawTextCenter(smallText, view.getWidth() / 2, 300, Color.WHITE, 40);
 
             // Draw the buttons.
             if (!crashed) {
