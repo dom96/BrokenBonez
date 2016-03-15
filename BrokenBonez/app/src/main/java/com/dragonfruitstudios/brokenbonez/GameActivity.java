@@ -14,6 +14,7 @@ import android.view.MotionEvent;
 import android.view.WindowManager;
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
+import com.dragonfruitstudios.brokenbonez.Menu.SettingsState;
 import com.dragonfruitstudios.brokenbonez.Menu.SplashState;
 
 /**
@@ -27,6 +28,7 @@ public class GameActivity extends Activity implements SensorEventListener {
     int counterTest = 0;
     public static SensorManager sensorManager;
     Sensor thisAccelerometer;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

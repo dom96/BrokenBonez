@@ -76,7 +76,6 @@ public class SettingsState implements GameObject {
     public void onTouchEvent(MotionEvent event) {
         soundEnabled.onTouchEvent(event);
         accelerometerEnabled.onTouchEvent(event);
-
         particlesEnabled.onTouchEvent(event);
 
         if(soundEnabled.onTouchEvent(event) == true){
