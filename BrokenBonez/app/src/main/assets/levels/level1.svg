@@ -85,7 +85,7 @@
 
     <path id="FinishLine" class="finish"
             fill="none" stroke="black" stroke-width="1"
-            d="M 1000.00,518.00" />
+            d="M 5364.00,518.00" />
 
   <path id="EndBuilding" class="building2"
         fill="none" stroke="black" stroke-width="1"
