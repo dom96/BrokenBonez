@@ -2,8 +2,8 @@ package com.dragonfruitstudios.brokenbonez.Menu;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.view.MotionEvent;
-
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.GameObject;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
@@ -13,9 +13,6 @@ import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 public class CreditsState implements GameObject {
     AssetLoader assetLoader;
     GameSceneManager gameSceneManager;
-    boolean creditsOn = false;
-    boolean creditsWait = true;
-    float waitTime = 0;
     VectorF pos;
     float rotation;
     Bitmap philPixelArt;
@@ -25,9 +22,9 @@ public class CreditsState implements GameObject {
         this.gameSceneManager = gameSceneManager;
         this.assetLoader.AddAssets(new String[]{"credits/philpixelart.png"});
         philPixelArt = assetLoader.getBitmapByName("credits/philpixelart.png");
-        pos = new VectorF(getScreenWidth() / 2, getScreenHeight() / 2);
+        // set height for image below:
+        pos = new VectorF(getScreenWidth() / 2 - 300, 300);
         rotation = 0;
-
     }
 
     public int getScreenWidth() {
@@ -40,14 +37,6 @@ public class CreditsState implements GameObject {
 
     @Override
     public void update(float lastUpdate) {
-        if(getCreditsWait() == true){
-            waitTime += lastUpdate;
-            if(waitTime > 2000) {
-                creditsOn = true;
-                creditsWait = false;
-                waitTime = 0;
-            }
-        }
     }
 
     @Override
@@ -57,16 +46,23 @@ public class CreditsState implements GameObject {
 
     @Override
     public void draw(GameView view) {
-        if(creditsOn == true){
-            view.drawImage(philPixelArt, pos, rotation, GameView.ImageOrigin.TopLeft);
-        }
-    }
-
-    public boolean getCreditsWait(){
-        return creditsWait;
+        //set height for text below:
+        view.drawTextCenter("Programmers:", getScreenWidth() / 2, getScreenHeight() / 2, Color.WHITE, 92);
+        view.drawTextCenter("Dominik Picheta", getScreenWidth() / 2, getScreenHeight() / 2, Color.WHITE, 92);
+        view.drawTextCenter("Andrew Mulholland", getScreenWidth() / 2, getScreenHeight() / 2, Color.WHITE, 92);
+        view.drawTextCenter("Nathaniel McParland", getScreenWidth() / 2, getScreenHeight() / 2, Color.WHITE, 92);
+        view.drawTextCenter("Artist:", getScreenWidth() / 2, getScreenHeight() / 2, Color.WHITE, 92);
+        view.drawTextCenter("Amy-Leigh Shaw", getScreenWidth() / 2, getScreenHeight() / 2, Color.WHITE, 92);
+        view.drawTextCenter("With Special Thanks To Phil Hanna,", getScreenWidth() / 2, getScreenHeight() / 2, Color.WHITE, 92);
+        view.drawTextCenter("For Supporting Us Throughout Our Project.", getScreenWidth() / 2, getScreenHeight() / 2, Color.WHITE, 92);
+        view.drawImage(philPixelArt, pos, rotation, GameView.ImageOrigin.TopLeft);
     }
 
     public void onTouchEvent(MotionEvent event) {
 
+    }
+
+    public AssetLoader getAssetLoader() {
+        return assetLoader;
     }
 }
