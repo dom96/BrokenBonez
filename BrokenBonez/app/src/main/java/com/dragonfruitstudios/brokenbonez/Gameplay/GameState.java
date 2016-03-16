@@ -17,23 +17,22 @@ import com.dragonfruitstudios.brokenbonez.Menu.Settings;
 import com.dragonfruitstudios.brokenbonez.ParticleSystem.ParticleManager;
 
 public class GameState {
-    GameScene gameScene;
+    private GameScene gameScene;
 
-    GameLevel currentLevel;
-    Bike bike;
+    private GameLevel currentLevel;
+    private Bike bike;
     private AssetLoader assetLoader;
     private GameSceneManager gameSceneManager;
     private Simulator physicsSimulator;
     private Ghost ghost;
     private ParticleManager particleManager;
-    public HighScore score;
+    private HighScore score;
     private Camera camera;
     private FinishOverlay finishOverlay;
-    private boolean slowMotion;
-    private boolean askingForHighScore; // determines whether the `askName` dialog is shown.
-    private boolean gameEnded;
     private Settings settings;
 
+    private boolean askingForHighScore; // determines whether the `askName` dialog is shown.
+    private boolean gameEnded; // determines whether the game ended.
 
     public GameState(GameScene gameScene, AssetLoader assetLoader, GameSceneManager gameSceneManager,
                      LevelInfo.LevelID levelID, Bike.CharacterType characterType,
@@ -43,7 +42,6 @@ public class GameState {
 
         // Load assets.
         this.assetLoader = assetLoader;
-
         this.assetLoader.AddAssets(new String[]{"bikeEngine.mp3", "bikeEngineRev.mp3",
                 "brokenboneztheme.ogg", "crash.mp3", "win.mp3"});
 
@@ -54,7 +52,6 @@ public class GameState {
         currentLevel = new GameLevel(this, levelID);
         bike = new Bike(assetLoader, currentLevel, Bike.BodyType.Bike, Bike.CharacterType.Leslie);
 
-        slowMotion = false;
         finishOverlay = new FinishOverlay(assetLoader);
         this.score = new HighScore(gameSceneManager.gameView);
 
@@ -63,7 +60,7 @@ public class GameState {
 
         this.particleManager = new ParticleManager(assetLoader, gameSceneManager);
 
-        // Initialise the bike.
+        // Initialise the bike's customisable settings.
         bike.setCharacterType(characterType);
         if (bike.getColor() != bikeColor) {
             bike.setColor(bikeColor);
@@ -104,6 +101,28 @@ public class GameState {
         currentLevel.drawForeground(view);
     }
 
+    private void onHighscoreNameSubmitted(boolean enteredName, String name) {
+        askingForHighScore = false;
+        // Save the ghost only if a name was entered.
+        if (enteredName) {
+            try {
+                ghost.save(name);
+            } catch (IOException e) {
+                Log.e("GameState", "Error saving Ghost: " + e.toString());
+                throw new RuntimeException(e.toString());
+            }
+        }
+
+        // Choose the next level.
+        LevelInfo.LevelID nextLevel = LevelInfo.getNextLevel(
+                currentLevel.getLevelID());
+        // Make sure to reset the slow motion.
+        setSlowMotion(false);
+        // Start a new game in the next level.
+        gameScene.newGame(nextLevel, bike.getCharacterType(),
+                bike.getBodyType(), bike.getColor());
+    }
+
     public void onTouchEvent(MotionEvent event) {
         if (!finishOverlay.isShown()) {
             // Determine what action the user performed.
@@ -118,37 +137,23 @@ public class GameState {
                 case ACTION_GAS_DOWN:
                 case ACTION_BRAKE_DOWN:
                     setBikeAcceleration(TouchHandler.getAccel());
-                    if ( (! getAssetLoader().getSoundByName("bikeEngineRev.mp3").isPlaying()) && this.settings.isBoolSoundEnabled()){
-                        getAssetLoader().getSoundByName("bikeEngineRev.mp3").play(false);   //Play only if is not already playing
+                    // Play the sound only if is not already playing.
+                    if (!getAssetLoader().getSoundByName("bikeEngineRev.mp3").isPlaying() &&
+                            this.settings.isBoolSoundEnabled()) {
+                        getAssetLoader().getSoundByName("bikeEngineRev.mp3").play(false);
                     }
                     break;
             }
         }
 
         FinishOverlay.OverlayResult result = finishOverlay.onTouchEvent(event);
-        Log.d("GS", "FinishOverlay wants: " + result.toString());
         switch (result) {
             case Continue:
                 if (!askingForHighScore) {
                     score.setCallbacks(new HighScore.HighScoreCallbacks() {
                         @Override
                         public void onNameEntered(boolean enteredName, String name) {
-                            askingForHighScore = false;
-                            if (enteredName) {
-                                try {
-                                    ghost.save(name);
-                                } catch (IOException e) {
-                                    Log.e("GameState", "Error saving Ghost: " + e.toString());
-                                    throw new RuntimeException(e.toString());
-                                }
-                            }
-
-                            // Choose the next level.
-                            LevelInfo.LevelID nextLevel = LevelInfo.getNextLevel(
-                                    currentLevel.getLevelID());
-                            setSlowMotion(false);
-                            gameScene.newGame(nextLevel, bike.getCharacterType(),
-                                    bike.getBodyType(), bike.getColor());
+                            onHighscoreNameSubmitted(enteredName, name);
                         }
                     });
                     score.askName(true);
@@ -190,7 +195,6 @@ public class GameState {
     }
 
     public void setSlowMotion(boolean value) {
-        slowMotion = value;
         if (value) {
             Simulator.setUpdateRate(200);
         }
