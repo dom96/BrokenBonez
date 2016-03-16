@@ -14,7 +14,7 @@ public class Music extends Sound {
     MediaPlayer m;
 
     public Music(SoundPool soundPool, AssetManager assetM, String filePath){
-        super(soundPool, assetM, filePath);
+        super(soundPool);
         try {
             MediaPlayer m = new MediaPlayer();
             m.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -74,7 +74,7 @@ public class Music extends Sound {
 
     @Override
     public void destroy() {
-        //TODO
+        m.release();
     }
 
     @Override
@@ -83,5 +83,16 @@ public class Music extends Sound {
         this.volume = volume;
     }
 
+    @Override
+    public boolean isPlaying() {
+        return m.isPlaying();
+    }
 
+    public int getDuration(){
+        return this.m.getDuration();
+    }
+
+    public void update(float lastUpdate){
+
+    }
 }

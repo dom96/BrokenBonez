@@ -1,6 +1,5 @@
 package com.dragonfruitstudios.brokenbonez.AssetLoading;
 
-import android.content.res.AssetManager;
 import android.media.SoundPool;
 
 public abstract class Sound{
@@ -11,7 +10,7 @@ public abstract class Sound{
     SoundPool soundPool;
     protected float volume = 1f;
 
-    public Sound(SoundPool soundPool, AssetManager assetM, String filePath){
+    public Sound(SoundPool soundPool){
         this.soundPool = soundPool;
     }
 
@@ -36,5 +35,9 @@ public abstract class Sound{
     public abstract void destroy();
 
     public abstract void setVolume(float volume);
+
+    public abstract boolean isPlaying();
+
+    public abstract void update(float lastUpdate);
 
 }

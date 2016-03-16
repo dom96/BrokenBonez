@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -199,6 +200,14 @@ public class AssetLoader {
      */
     public AssetManager getAssetManager() {
         return assetManager;
+    }
+
+    public void update(float lastUpdate){
+        Iterator<Map.Entry<String, Sound>> iterator = sounds.entrySet().iterator();
+        while(iterator.hasNext()){
+            Map.Entry<String, Sound> sound = iterator.next();
+            sound.getValue().update(lastUpdate);
+        }
     }
 
 }
