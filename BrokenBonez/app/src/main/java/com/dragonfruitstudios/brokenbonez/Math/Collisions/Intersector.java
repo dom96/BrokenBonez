@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public abstract class Intersector implements Drawable {
 
     /**
-     * Used to report that
+     * Used to report that a collisions between certain intersectors are not implemented.
      */
     protected Manifold.Collection collisionNotImplemented(Intersector shape) {
         throw new RuntimeException("CollisionTest needs to be implemented for " +
