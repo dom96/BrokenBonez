@@ -159,6 +159,7 @@ public class GameState {
                         bike.getBodyType(), bike.getColor());
                 break;
             case ShowMainMenu:
+                setSlowMotion(false);
                 gameSceneManager.setScene("menuScene");
                 break;
             case None:
