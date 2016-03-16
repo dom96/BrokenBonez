@@ -1,9 +1,7 @@
 package com.dragonfruitstudios.brokenbonez.AssetLoading;
 
-import android.app.Activity;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
-import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Handler;
 import android.util.Log;
@@ -12,17 +10,22 @@ import java.io.IOException;
 
 public class SoundEffect extends Sound {
     SoundPool s;
-    int id;
-    boolean loaded = false;
-    int streamID;
+    private int id;
+    private boolean loaded = false;
+    private int streamID;
+    private AssetManager assetM;
+    private String filePath;
+    private float timeRemaining = 0;
+    private final Object lock = new Object();
+
     public SoundEffect(SoundPool soundPool, AssetManager assetM, String filePath){
-        super(soundPool, assetM, filePath);
+        super(soundPool);
         try {
             Log.d("AssetLoader", "Loading sound from " + filePath);
             AssetFileDescriptor df = assetM.openFd(filePath);
-            int id = soundPool.load(df, 1);
-            this.id = id;
-
+            this.id = soundPool.load(df, 1);
+            this.assetM = assetM;
+            this.filePath = filePath;
             soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
                 @Override
                 public void onLoadComplete(SoundPool soundPool, int ID, int status) {
@@ -37,6 +40,14 @@ public class SoundEffect extends Sound {
 
     }
 
+    private int getDuration(){
+        Music m = new Music(soundPool, assetM, this.filePath);
+        int duration = m.getDuration();
+        m.destroy();
+        m = null;
+        return duration;
+    }
+
     private void tryPlay( final boolean loop){ //May be used later -AM
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -47,7 +58,7 @@ public class SoundEffect extends Sound {
                     } else {
                         streamID = soundPool.play(id, 1, 1, 1, 0, 1);
                     }
-                } else{
+                } else {
                     tryPlay(loop);
                 }
             }
@@ -55,6 +66,9 @@ public class SoundEffect extends Sound {
     }
 
     private void playSound(boolean loop){
+        synchronized (lock) {
+            this.timeRemaining = getDuration();
+        }
         if (loop) {
             streamID = soundPool.play(id, 1, 1, 1, -1, 1);
         } else {
@@ -108,10 +122,26 @@ public class SoundEffect extends Sound {
         //TODO
     }
 
+    public void update(float lastUpdate){
+        synchronized (lock) {
+            if (this.timeRemaining > 0){
+                this.timeRemaining =  Math.max(timeRemaining - lastUpdate,0);//= Math.max(timeRemaining - lastUpdate, 0);
+            } else{
+                this.timeRemaining = 0;
+            }
+    }}
+
     @Override
     public void setVolume(float volume) {
         soundPool.setVolume(streamID, volume, volume);
         this.volume = volume;
+    }
+
+    @Override
+    public boolean isPlaying(){
+        synchronized (lock) {
+            return this.timeRemaining != 0;
+        }
     }
 
 

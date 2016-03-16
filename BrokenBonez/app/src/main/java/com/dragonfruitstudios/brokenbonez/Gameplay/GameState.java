@@ -117,7 +117,9 @@ public class GameState {
                 case ACTION_GAS_DOWN:
                 case ACTION_BRAKE_DOWN:
                     setBikeAcceleration(TouchHandler.getAccel());
-                    getAssetLoader().getSoundByName("bikeEngineRev.mp3").play(false);   //Nearly ready, still little more test
+                    if ( ! getAssetLoader().getSoundByName("bikeEngineRev.mp3").isPlaying()){
+                        getAssetLoader().getSoundByName("bikeEngineRev.mp3").play(false);   //Play only if is not already playing
+                    }
                     break;
             }
         }

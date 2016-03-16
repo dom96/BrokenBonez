@@ -167,6 +167,7 @@ public class GameLoop implements Runnable {
             }
             // Pass it to GameState's update method.
             gameSceneManager.update(msSinceLastUpdate);
+            this.assetLoader.update(msSinceLastUpdate);
         }
 
         // Update the `lastUpdate` variable with the current time.
