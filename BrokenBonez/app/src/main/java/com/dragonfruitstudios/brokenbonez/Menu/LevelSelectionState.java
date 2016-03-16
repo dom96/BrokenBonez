@@ -10,7 +10,10 @@ import com.dragonfruitstudios.brokenbonez.Game.Camera;
 import com.dragonfruitstudios.brokenbonez.Game.GameObject;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Game.Graphics;
+import com.dragonfruitstudios.brokenbonez.Game.LevelInfo;
+import com.dragonfruitstudios.brokenbonez.Game.Scenes.GameScene;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
+import com.dragonfruitstudios.brokenbonez.Gameplay.Bike;
 import com.dragonfruitstudios.brokenbonez.Math.Physics.Simulator;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
@@ -26,6 +29,8 @@ public class LevelSelectionState implements GameObject {
     ImageButton level4;
     VectorF pos;
     float rotation;
+
+    Bike selectedBike;
 
     public LevelSelectionState(AssetLoader assetLoader, GameSceneManager gameSceneManager){
         this.gameSceneManager = gameSceneManager;
@@ -75,16 +80,25 @@ public class LevelSelectionState implements GameObject {
         level3.onTouchEvent(event);
         level4.onTouchEvent(event);
 
+        GameScene gameScene = (GameScene)this.gameSceneManager.getGameSceneByName("gameScene");
         if(level1.onTouchEvent(event) == true){
+            gameScene.newGame(LevelInfo.LevelID.Level1, selectedBike.getCharacterType(),
+                    selectedBike.getBodyType(), selectedBike.getColor());
             this.gameSceneManager.setScene("gameScene");
         }
         if(level2.onTouchEvent(event) == true){
+            gameScene.newGame(LevelInfo.LevelID.Level2, selectedBike.getCharacterType(),
+                    selectedBike.getBodyType(), selectedBike.getColor());
             this.gameSceneManager.setScene("gameScene");
         }
         if(level3.onTouchEvent(event) == true){
+            gameScene.newGame(LevelInfo.LevelID.Level3, selectedBike.getCharacterType(),
+                    selectedBike.getBodyType(), selectedBike.getColor());
             this.gameSceneManager.setScene("gameScene");
         }
         if(level4.onTouchEvent(event) == true){
+            gameScene.newGame(LevelInfo.LevelID.Level4, selectedBike.getCharacterType(),
+                    selectedBike.getBodyType(), selectedBike.getColor());
             this.gameSceneManager.setScene("gameScene");
         }
     }
@@ -94,5 +108,9 @@ public class LevelSelectionState implements GameObject {
     }
     public Simulator getPhysicsSimulator() {
         return physicsSimulator;
+    }
+
+    public void storeSelectedBike(Bike bike) {
+        this.selectedBike = bike;
     }
 }

@@ -34,6 +34,7 @@ public class GameLevel extends Level {
     LevelInfo info; // Holds information about the current level.
 
     VectorF bikePos;
+    LevelInfo.LevelID currentLevelID;
 
     boolean layersScaled = false;
     boolean bitmapsScaled = false;
@@ -41,14 +42,18 @@ public class GameLevel extends Level {
 
     ArrayList<LevelObject> levelObjects;
 
-    public GameLevel(GameState state) {
+    public GameLevel(GameState state, LevelInfo.LevelID levelID) {
         gameState = state;
 
         startPoint = new VectorF(0, 0); // Just a reasonable default.
         bikePos = new VectorF(0, 0);
+        layersScaled = false;
+        bitmapsScaled = false;
+        currentLevelID = levelID;
+        String levelPath = LevelInfo.getLevelPath(levelID);
 
         // Create a default level info object (TODO: This should be loaded from LevelInfo text file).
-        info = new LevelInfo("level1", "surface.png", "ground.png", "finish.png");
+        info = new LevelInfo(levelID, "surface.png", "ground.png", "finish.png");
         // Parameters to constructors:
         // Y position (based on 768 high screen), scroll factor, image origin
         // (For ColorLayer):
@@ -63,7 +68,7 @@ public class GameLevel extends Level {
                 GameView.ImageOrigin.BottomLeft));
 
         // Load the SVG file which defines the level's geometry.
-        info.loadSVG(state.getAssetLoader(), "level2.svg", new VectorF(-600, 0));
+        info.loadSVG(gameState.getAssetLoader(), levelPath, new VectorF(-600, 0));
 
         // Initialise the SolidLayer class asset keys.
         info.addInfo("plain", info.getSurfaceKey(), info.getImagePath("ground_base.png"),
@@ -80,13 +85,12 @@ public class GameLevel extends Level {
                 new VectorF(-10, -39), true);
 
         // Load bitmaps defined in LevelInfo.
-        scaledBitmaps = info.loadAssets(state.getAssetLoader());
+        scaledBitmaps = info.loadAssets(gameState.getAssetLoader());
 
         Simulator physicsSimulator = gameState.getPhysicsSimulator();
         for (LevelInfo.SolidLayer sl : info.solids) {
             physicsSimulator.addStaticShape(sl);
         }
-
 
         // Initialise the LevelObjects based on the ones specified in LevelInfo.
         levelObjects = new ArrayList<>();
@@ -102,25 +106,6 @@ public class GameLevel extends Level {
             Graphics.scalePos(pos, Graphics.getScreenWidth(), Graphics.getScreenHeight());
             levelObjects.add(new LevelBoost(getAssetLoader(), pos.x, pos.y, 0));
         }
-
-        /*
-        // TODO: Hardcoded for now.
-        // Define some test Polygons.
-        for (int i = 0; i < 20; i++) {
-            float height = info.calcGroundHeight(getAssetLoader(), 720);
-            Rect rect = new Rect(new VectorF(i*2800, height), 2600, 50);
-            physicsSimulator.createStaticBody(rect);
-            Triangle triangle = new Triangle(new VectorF(i*2600, height-100), -200, 100);
-            Triangle triangle2 = new Triangle(new VectorF(i*2800, height-100), 200, 100);
-            physicsSimulator.createStaticBody(triangle);
-            physicsSimulator.createStaticBody(triangle2);
-        }
-        // TODO: Change 2 to 1000 for a perf test, fix the slowdown.
-        for (int i = 0; i < 2; i++) {
-            Rect rect = new Rect(new VectorF(20*3000, info.calcGroundHeight(getAssetLoader(), 720)- 200), 200, 700);
-            physicsSimulator.createStaticBody(rect);
-        }
-        */
     }
 
     public void updateSize(int w, int h) {
@@ -233,7 +218,7 @@ public class GameLevel extends Level {
 
         if (Graphics.drawDebugInfo) {
             // Draw debug info.
-            String debugInfo = String.format("Level[Name: %s]", info.name);
+            String debugInfo = String.format("Level[Name: %s]", currentLevelID);
             gameView.drawText(debugInfo, 100, 30, Color.WHITE);
         }
     }
@@ -385,9 +370,6 @@ public class GameLevel extends Level {
 
         // Determine if Bike passed the finish line.
         LevelInfo.SolidObject finishLine = info.getSolidObject("finish");
-        if (finishLine == null) {
-            throw new RuntimeException("Level doesn't define a finish line.");
-        }
         VectorF pos = finishLine.pos.copy();
         Graphics.scalePos(pos, Graphics.getScreenWidth(), Graphics.getScreenWidth());
         if (bikePos.x >= pos.x) {
@@ -429,5 +411,9 @@ public class GameLevel extends Level {
     @Override
     public void onBikeCrash() {
         gameState.endGame(true);
+    }
+
+    public LevelInfo.LevelID getLevelID() {
+        return currentLevelID;
     }
 }

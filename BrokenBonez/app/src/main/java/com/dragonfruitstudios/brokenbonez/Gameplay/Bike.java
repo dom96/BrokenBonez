@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.util.Log;
 
+import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.Graphics;
 import com.dragonfruitstudios.brokenbonez.Game.Level;
 import com.dragonfruitstudios.brokenbonez.GameLoop;
@@ -61,9 +62,17 @@ public class Bike implements GameObject {
         DeeDee, Jenny, Leslie, Wanita
     }
 
-    public Bike(Level currentLevel, BodyType bodyType, CharacterType characterType) {
+    public Bike(AssetLoader assetLoader, Level currentLevel, BodyType bodyType,
+                CharacterType characterType) {
+        // Store the current level.
         this.currentLevel = currentLevel;
 
+        // Load the bike assets
+        assetLoader.AddAssets(new String[] {"bike/wheel_basic.png", "bike/body_one.png",
+                "bike/body_two.png", "bike/deedee.png", "bike/jenny.png", "bike/leslie.png",
+                "bike/wanita.png"});
+
+        // Define physical bodies to model the Bike.
         Circle circle = new Circle(new VectorF(0, 0), wheelRadius);
         leftWheel = currentLevel.getPhysicsSimulator().createDynamicBody(circle, wheelMass);
         rightWheel = currentLevel.getPhysicsSimulator().createDynamicBody(circle, wheelMass);
@@ -72,9 +81,10 @@ public class Bike implements GameObject {
         wheelConstraint = currentLevel.getPhysicsSimulator().createConstraint(leftWheel,
                 rightWheel, wheelSeparation);
 
+        // Store and compute variables holding customisation data (bike color, shape etc.)
         this.bodyType = bodyType;
         setCharacterType(characterType);
-        // Use the `setColor` setter which assigns the `body` for us.
+        // The `setColor` setter computes the necessary `body` bitmap.
         setColor(Color.parseColor("#4d27f6"));
 
         // Create bounding rectangle around Bike body.

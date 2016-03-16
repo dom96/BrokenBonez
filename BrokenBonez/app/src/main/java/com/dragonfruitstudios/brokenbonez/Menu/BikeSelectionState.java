@@ -12,6 +12,7 @@ import com.dragonfruitstudios.brokenbonez.Game.GameObject;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Game.Graphics;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.GameScene;
+import com.dragonfruitstudios.brokenbonez.Game.Scenes.LevelSelectionScene;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
 import com.dragonfruitstudios.brokenbonez.Gameplay.Bike;
 import com.dragonfruitstudios.brokenbonez.Math.Physics.Simulator;
@@ -98,7 +99,7 @@ public class BikeSelectionState implements GameObject {
         prevPrevPrev = new ImageButton("selection/prev.png", assetLoader, (getScreenWidth() / 10 - 80), (getScreenHeight() / 10) * 8 - 60, 95, 80);
         select = new ImageButton("selection/select.png", assetLoader, (getScreenWidth() / 10) * 2, (getScreenHeight() / 10) * 9 - 20, 290, 80);
         level = new BikeSelectionLevel(this);
-        bike = new Bike(level, Bike.BodyType.Bike, Bike.CharacterType.Leslie);
+        bike = new Bike(assetLoader, level, Bike.BodyType.Bike, Bike.CharacterType.Leslie);
         bike.setColor(Color.BLUE);
         color = colorList[i];
         text = textList[j];
@@ -159,8 +160,9 @@ public class BikeSelectionState implements GameObject {
         select.onTouchEvent(event);
 
         if(select.onTouchEvent(event) == true){
-            GameScene gameScene = (GameScene)this.gameSceneManager.getGameSceneByName("gameScene");
-            gameScene.newGame(bike.getCharacterType(), bike.getBodyType(), bike.getColor());
+            LevelSelectionScene lvlSelection =
+                    (LevelSelectionScene)this.gameSceneManager.getGameSceneByName("levelSelectionScene");
+            lvlSelection.getState().storeSelectedBike(bike);
             this.gameSceneManager.setScene("levelSelectionScene");
         }
         // bike model

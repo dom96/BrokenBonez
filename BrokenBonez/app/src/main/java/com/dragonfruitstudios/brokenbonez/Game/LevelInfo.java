@@ -37,7 +37,11 @@ import javax.xml.parsers.ParserConfigurationException;
  * This class specifies information about a specific level.
  */
 public class LevelInfo {
-    public String name;
+    public enum LevelID {
+        Unknown, Level1, Level2, Level3, Level4
+    }
+
+    private LevelID levelID;
     public ArrayList<Layer> layers;
     public String surfacePath; // Path to the image which is drawn for the bike to ride on.
     public String groundPath; // Path to the image which can be drawn below surface.
@@ -178,8 +182,8 @@ public class LevelInfo {
         }
     }
 
-    public LevelInfo(String name, String surfacePath, String groundPath, String finishPath) {
-        this.name = name;
+    public LevelInfo(LevelID levelID, String surfacePath, String groundPath, String finishPath) {
+        this.levelID = levelID;
         this.surfacePath = surfacePath;
         this.groundPath = groundPath;
         this.finishPath = finishPath;
@@ -238,7 +242,8 @@ public class LevelInfo {
     }
 
     private String getLevelPath() {
-        return "levels/" + name + "/";
+        // Currently only support 1 level tileset, so this is simply hardcoded in.
+        return "levels/level1/";
     }
 
     public String getImagePath(String name) {
@@ -544,6 +549,52 @@ public class LevelInfo {
             Log.e("LevelInfo", "Error parsing SVG: " + exc.toString());
             // TODO: Error system, show user a dialog box when an error occurs at root.
         }
+    }
+
+    public static String getLevelName(LevelID levelID) {
+        switch (levelID) {
+            case Level1:
+                return "level1";
+            case Level2:
+                return "level2";
+            case Level3:
+                return "level3";
+            case Level4:
+                return "level4";
+            case Unknown:
+                throw new RuntimeException("Unable to get level path of Unknown LevelID.");
+        }
+        return "";
+    }
+
+    public static String getLevelPath(LevelID levelID) {
+        switch (levelID) {
+            case Level1:
+                return "level1.svg";
+            case Level2:
+                return "level2.svg";
+            case Level3:
+                return "level3.svg";
+            case Level4:
+                return "level4.svg";
+            case Unknown:
+                throw new RuntimeException("Unable to get level path of Unknown LevelID.");
+        }
+        return "";
+    }
+
+    public static LevelID getNextLevel(LevelID levelID) {
+        switch (levelID) {
+            case Level1:
+                return LevelID.Level2;
+            case Level2:
+                return LevelID.Level3;
+            case Level3:
+                return LevelID.Level4;
+            case Level4:
+                return LevelID.Unknown;
+        }
+        return LevelID.Unknown;
     }
 
 

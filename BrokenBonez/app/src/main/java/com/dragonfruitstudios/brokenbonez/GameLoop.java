@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Game.Graphics;
+import com.dragonfruitstudios.brokenbonez.Game.LevelInfo;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.BikeSelectionScene;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.CreditsScene;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.GameScene;
@@ -222,7 +223,8 @@ public class GameLoop implements Runnable {
             case KeyEvent.KEYCODE_D:
                 gameSceneManager.setScene("gameScene");
                 GameScene gameScene = (GameScene)gameSceneManager.getGameSceneByName("gameScene");
-                gameScene.newGame(Bike.CharacterType.Leslie, Bike.BodyType.Bike, Color.BLUE);
+                gameScene.newGame(LevelInfo.LevelID.Level1, Bike.CharacterType.Leslie,
+                        Bike.BodyType.Bike, Color.BLUE);
                 break;
         }
 

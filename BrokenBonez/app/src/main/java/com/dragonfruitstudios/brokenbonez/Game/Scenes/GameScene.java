@@ -6,6 +6,7 @@ import android.hardware.SensorEvent;
 import android.util.Log;
 import android.view.MotionEvent;
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
+import com.dragonfruitstudios.brokenbonez.Game.LevelInfo;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
 import com.dragonfruitstudios.brokenbonez.Gameplay.Bike;
 import com.dragonfruitstudios.brokenbonez.Gameplay.GameState;
@@ -26,12 +27,21 @@ public class GameScene extends Scene {
 
     public GameScene(AssetLoader assetLoader, GameSceneManager gameSceneManager) {
         super(assetLoader, gameSceneManager);
-        this.state = new GameState(assetLoader, this.gameSceneManager);
-        newGame(Bike.CharacterType.Leslie, Bike.BodyType.Bike, Color.BLUE);
+        // Create a default GameState instance.
+        this.state = new GameState(this, assetLoader, this.gameSceneManager,
+                LevelInfo.LevelID.Level1, Bike.CharacterType.Leslie,
+                Bike.BodyType.Bike, Color.BLUE);
     }
 
-    public void newGame(Bike.CharacterType characterType, Bike.BodyType bikeBodyType, int bikeColor) {
-        this.state.newGame(characterType, bikeBodyType, bikeColor);
+    public void newGame(LevelInfo.LevelID levelID, Bike.CharacterType characterType,
+                        Bike.BodyType bikeBodyType, int bikeColor) {
+        // The easiest way to create a new game is to recreate the GameState. Resetting the state
+        // manually is a very difficult to do reliably.
+        this.state = new GameState(this, assetLoader, this.gameSceneManager,
+                levelID, characterType, bikeBodyType, bikeColor);
+        // The state needs to receive at least one `updateSize` call to draw the Game properly.
+        this.state.updateSize(gameSceneManager.gameView.getWidth(),
+                gameSceneManager.gameView.getHeight());
     }
 
     public void draw(GameView view) {

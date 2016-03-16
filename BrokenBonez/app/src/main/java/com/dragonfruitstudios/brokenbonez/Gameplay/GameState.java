@@ -5,6 +5,8 @@ import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.Camera;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Game.Graphics;
+import com.dragonfruitstudios.brokenbonez.Game.LevelInfo;
+import com.dragonfruitstudios.brokenbonez.Game.Scenes.GameScene;
 import com.dragonfruitstudios.brokenbonez.GameLoop;
 import com.dragonfruitstudios.brokenbonez.Input.TouchHandler;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Rect;
@@ -17,6 +19,8 @@ import java.io.IOException;
 import com.dragonfruitstudios.brokenbonez.ParticleSystem.ParticleManager;
 
 public class GameState {
+    GameScene gameScene;
+
     GameLevel currentLevel;
     Bike bike;
     private AssetLoader assetLoader;
@@ -30,16 +34,18 @@ public class GameState {
     private FinishOverlay finishOverlay;
     private boolean slowMotion;
     private boolean askingForHighScore; // determines whether the `askName` dialog is shown.
+    private boolean gameEnded;
 
 
-    public GameState(AssetLoader assetLoader, GameSceneManager gameSceneManager) {
+    public GameState(GameScene gameScene, AssetLoader assetLoader, GameSceneManager gameSceneManager,
+                     LevelInfo.LevelID levelID, Bike.CharacterType characterType,
+                     Bike.BodyType bikeBodyType, int bikeColor) {
+        this.gameScene = gameScene;
         this.gameSceneManager = gameSceneManager;
 
         // Load assets.
         this.assetLoader = assetLoader;
-        this.assetLoader.AddAssets(new String[] {"bike/wheel_basic.png", "bike/body_one.png",
-                "bike/body_two.png", "bike/deedee.png", "bike/jenny.png", "bike/leslie.png",
-                "bike/wanita.png"});
+
         this.assetLoader.AddAssets(new String[]{"bikeEngine.mp3", "bikeEngineRev.mp3",
                 "brokenboneztheme.ogg"});
 
@@ -47,33 +53,24 @@ public class GameState {
         this.physicsSimulator = new Simulator();
 
         camera = new Camera(0, 0);
-        currentLevel = new GameLevel(this);
-        bike = new Bike(currentLevel, Bike.BodyType.Bike, Bike.CharacterType.Leslie);
+        currentLevel = new GameLevel(this, levelID);
+        bike = new Bike(assetLoader, currentLevel, Bike.BodyType.Bike, Bike.CharacterType.Leslie);
 
         slowMotion = false;
         finishOverlay = new FinishOverlay(assetLoader);
         this.score = new HighScore(gameSceneManager.gameView);
 
         // Create Ghost to show the player a Ghost bike of the last playthrough.
-        ghost = new Ghost(gameSceneManager.activity.getApplicationContext(), "level_flat",
-                currentLevel);
+        ghost = new Ghost(gameSceneManager.activity.getApplicationContext(), assetLoader, currentLevel);
 
         this.particleManager = new ParticleManager(assetLoader, gameSceneManager);
-    }
 
-    public void newGame(Bike.CharacterType characterType, Bike.BodyType bikeBodyType,
-                        int bikeColor) {
-        // TODO: Level selection.
+        // Initialise the bike.
         bike.setCharacterType(characterType);
         if (bike.getColor() != bikeColor) {
             bike.setColor(bikeColor);
         }
         bike.setBodyType(bikeBodyType);
-        bike.reset();
-        setSlowMotion(false);
-        finishOverlay.disable();
-        score.reset();
-        ghost.reset();
     }
 
     public void update(float lastUpdate) {
@@ -135,7 +132,6 @@ public class GameState {
                         @Override
                         public void onNameEntered(boolean enteredName, String name) {
                             askingForHighScore = false;
-                            // TODO: Choose next level.
                             if (enteredName) {
                                 try {
                                     ghost.save(name);
@@ -144,7 +140,13 @@ public class GameState {
                                     throw new RuntimeException(e.toString());
                                 }
                             }
-                            newGame(bike.getCharacterType(), bike.getBodyType(), bike.getColor());
+
+                            // Choose the next level.
+                            LevelInfo.LevelID nextLevel = LevelInfo.getNextLevel(
+                                    currentLevel.getLevelID());
+                            setSlowMotion(false);
+                            gameScene.newGame(nextLevel, bike.getCharacterType(),
+                                    bike.getBodyType(), bike.getColor());
                         }
                     });
                     score.askName(true);
@@ -152,7 +154,9 @@ public class GameState {
                 }
                 break;
             case RestartLevel:
-                newGame(bike.getCharacterType(), bike.getBodyType(), bike.getColor());
+                setSlowMotion(false);
+                gameScene.newGame(currentLevel.getLevelID(), bike.getCharacterType(),
+                        bike.getBodyType(), bike.getColor());
                 break;
             case ShowMainMenu:
                 gameSceneManager.setScene("menuScene");
@@ -184,7 +188,7 @@ public class GameState {
 
     public void setSlowMotion(boolean value) {
         slowMotion = value;
-        if (slowMotion) {
+        if (value) {
             Simulator.setUpdateRate(200);
         }
         else {
@@ -193,15 +197,17 @@ public class GameState {
     }
 
     public void endGame(boolean crashed) {
-        setSlowMotion(true);
-        if (!crashed) {
-            if (!ghost.isFinished()) {
-                ghost.finish();
+        if (!gameEnded) {
+            gameEnded = true;
+            setSlowMotion(true);
+            if (!crashed) {
+                if (!ghost.isFinished()) {
+                    ghost.finish();
+                }
+                finishOverlay.enable(false, ghost.getCurrentTime(), ghost.getTimeDiff());
+            } else {
+                finishOverlay.enable(true, ghost.getCurrentTime(), -1);
             }
-            finishOverlay.enable(false, ghost.getCurrentTime(), ghost.getTimeDiff());
-        }
-        else {
-            finishOverlay.enable(true, ghost.getCurrentTime(), -1);
         }
     }
 }

@@ -4,9 +4,11 @@ import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
 
+import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Game.Graphics;
 import com.dragonfruitstudios.brokenbonez.Game.Level;
+import com.dragonfruitstudios.brokenbonez.Game.LevelInfo;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 import java.io.FileInputStream;
@@ -22,22 +24,22 @@ import java.io.ObjectOutputStream;
  */
 public class Ghost extends Bike  {
     Context context; // Used for internal storage.
-    String levelName;
     GhostInfo currentRun; // The information about the current run.
     GhostInfo prevRun; // The information about the last run.
+    GameLevel currentLevel; // The level currently being played.
 
-    public Ghost(Context context, String levelName, Level currentLevel) {
-        super(currentLevel, BodyType.Bike, CharacterType.Leslie);
+    public Ghost(Context context, AssetLoader assetLoader, GameLevel currentLevel) {
+        super(assetLoader, currentLevel, BodyType.Bike, CharacterType.Leslie);
         // Disable gravity of bike.
         leftWheel.setHasGravity(false);
         rightWheel.setHasGravity(false);
 
         // Set up the ghost.
         this.context = context;
-        this.levelName = levelName;
         currentRun = new GhostInfo("Anonymous");
+        this.currentLevel = currentLevel;
         try {
-            load(levelName);
+            load(LevelInfo.getLevelName(currentLevel.getLevelID()));
         }
         catch (Exception e) {
             // TODO: Show dialog to user?
@@ -45,11 +47,13 @@ public class Ghost extends Bike  {
         }
     }
 
-    public void reset() {
+    public void reset(GameLevel currentLevel) {
+        super.reset();
         currentRun.reset();
+        this.currentLevel = currentLevel;
 
         try {
-            load(levelName);
+            load(LevelInfo.getLevelName(currentLevel.getLevelID()));
         }
         catch (Exception e) {
             // TODO: Show dialog to user?
@@ -82,7 +86,7 @@ public class Ghost extends Bike  {
         }
 
         currentRun.setUsername(username);
-        String filename = "ghost_" + levelName;
+        String filename = "ghost_" + LevelInfo.getLevelName(currentLevel.getLevelID());
         FileOutputStream stream = context.openFileOutput(filename, Context.MODE_PRIVATE);
         ObjectOutputStream serialiseStream = new ObjectOutputStream(stream);
         serialiseStream.writeObject(currentRun);
