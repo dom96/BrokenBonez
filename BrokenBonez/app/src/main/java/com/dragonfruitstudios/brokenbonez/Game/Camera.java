@@ -1,7 +1,5 @@
 package com.dragonfruitstudios.brokenbonez.Game;
 
-import android.util.Log;
-
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 public class Camera {

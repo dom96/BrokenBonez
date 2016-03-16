@@ -1,7 +1,6 @@
 package com.dragonfruitstudios.brokenbonez.Game.Scenes;
 
 import android.view.MotionEvent;
-
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
