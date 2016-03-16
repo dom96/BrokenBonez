@@ -10,9 +10,9 @@ import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 public class LevelCoin extends LevelObject {
 
-    String coinSound = "coin.mp3";
-    String coinImage = "coin.png";
-    Rect rect;
+    private final String coinSound = "coin.mp3";
+    private final String coinImage = "coin.png";
+    private final Rect rect;
 
     public LevelCoin(AssetLoader assets, float x, float y, float rotation){
         this.v = new VectorF(x, y);
@@ -30,7 +30,7 @@ public class LevelCoin extends LevelObject {
     @Override
     public void draw(GameView gameView) {
         if (this.getVisible()) {
-            gameView.drawImage(assets.getBitmapByName(coinImage), this.getVector(), this.rotation, GameView.ImageOrigin.Middle);
+            gameView.drawImage(assets.getBitmapByName(coinImage), this.getVector(), this.rotation, GameView.ImageOrigin.TopLeft);
         }
     }
 

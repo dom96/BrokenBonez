@@ -10,13 +10,12 @@ import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 public class LevelBoost extends LevelObject {
 
-    private final String boostSound = "coin.mp3";
     private final String boostImage = "boostgameicon.png";
-    private Rect rect;
+    private final Rect rect;
 
     public LevelBoost(AssetLoader assets, float x, float y, float rotation){
         this.v = new VectorF(x, y);
-        String[] s = {boostSound, boostImage};
+        String[] s = {boostImage};
         this.assets = assets;
         this.assets.AddAssets(s);
         this.rotation = rotation;
@@ -31,7 +30,7 @@ public class LevelBoost extends LevelObject {
     public void draw(GameView gameView) {
         this.rect.draw(gameView);
         if (this.getVisible()) {
-            gameView.drawImage(assets.getBitmapByName(boostImage), this.getVector(), this.rotation, GameView.ImageOrigin.Middle);
+            gameView.drawImage(assets.getBitmapByName(boostImage), this.getVector(), this.rotation, GameView.ImageOrigin.TopLeft);
         }
     }
 
@@ -52,13 +51,11 @@ public class LevelBoost extends LevelObject {
     public void onHit(Bike bike, HighScore score) {
         if (this.getVisible()) {
             this.setVisible(false);
-            //this.playSound();
             bike.getLeftWheel().getVelocity().set(1000, 0);
         }
     }
 
     @Override
     public void playSound() {
-        assets.getSoundByName(boostSound).play(false);
     }
 }

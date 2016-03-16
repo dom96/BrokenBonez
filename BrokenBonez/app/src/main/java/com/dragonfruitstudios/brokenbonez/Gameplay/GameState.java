@@ -13,6 +13,7 @@ import com.dragonfruitstudios.brokenbonez.Math.Physics.Simulator;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
 import com.dragonfruitstudios.brokenbonez.HighScores.HighScore;
 import java.io.IOException;
+import com.dragonfruitstudios.brokenbonez.Menu.Settings;
 import com.dragonfruitstudios.brokenbonez.ParticleSystem.ParticleManager;
 
 public class GameState {
@@ -31,6 +32,7 @@ public class GameState {
     private boolean slowMotion;
     private boolean askingForHighScore; // determines whether the `askName` dialog is shown.
     private boolean gameEnded;
+    private Settings settings;
 
 
     public GameState(GameScene gameScene, AssetLoader assetLoader, GameSceneManager gameSceneManager,
@@ -43,7 +45,7 @@ public class GameState {
         this.assetLoader = assetLoader;
 
         this.assetLoader.AddAssets(new String[]{"bikeEngine.mp3", "bikeEngineRev.mp3",
-                "brokenboneztheme.ogg"});
+                "brokenboneztheme.ogg", "crash.mp3", "win.mp3"});
 
         // Create a new physics simulator.
         this.physicsSimulator = new Simulator();
@@ -67,6 +69,8 @@ public class GameState {
             bike.setColor(bikeColor);
         }
         bike.setBodyType(bikeBodyType);
+
+        this.settings = new Settings(gameSceneManager);
     }
 
     public void update(float lastUpdate) {
@@ -114,7 +118,7 @@ public class GameState {
                 case ACTION_GAS_DOWN:
                 case ACTION_BRAKE_DOWN:
                     setBikeAcceleration(TouchHandler.getAccel());
-                    if ( ! getAssetLoader().getSoundByName("bikeEngineRev.mp3").isPlaying()){
+                    if ( (! getAssetLoader().getSoundByName("bikeEngineRev.mp3").isPlaying()) && this.settings.isBoolSoundEnabled()){
                         getAssetLoader().getSoundByName("bikeEngineRev.mp3").play(false);   //Play only if is not already playing
                     }
                     break;
@@ -200,12 +204,14 @@ public class GameState {
             gameEnded = true;
             setSlowMotion(true);
             if (!crashed) {
+                assetLoader.getSoundByName("win.mp3").play();
                 if (!ghost.isFinished()) {
                     ghost.finish();
                 }
                 finishOverlay.show(false, ghost.getCurrentTime(), ghost.getTimeDiff());
             } else {
                 finishOverlay.show(true, ghost.getCurrentTime(), -1);
+                assetLoader.getSoundByName("crash.mp3").play();
             }
         }
     }

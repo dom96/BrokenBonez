@@ -1,21 +1,17 @@
 package com.dragonfruitstudios.brokenbonez.LevelObjects;
 
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
-import com.dragonfruitstudios.brokenbonez.Game.GameObject;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Gameplay.Bike;
-import com.dragonfruitstudios.brokenbonez.Gameplay.GameState;
 import com.dragonfruitstudios.brokenbonez.HighScores.HighScore;
-import com.dragonfruitstudios.brokenbonez.Math.Collisions.Rect;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 public abstract class LevelObject {
 
     AssetLoader assets;
-    boolean visible = true;
+    private boolean visible = true;
     protected VectorF v;
     float rotation;
-    //GameState gameState;
 
     public abstract void draw(GameView view);
 

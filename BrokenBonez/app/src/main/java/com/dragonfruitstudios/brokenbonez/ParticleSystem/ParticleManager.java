@@ -32,11 +32,11 @@ public class ParticleManager implements GameObject{
                 assetLoader.getBitmapByName("particlesystem/smoke3.png"),
                 assetLoader.getBitmapByName("particlesystem/smoke4.png")};
 
-        settings = SettingsState.load(gameSceneManager.gameView.getContext());
+        settings = new Settings(gameSceneManager);
     }
 
     public void draw(GameView view){
-        if(settings.boolParticlesEnabled == true) {
+        if(settings.isBoolParticlesEnabled() && ! ( smokeParticleSystem == null)) {
             smokeParticleSystem.doDraw(view);
         }
     }

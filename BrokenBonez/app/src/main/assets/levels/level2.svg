@@ -124,10 +124,9 @@
 
 <path id="coin1" class="coin"
         fill="none" stroke="black" stroke-width="1"
-        d="M 1580,518.00" />
+        d="M 1580,490.00" />
 
 <path id="booster1" class="booster"
         fill="none" stroke="black" stroke-width="1"
-        d="M 3280,518.00" />
-
+        d="M 3280,470.00" />
 </svg>
