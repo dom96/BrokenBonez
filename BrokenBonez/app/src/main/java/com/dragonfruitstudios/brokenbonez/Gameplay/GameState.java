@@ -75,7 +75,7 @@ public class GameState {
         currentLevel.update(lastUpdate, bike, score);
         particleManager.update(lastUpdate, bike.getPos());
         camera.centerHorizontally(bike.getPos().x);
-        if (!finishOverlay.isEnabled()) {
+        if (!finishOverlay.isShown()) {
             score.changeTimeBy(lastUpdate);
         }
         ghost.createSlice(lastUpdate, bike.getLeftWheel().getPos(), bike.getRightWheel().getPos(),
@@ -101,7 +101,7 @@ public class GameState {
     }
 
     public void onTouchEvent(MotionEvent event) {
-        if (!finishOverlay.isEnabled()) {
+        if (!finishOverlay.isShown()) {
             // Determine what action the user performed.
             TouchHandler.ControlIsActive action = TouchHandler.determineAction(event,
                     Graphics.getScreenWidth() / 2);
@@ -203,9 +203,9 @@ public class GameState {
                 if (!ghost.isFinished()) {
                     ghost.finish();
                 }
-                finishOverlay.enable(false, ghost.getCurrentTime(), ghost.getTimeDiff());
+                finishOverlay.show(false, ghost.getCurrentTime(), ghost.getTimeDiff());
             } else {
-                finishOverlay.enable(true, ghost.getCurrentTime(), -1);
+                finishOverlay.show(true, ghost.getCurrentTime(), -1);
             }
         }
     }
