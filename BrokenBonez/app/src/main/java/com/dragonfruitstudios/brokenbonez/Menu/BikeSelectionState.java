@@ -63,7 +63,7 @@ public class BikeSelectionState implements GameObject {
         this.physicsSimulator = new Simulator();
         camera = new Camera(0, 0);
         bikeSelectionLevel = new BikeSelectionLevel(this);
-        this.assetLoader.AddAssets(new String[]{"selection/selectiontext.png", "selection/dirtbike.png", "selection/bmx.png", "selection/bikeselect.png", "selection/leslietext.png", "selection/deedeetext.png", "selection/jennytext.png", "selection/wanitatext.png", "selection/leslie.png", "selection/deedee.png", "selection/jenny.png", "selection/wanita.png", "selection/selectionText.png"});
+        this.assetLoader.AddAssets(new String[]{"selection/selectiontext.png", "selection/dirtbike.png", "selection/bmx.png", "selection/bikeselect.png", "selection/leslietext.png", "selection/deedeetext.png", "selection/jennytext.png", "selection/wanitatext.png", "selection/leslie.png", "selection/deedee.png", "selection/jenny.png", "selection/wanita.png"});
         background = assetLoader.getBitmapByName("selection/selectiontext.png");
         blue = Color.BLUE;
         purple = Color.parseColor("#7b2b80");
