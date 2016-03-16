@@ -10,10 +10,11 @@ import java.util.ArrayList;
 /**
  * Defines a class which supports intersection.
  */
-
-// TODO: Clean up the old collidesWith methods in the Line, Polygon etc classes.
 public abstract class Intersector implements Drawable {
 
+    /**
+     * Used to report that
+     */
     protected Manifold.Collection collisionNotImplemented(Intersector shape) {
         throw new RuntimeException("CollisionTest needs to be implemented for " +
                 this.getClass() + " and " + shape.getClass());

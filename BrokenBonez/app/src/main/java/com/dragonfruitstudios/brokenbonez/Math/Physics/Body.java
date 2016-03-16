@@ -3,11 +3,12 @@ package com.dragonfruitstudios.brokenbonez.Math.Physics;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 public abstract class Body {
+    // Determines how close two Polygons can get before `mightCollide` reports `True`.
     private final float collisionProximityFactor = 1.5f;
 
-    float mass;
-    float inverseMass;
-    float restitution;
+    float mass; // Mass of body
+    float inverseMass; // Inverse mass (cached for performance).
+    float restitution; // Affects bounciness of body.
 
     // Caching for `mightCollide`.
     float proximityX = -1;
@@ -37,8 +38,6 @@ public abstract class Body {
             proximityX = Math.max(this.getSize().x, b.getSize().x) * collisionProximityFactor;
             proximityY = Math.max(this.getSize().y, b.getSize().y) * collisionProximityFactor;
         }
-        // TODO: The code below is still surprisingly slow. It appears that accessing getPos()
-        // is slow.
         return Math.abs(this.getPos().x - b.getPos().x) < proximityX &&
                 Math.abs(this.getPos().y - b.getPos().y) < proximityY;
     }

@@ -103,6 +103,9 @@ public class Manifold {
 
     // </editor-fold>
 
+    /**
+     * Stores a list of Manifolds and provides methods for dealing with this list.
+     */
     public static class Collection implements Iterable<Manifold> {
         private ArrayList<Manifold> manifolds;
 
@@ -141,6 +144,9 @@ public class Manifold {
 
         // <editor-fold desc="Methods applied to all Manifolds in collection">
 
+        /**
+         * Adds the specified penetration to each Manifold in this collection.
+         */
         public void addPenetration(float penetration) {
             for (Manifold m : manifolds) {
                 m.setPenetration(m.getPenetration() + penetration);

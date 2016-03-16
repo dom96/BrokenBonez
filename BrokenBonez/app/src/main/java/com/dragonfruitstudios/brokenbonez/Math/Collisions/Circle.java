@@ -11,10 +11,10 @@ import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 import java.util.ArrayList;
 
 public class Circle extends Intersector implements Drawable {
-    VectorF center;
-    float radius;
+    private VectorF center;
+    private float radius;
 
-    VectorF size;
+    private VectorF size;
 
     /**
      * Creates a new Circle bounding shape with the specified center x and y position as well as
