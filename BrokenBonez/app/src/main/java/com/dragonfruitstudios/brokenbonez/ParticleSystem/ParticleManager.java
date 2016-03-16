@@ -13,7 +13,7 @@ import com.dragonfruitstudios.brokenbonez.Menu.SettingsState;
 public class ParticleManager implements GameObject{
     private AssetLoader assetLoader;
     private GameSceneManager gameSceneManager;
-    Settings settings;
+    private Settings settings;
     private Bitmap[] smokeParticles;
     private ParticleSystem smokeParticleSystem;
 

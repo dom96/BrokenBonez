@@ -15,19 +15,19 @@ import com.dragonfruitstudios.brokenbonez.GameSceneManager;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 public class MenuState implements GameObject {
-    ImageButton startGame;
-    ImageButton hiScore;
-    ImageButton credits;
-    ImageButton settings;
-    AssetLoader assetLoader;
-    Bitmap background;
-    boolean noiseOn;
-    boolean noiseWait;
-    float waitTime = 0;
-    Bitmap noise;
+    private ImageButton startGame;
+    private ImageButton hiScore;
+    private ImageButton credits;
+    private ImageButton settings;
+    private AssetLoader assetLoader;
+    private Bitmap background;
+    private boolean noiseOn;
+    private boolean noiseWait;
+    private float waitTime = 0;
+    private Bitmap noise;
     VectorF pos;
     float rotation;
-    GameSceneManager gameSceneManager;
+    private GameSceneManager gameSceneManager;
     Settings savedSettings;
 
     public MenuState(AssetLoader assetLoader, GameSceneManager gameSceneManager) {
