@@ -8,8 +8,7 @@ import java.io.Serializable;
  * Origin is assumed to be (0, 0).
  */
 public class VectorF implements Serializable {
-
-    // Public because accessing these directly is much cleaner than using the getters/setters,
+    // Public because accessing these directly is much cleaner than using the getters/setters.
     public float x;
     public float y;
 

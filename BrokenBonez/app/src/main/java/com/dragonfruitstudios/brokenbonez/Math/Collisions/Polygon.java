@@ -22,7 +22,7 @@ public class Polygon extends Intersector implements Drawable {
     private RectF rect;
 
     private android.graphics.RectF calcRect() {
-        // TODO: This code sucks. Clean it up. But make sure tests pass.
+        // TODO: This is a quick and dirty way to calculate the rectangle, find better way.
         float minX = Float.MAX_VALUE;
         float maxX = -Float.MAX_VALUE;
         float minY = Float.MAX_VALUE;
@@ -193,6 +193,17 @@ public class Polygon extends Intersector implements Drawable {
         return result;
     }
 
+    /**
+     * Recalculates the this Polygon's rectangle and size cache. This should be called when
+     * modifying the Polygon.
+     */
+    public void recalculateBounds() {
+        rect = calcRect();
+        size = calcSize();
+    }
+
+    // <editor-fold desc="Getters/Setters">
+
     public ArrayList<Line> getLines() {
         return lines;
     }
@@ -216,11 +227,7 @@ public class Polygon extends Intersector implements Drawable {
     public RectF getRect() {
         return rect;
     }
-
-    public void recalculateBounds() {
-        rect = calcRect();
-        size = calcSize();
-    }
+    // </editor-fold>
 
     /**
      This method is used to show where the polygon is on the screen, for debugging purposes only.

@@ -22,14 +22,14 @@ import java.io.ObjectOutputStream;
  * level and shows them the way they moved.
  */
 public class Ghost extends Bike  {
-    Context context; // Used for internal storage.
-    GhostInfo currentRun; // The information about the current run.
-    GhostInfo prevRun; // The information about the last run.
-    GameLevel currentLevel; // The level currently being played.
+    private Context context; // Used for internal storage.
+    private GhostInfo currentRun; // The information about the current run.
+    private GhostInfo prevRun; // The information about the last run.
+    private GameLevel currentLevel; // The level currently being played.
 
     public Ghost(Context context, AssetLoader assetLoader, GameLevel currentLevel) {
         super(assetLoader, currentLevel, BodyType.Bike, CharacterType.Leslie);
-        // Disable gravity of bike.
+        // Disable gravity of the bike we are extending.
         leftWheel.setHasGravity(false);
         rightWheel.setHasGravity(false);
 
@@ -37,20 +37,6 @@ public class Ghost extends Bike  {
         this.context = context;
         currentRun = new GhostInfo("Anonymous");
         this.currentLevel = currentLevel;
-        try {
-            load(LevelInfo.getLevelName(currentLevel.getLevelID()));
-        }
-        catch (Exception e) {
-            // TODO: Show dialog to user?
-            Log.e("Ghost", "Failed to load old run: " + e.toString());
-        }
-    }
-
-    public void reset(GameLevel currentLevel) {
-        super.reset();
-        currentRun.reset();
-        this.currentLevel = currentLevel;
-
         try {
             load(LevelInfo.getLevelName(currentLevel.getLevelID()));
         }
@@ -79,7 +65,6 @@ public class Ghost extends Bike  {
         if (prevRun != null) {
             Log.w("Ghost", "Time diff: " + (prevRun.getFinishTime() - currentRun.getFinishTime()));
         }
-        //Log.w("Ghost", "Prec: " + prevRun.getFinishTime() + " Curr: " + currentRun.getFinishTime());
         if (prevRun != null && prevRun.getFinishTime() < currentRun.getFinishTime()) {
             return;
         }
@@ -93,10 +78,16 @@ public class Ghost extends Bike  {
         serialiseStream.close();
     }
 
+    /**
+     * Creates a new time slice which stores the information specified. This essentially stores
+     * the bike's left/right wheel positions and their rotation at `currentTime + msPassed`
+     * moment of time.
+     */
     public void createSlice(float msPassed, VectorF leftWheelPos, VectorF rightWheelPos,
                             float leftRotation, float rightRotation) {
         if (!currentRun.isFinished()) {
-            currentRun.createSlice(msPassed, leftWheelPos, rightWheelPos, leftRotation, rightRotation);
+            currentRun.createSlice(msPassed, leftWheelPos, rightWheelPos, leftRotation,
+                    rightRotation);
         }
 
         if (prevRun != null && prevRun.hasSlices()) {

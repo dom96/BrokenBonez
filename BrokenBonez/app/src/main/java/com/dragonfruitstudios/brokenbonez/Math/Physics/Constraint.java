@@ -2,6 +2,12 @@ package com.dragonfruitstudios.brokenbonez.Math.Physics;
 
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
+/**
+ * This class implements a constraint between two arbitrary bodies which ensures that they
+ * are always within a certain distance of each other.
+ *
+ * This is used to keep the wheels of the bike locked together.
+ */
 public class Constraint {
     DynamicBody bodyA;
     DynamicBody bodyB;
@@ -26,7 +32,7 @@ public class Constraint {
         VectorF leftToRight = bodyB.getPos().subtracted(bodyA.getPos());
         // Calculate the distance between the two wheels.
         float distance = leftToRight.magnitude();
-        //Log.d("Constraint", "Distance: " + distance);
+
         // Ensure that the magnitude is not 0 which leads to an exception.
         if (distance != 0) {
             leftToRight.normalise();

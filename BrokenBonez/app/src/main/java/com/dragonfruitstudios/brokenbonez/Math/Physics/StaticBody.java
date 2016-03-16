@@ -11,10 +11,10 @@ import java.util.ArrayList;
 
 /**
  * Implements a static body. That is, a body which has infinite mass and does not participate in
- * the physics simulation.
+ * the physics simulation. It does however collide with other bodies preventing their movement.
  */
 public class StaticBody extends Body {
-    Intersector boundingShape;
+    private Intersector boundingShape;
 
     /**
      * Creates a new static shape based on the specified shape template. The specified shape
@@ -56,6 +56,14 @@ public class StaticBody extends Body {
 
     public VectorF getSize() {
         return boundingShape.getSize();
+    }
+
+    public void setBoundingShape(Intersector boundingShape) {
+        this.boundingShape = boundingShape;
+    }
+
+    public Intersector getBoundingShape() {
+        return boundingShape;
     }
 
 }

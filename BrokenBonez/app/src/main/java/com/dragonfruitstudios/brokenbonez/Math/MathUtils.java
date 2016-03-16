@@ -3,6 +3,9 @@ package com.dragonfruitstudios.brokenbonez.Math;
 public class MathUtils {
     public static final float defEpsilon = 0.001f;
 
+    /**
+     * Determines whether a and b are equal with a certain degree of accuracy.
+     */
     public static boolean equal(float a, float b, float epsilon) {
         if (Math.abs(a - b) < epsilon) {
             return true;

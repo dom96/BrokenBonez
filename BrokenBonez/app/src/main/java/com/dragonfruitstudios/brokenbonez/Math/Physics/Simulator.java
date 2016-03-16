@@ -23,7 +23,6 @@ public class Simulator {
     // Used to calculate update factor.
     private static float updateRate = 60f;
 
-    // TODO: Make these non-static?
     public final static float gravity = 9.81f;
     public final static float gravityScaled = 10*gravity;
     public final static float airResistance = 0.1f; // Percentage of velocity lost due to air resistance.
@@ -57,7 +56,6 @@ public class Simulator {
                     for (Manifold m : collision) {
                         collisions.add(m);
                     }
-
                 }
             }
 
@@ -133,16 +131,23 @@ public class Simulator {
      */
     public void addStaticShape(Intersector shape) {
         StaticBody body = new StaticBody();
-        body.boundingShape = shape;
+        body.setBoundingShape(shape);
         staticBodies.add(body);
     }
 
+    /**
+     * Adds the specified constraint to this simulator as long as the simulator doesn't already
+     * contain it.
+     */
     public void addConstraint(Constraint constraint) {
         if (!constraints.contains(constraint)) {
             constraints.add(constraint);
         }
     }
 
+    /**
+     * Removes the specified constraint from this simulator.
+     */
     public void removeConstraint(Constraint constraint) {
         constraints.remove(constraint);
     }
@@ -153,7 +158,7 @@ public class Simulator {
     public boolean collidesWith(Intersector shape) {
         for (StaticBody sb : staticBodies) {
             // TODO: Optimise this.
-            if (sb.boundingShape.collisionTest(shape).hasCollisions()) {
+            if (sb.getBoundingShape().collisionTest(shape).hasCollisions()) {
                 return true;
             }
         }
