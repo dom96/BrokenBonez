@@ -30,7 +30,7 @@ public class Bike implements GameObject {
     // The wheel's of this bike.
     DynamicBody leftWheel;
     DynamicBody rightWheel;
-    // The constraint between the two wheels.
+    // The constraint between the two wheels (holds the two wheels a certain distance apart).
     Constraint wheelConstraint;
     // The body of this bike.
     Rect bodyRect;
@@ -51,10 +51,16 @@ public class Bike implements GameObject {
     // Has this bike crashed?
     boolean dead;
 
+    /**
+     * The different Bike body types.
+     */
     public enum BodyType {
         Bike, Bicycle
     }
 
+    /**
+     * The different characters that can ride the bike.
+     */
     public enum CharacterType {
         DeeDee, Jenny, Leslie, Wanita
     }
