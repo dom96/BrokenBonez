@@ -82,12 +82,15 @@ public class HighScoreScene extends Scene {
     public void draw(GameView view) {
         clearHighScore.draw(view);
         HighScoreData highScore;
-        gameView.drawText("High Scores", getScreenWidth() / 2, 100, Color.WHITE, 66);
-
+        gameView.drawText("High Scores", getScreenWidth() / 2, 100, Color.WHITE, 80);
+        gameView.drawText("Name", (getScreenWidth() / 6) * 2, (210), Color.WHITE, 74);
+        gameView.drawText("Time(Sec)", (getScreenWidth() / 6) * 3, (210), Color.WHITE, 74);
+        gameView.drawText("Score", (getScreenWidth() / 6) * 4, (210), Color.WHITE, 74);
         for (int i = this.currentHighScores.size() -1; i >= 0; i--) {
             highScore = currentHighScores.get(i);
-            gameView.drawText("Name:" + "                     " + "Time(Sec):" + "                        " + "Score:", getScreenWidth() / 2, 200, Color.WHITE, 66);
-            gameView.drawText("                                                      " + highScore.name + "                         " + highScore.time/1000 + "                              " + highScore.score, getScreenWidth() / 4, (300 + (i * 40)), Color.WHITE, 66);
+            gameView.drawText(highScore.name, (getScreenWidth() / 6) * 2, (300 + (i * 70)), Color.WHITE, 66);
+            gameView.drawText("" + (highScore.time/1000), (getScreenWidth() / 6) * 3, (300 + (i * 70)), Color.WHITE, 66);
+            gameView.drawText("" + highScore.score, (getScreenWidth() / 6) * 4, (300 + (i * 70)), Color.WHITE, 66);
         }
     }
 }
