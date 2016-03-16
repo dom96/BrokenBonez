@@ -6,15 +6,22 @@ import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class GhostInfo implements Serializable {
+/**
+ * This class stores information about a Ghost, it should only be used by the Ghost class and is
+ * therefore using the default access modifier so that it is only available in the Gameplay package.
+ */
+class GhostInfo implements Serializable {
     // Increase this to save space. I set it to 1 for best quality.
     // TODO: Another option to improve quality without sacrificing space is to implement
     // TODO: interpolation between time slices.
     private final int sliceEvery = 1;
 
-    private String username;
+    private String username; // Username of ghost.
 
-    protected class TimeSlice implements Serializable {
+    /**
+     * A single captured slice of time in the player's game run.
+     */
+    class TimeSlice implements Serializable {
         float time;
         VectorF leftWheelPos;
         VectorF rightWheelPos;
@@ -91,6 +98,9 @@ public class GhostInfo implements Serializable {
         this.username = username;
     }
 
+    /**
+     * Signifies the completion of the GhostInfo run.
+     */
     public void finish() {
         if (isFinished()) {
             throw new RuntimeException("GhostInfo already has been finished.");
@@ -116,13 +126,5 @@ public class GhostInfo implements Serializable {
 
     public boolean hasSlices() {
         return slices.size() != 0;
-    }
-
-    public void reset() {
-        this.username = "Anonymous";
-        this.slices.clear();
-        this.currentTime = 0;
-        this.finishTime = -1;
-        this.lastSliceCreation = 0;
     }
 }
