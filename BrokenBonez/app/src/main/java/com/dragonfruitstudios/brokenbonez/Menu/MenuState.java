@@ -35,7 +35,7 @@ public class MenuState implements GameObject {
         this.gameSceneManager = gameSceneManager;
         startGame = new ImageButton("menu/start.png", assetLoader, getScreenWidth() / 2 - getScreenWidth() / 4, getScreenHeight() / 4 + 60, 930, 270);
         hiScore = new ImageButton("menu/highscore.png", assetLoader, getScreenWidth() / 2 - getScreenWidth() / 4, getScreenHeight() / 4 * 2 + 120, 425, 120);
-        credits = new ImageButton("menu/credits.png", assetLoader,  getScreenWidth() / 4 * 2 + 25, getScreenHeight() / 4 * 2 + 120, 425, 120);
+        credits = new ImageButton("menu/credits.png", assetLoader,  getScreenWidth() / 4 * 2 + 15, getScreenHeight() / 4 * 2 + 120, 425, 120);
         settings = new ImageButton("menu/settings.png", assetLoader, (getScreenWidth() / 10) * 9 + 70, (getScreenHeight() / 10) * 9 + 15, 120, 100);
         this.assetLoader.AddAssets(new String[]{"menu/tv.png", "menu/tvnoise.png", "staticnoise.mp3"});
         noise = assetLoader.getBitmapByName("menu/tvnoise.png");
