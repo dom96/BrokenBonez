@@ -10,8 +10,9 @@ import com.dragonfruitstudios.brokenbonez.Math.Collisions.Polygon;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 public class Graphics {
-
-    public static boolean drawDebugInfo = false;
+    // Determines whether to draw debug information on the screen.
+    // Change to true to see some interesting overlays!
+    public static final boolean drawDebugInfo = false;
 
     /**
      * Finds every pixel with the specified `toReplace` color and replaces it with the
@@ -34,7 +35,7 @@ public class Graphics {
     }
 
     /**
-     * Turns the image black and white and slightly transparent.
+     * Turns the image black and white.
      */
     public static void ghostify(Bitmap img) {
         int[] pixels = new int[img.getWidth()*img.getHeight()];
@@ -77,20 +78,36 @@ public class Graphics {
         }
     }
 
+    /**
+     * Returns the device's screen width.
+     *
+     * This is a convenience method, using GameView.getWidth might be more reliable.
+     */
     public static int getScreenWidth() {
         return Resources.getSystem().getDisplayMetrics().widthPixels;
     }
 
+    /**
+     * Returns the device's screen height.
+     */
     public static int getScreenHeight() {
         return Resources.getSystem().getDisplayMetrics().heightPixels;
     }
 
     // <editor-fold desc="Methods for scaling to screen resolution">
 
+    /**
+     * Assuming an original resolution of 1280x768, this method will scale `x` to fit the
+     * specified screen width `w`.
+     */
     public static float scaleX(float x, int w) {
         return (x / 1280) * w;
     }
 
+    /**
+     * Assuming an original resolution of 1280x768, this method will scale `y` to fit the
+     * specified screen width `h`.
+     */
     public static float scaleY(float y, int h) {
         return (y / 768) * h;
     }
@@ -110,7 +127,8 @@ public class Graphics {
     }
 
     /**
-     * Scales the specified polygon to the current phone's resolution.
+     * Scales the specified polygon to the current phone's resolution. Assuming the Polygon has
+     * been created for a resolution of 768x1280.
      */
     public static void scalePolygon(Polygon polygon, int w, int h) {
         for (Line l : polygon.getLines()) {
