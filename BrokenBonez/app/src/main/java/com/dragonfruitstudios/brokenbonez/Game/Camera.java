@@ -25,6 +25,13 @@ public class Camera {
     }
 
     /**
+     * Scrolls the camera vertically.
+     */
+    public void scrollY(float y) {
+        pos.add(new VectorF(0, y));
+    }
+
+    /**
      * Activate this camera on the specified view.
      *
      * Note: You should use GameView.enableCamera instead.
