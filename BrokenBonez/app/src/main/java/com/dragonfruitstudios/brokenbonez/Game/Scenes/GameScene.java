@@ -1,9 +1,7 @@
 package com.dragonfruitstudios.brokenbonez.Game.Scenes;
 
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.hardware.SensorEvent;
-import android.util.Log;
 import android.view.MotionEvent;
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
@@ -11,11 +9,8 @@ import com.dragonfruitstudios.brokenbonez.Gameplay.Bike;
 import com.dragonfruitstudios.brokenbonez.Gameplay.GameState;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Input.Accelerometer;
-import com.dragonfruitstudios.brokenbonez.Input.TouchHandler;
 import com.dragonfruitstudios.brokenbonez.Menu.Settings;
 import com.dragonfruitstudios.brokenbonez.Menu.SettingsState;
-
-import java.io.IOException;
 
 /**
  * Implements the game scene in which the bulk of the gameplay occurs.
@@ -37,15 +32,12 @@ public class GameScene extends Scene {
     public void draw(GameView view) {
         state.draw(view);
     }
-
     public void update(float lastUpdate) {
         state.update(lastUpdate);
     }
-
     public void updateSize(int w, int h) {
         state.updateSize(w, h);
     }
-
     public void onTouchEvent(MotionEvent event) {
         state.onTouchEvent(event);
     }

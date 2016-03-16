@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-// tick boxes
 public class SettingsState implements GameObject {
     ImageButton soundEnabled;
     ImageButton soundDisabled;
@@ -178,6 +177,6 @@ public class SettingsState implements GameObject {
     }
 
     public static Settings createDefaultSettings(){
-        return new Settings(true, true, true);
+        return new Settings(true, true, false);
     }
 }

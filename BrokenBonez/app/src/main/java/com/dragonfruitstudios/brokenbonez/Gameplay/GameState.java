@@ -11,7 +11,6 @@ import com.dragonfruitstudios.brokenbonez.Math.Physics.Simulator;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
 import com.dragonfruitstudios.brokenbonez.HighScores.HighScore;
 import java.io.IOException;
-
 import com.dragonfruitstudios.brokenbonez.ParticleSystem.ParticleManager;
 
 public class GameState {
@@ -24,7 +23,6 @@ public class GameState {
     private ParticleManager particleManager;
     public HighScore score;
     private Camera camera;
-
     private FinishOverlay finishOverlay;
     private boolean slowMotion;
     private boolean askingForHighScore; // determines whether the `askName` dialog is shown.

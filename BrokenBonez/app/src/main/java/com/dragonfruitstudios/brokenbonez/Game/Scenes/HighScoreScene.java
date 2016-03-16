@@ -3,13 +3,11 @@ package com.dragonfruitstudios.brokenbonez.Game.Scenes;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.view.MotionEvent;
-
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
 import com.dragonfruitstudios.brokenbonez.HighScores.HighScore;
 import com.dragonfruitstudios.brokenbonez.HighScores.HighScoreData;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,10 +34,6 @@ public class HighScoreScene extends Scene {
 
     public int getScreenWidth() {
         return Resources.getSystem().getDisplayMetrics().widthPixels;
-    }
-
-    public int getScreenHeight() {
-        return Resources.getSystem().getDisplayMetrics().heightPixels;
     }
 
     @Override

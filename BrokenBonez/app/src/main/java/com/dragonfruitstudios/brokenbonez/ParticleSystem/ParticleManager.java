@@ -5,7 +5,6 @@ import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.GameObject;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
-import com.dragonfruitstudios.brokenbonez.Gameplay.GameState;
 import com.dragonfruitstudios.brokenbonez.Input.TouchHandler;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 import com.dragonfruitstudios.brokenbonez.Menu.Settings;
@@ -14,7 +13,6 @@ import com.dragonfruitstudios.brokenbonez.Menu.SettingsState;
 public class ParticleManager implements GameObject{
     private AssetLoader assetLoader;
     private GameSceneManager gameSceneManager;
-    private GameState state;
     Settings settings;
     private Bitmap[] smokeParticles;
     private ParticleSystem smokeParticleSystem;
