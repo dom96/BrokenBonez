@@ -10,7 +10,7 @@ import com.dragonfruitstudios.brokenbonez.Game.Graphics;
 import com.dragonfruitstudios.brokenbonez.Menu.ImageButton;
 
 public class FinishOverlay {
-    AssetLoader assetLoader;
+    private AssetLoader assetLoader;
 
     private boolean shown;
     // Information which determines what is displayed to the user.
@@ -19,9 +19,9 @@ public class FinishOverlay {
     private float ghostTimeDiff; // The difference between the fastest bike ride and this ride.
 
     // Buttons
-    ImageButton continueBtn;
-    ImageButton mainMenuBtn;
-    ImageButton restartLevelBtn;
+    private ImageButton continueBtn;
+    private ImageButton mainMenuBtn;
+    private ImageButton restartLevelBtn;
 
     public FinishOverlay(AssetLoader assetLoader) {
         this.assetLoader = assetLoader;
