@@ -1,4 +1,4 @@
-package com.dragonfruitstudios.brokenbonez.Game;
+package com.dragonfruitstudios.brokenbonez.Game.Levels;
 
 import android.util.Log;
 
@@ -8,6 +8,10 @@ import com.dragonfruitstudios.brokenbonez.Math.Collisions.Manifold;
 import com.dragonfruitstudios.brokenbonez.Math.Physics.Simulator;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
+/**
+ * This class specifies the bare minimum methods needed by the Bike. That way a custom level can
+ * be created which does not do much but can still draw a bike (as is done in one of the menus).
+ */
 public abstract class Level {
 
     abstract public AssetLoader getAssetLoader();
@@ -20,7 +24,7 @@ public abstract class Level {
     abstract public VectorF getStartPoint();
 
     /**
-     * Determines whether any of the StaticBodies in the Level collide with
+     * Determines whether any of the physical StaticBodies in the Level collide with
      * the specified shape.
      */
     public boolean collidesWith(Intersector shape) {

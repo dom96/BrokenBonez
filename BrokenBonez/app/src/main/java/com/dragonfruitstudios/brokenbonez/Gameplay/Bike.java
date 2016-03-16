@@ -6,9 +6,7 @@ import android.util.Log;
 
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.Graphics;
-import com.dragonfruitstudios.brokenbonez.Game.Level;
-import com.dragonfruitstudios.brokenbonez.GameLoop;
-import com.dragonfruitstudios.brokenbonez.Input.Accelerometer;
+import com.dragonfruitstudios.brokenbonez.Game.Levels.Level;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Circle;
 import com.dragonfruitstudios.brokenbonez.Game.GameObject;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
@@ -17,7 +15,6 @@ import com.dragonfruitstudios.brokenbonez.Math.Collisions.Rect;
 import com.dragonfruitstudios.brokenbonez.Math.Physics.Constraint;
 import com.dragonfruitstudios.brokenbonez.Math.Physics.DynamicBody;
 import com.dragonfruitstudios.brokenbonez.Math.Physics.Simulator;
-import com.dragonfruitstudios.brokenbonez.Math.Physics.StaticBody;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 public class Bike implements GameObject {

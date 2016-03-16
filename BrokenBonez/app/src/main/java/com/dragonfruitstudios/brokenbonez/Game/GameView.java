@@ -24,28 +24,48 @@ import java.security.InvalidParameterException;
  *  This class implements a View which supports drawing. Currently implemented as a custom View,
  *  but the API has been designed to support other backends.
  *  It may for example utilise a GlSurfaceView backend in the future depending on performance.
+ *
+ *  To use this view, create a new instance of it and then use `setContentView` in an Activity.
+ *  You will then need to set the GameView's callbacks using the `setCallbacks` method. The
+ *  callbacks are called whenever the view wants to be drawn or when its size changes.
+ *
+ *  When wanting to draw on the GameView, call one of the many public drawing methods defined here.
  */
 public class GameView extends View {
-    boolean ready;
-    Canvas canvas;
-    Paint paint;
-    Camera camera;
-    boolean cameraEnabled;
+    private static final String TAG = GameView.class.getSimpleName();
 
+    private boolean ready; // Determines whether the Canvas is ready to be drawn on.
+    private Canvas canvas;
+    private Paint paint; // Contains drawing options.
+    private Camera camera; // The camera which can be used for drawing.
+    private boolean cameraEnabled;
+
+    /**
+     * Stores two GameView callbacks.
+     */
     public interface GVCallbacks {
+        /**
+         * Called when the GameView wants to be drawn.
+         */
         void performDraw(GameView gameView);
 
+        /**
+         * Called when the GameView's size changed.
+         */
         void onSizeChanged(GameView gameView, int w, int h, int oldw, int oldh);
     }
 
-    GVCallbacks callbacks;
+    private GVCallbacks callbacks;
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        // Prepare the canvas.
         ready = true;
         this.canvas = canvas;
+        // Call user's callback to perform drawing.
         callbacks.performDraw(this);
+        // Dispose canvas.
         ready = false;
         this.canvas = null;
     }
@@ -53,15 +73,16 @@ public class GameView extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
+        // Ignore this event when it reports that width and height are 0.
         if (w == 0 || h == 0) {
-            Log.d("GameView", "Size changed to 0, skipping event.");
+            Log.d(TAG, "Size changed to 0, skipping event.");
             return;
         }
-        Log.d("GameView", String.format("Size changed. W: %s, H: %s, oldW: %s, oldH: %s",
+        Log.i(TAG, String.format("Size changed. W: %s, H: %s, oldW: %s, oldH: %s",
                 w, h, oldw, oldh));
         callbacks.onSizeChanged(this, w, h, oldw, oldh);
 
-        // Update camera size.
+        // Update the GameView camera's size.
         camera.updateSize(w, h);
     }
 
@@ -90,6 +111,9 @@ public class GameView extends View {
         canvas.translate(x, y);
     }
 
+    /**
+     * Assigns the specified camera to this GameView.
+     */
     public void setCamera(Camera camera) {
         if (this.cameraEnabled) {
             throw new RuntimeException("Disable the current camera before changing it.");
@@ -98,10 +122,17 @@ public class GameView extends View {
         this.cameraEnabled = false;
     }
 
+    /**
+     * Gets the GameView's Camera.
+     */
     public Camera getCamera() {
         return camera;
     }
 
+    /**
+     * Activates the GameView's camera. This causes all draws to be translated by a certain amount
+     * of pixels specified by the camera.
+     */
     public void enableCamera() {
         if (this.camera == null) {
             throw new RuntimeException("You need to set a camera first.");
@@ -113,6 +144,9 @@ public class GameView extends View {
         this.cameraEnabled = true;
     }
 
+    /**
+     * Deactivates the GameView's camera. All calls after a call to this won't be translated.
+     */
     public void disableCamera() {
         if (!this.cameraEnabled) {
             throw new RuntimeException("Camera has not been enabled.");
@@ -121,6 +155,9 @@ public class GameView extends View {
         this.cameraEnabled = false;
     }
 
+    /**
+     * A little method to ensure that the Canvas is ready.
+     */
     private void checkCanvas() {
         if (!ready) {
             throw new IllegalArgumentException("Cannot draw right now, Canvas not ready.");
@@ -129,8 +166,6 @@ public class GameView extends View {
 
     /**
      * Clear the GameView with the specified color.
-     *
-     * @param color
      */
     public void clear(int color) {
         checkCanvas();
@@ -140,11 +175,6 @@ public class GameView extends View {
 
     /**
      * Draw the specified text at the specified x,y coords with the specified color.
-     *
-     * @param text
-     * @param x
-     * @param y
-     * @param color
      */
     public void drawText(String text, float x, float y, int color) {
         checkCanvas();
@@ -155,6 +185,9 @@ public class GameView extends View {
         canvas.drawText(text, x, y, paint);
     }
 
+    /**
+     * Draws the specified text with the specified text size.
+     */
     public void drawText(String text, float x, float y, int color, int textSize) {
         checkCanvas();
         paint.setColor(color);
@@ -165,12 +198,18 @@ public class GameView extends View {
         canvas.drawText(text, x, y, paint);
     }
 
+    /**
+     * Draws the specified text in with a center text alignment.
+     */
     public void drawTextCenter(String text, float x, float y, int color, int textSize) {
         paint.setTextAlign(Paint.Align.CENTER);
         drawText(text, x, y, color, textSize);
         paint.setTextAlign(Paint.Align.LEFT);
     }
 
+    /**
+     * Draws the specified text in with a center text alignment and specified rotation.
+     */
     public void drawTextCenter(String text, float x, float y, int color, int textSize,
                                float rotation) {
         paint.setTextAlign(Paint.Align.CENTER);
@@ -185,13 +224,7 @@ public class GameView extends View {
     /**
      * Draws a rectangle at the specified coordinates and with the specified color.
      * The rectangle is drawn with its contents filled.
-     * @param left
-     * @param top
-     * @param right
-     * @param bottom
-     * @param color
      */
-
     public void drawRect(float left, float top, float right, float bottom, int color) {
         checkCanvas();
         paint.setColor(color);
@@ -200,15 +233,9 @@ public class GameView extends View {
         paint.reset();
     }
 
-    public void drawRectFrame(float left, float top, float right, float bottom, int color) {
-        // TODO: Just merge this with `drawRect`.
-        checkCanvas();
-        paint.setColor(color);
-        paint.setStyle(Paint.Style.STROKE);
-        canvas.drawRect(left, top, right, bottom, paint);
-        paint.reset();
-    }
-
+    /**
+     * Draws a filled circle with a center at position (cx, cy) and radius specified.
+     */
     public void drawCircle(float cx, float cy, float radius, int color) {
         checkCanvas();
 
@@ -216,6 +243,9 @@ public class GameView extends View {
         canvas.drawCircle(cx, cy, radius, paint);
     }
 
+    /**
+     * Draws a circle with the specified paint style.
+     */
     public void drawCircle(float cx, float cy, float radius, int color, Paint.Style style) {
         checkCanvas();
 
@@ -224,19 +254,18 @@ public class GameView extends View {
         paint.reset();
     }
 
-    public void drawCircleWithLine(float cx, float cy, float radius, int color, int lineColor) {
-        drawCircle(cx, cy, radius, color);
-
-        paint.setColor(lineColor);
-        canvas.drawLine(cx, cy, cx + radius, cy, paint);
-    }
-
+    /**
+     * Draws a line between two vectors with the specified color.
+     */
     public void drawLine(VectorF start, VectorF finish, int color) {
         checkCanvas();
         paint.setColor(color);
         canvas.drawLine(start.getX(), start.getY(), finish.getX(), finish.getY(), paint);
     }
 
+    /**
+     * Determines the relative location that an object will be drawn.
+     */
     public enum ImageOrigin {
         TopLeft, Middle, BottomLeft,
         MiddleLeft
@@ -270,7 +299,7 @@ public class GameView extends View {
 
     /**
      * Draws a section of the image at the specified `dest` rectangle.
-     * @param image
+     * @param image The image to draw.
      * @param src The section of the image to draw.
      * @param dest Where to draw the image.
      * @param rotation The rotation of the image about its top-left corner.
@@ -287,6 +316,9 @@ public class GameView extends View {
         canvas.restore();
     }
 
+    /**
+     * Draws the specified Polygon with its inside filled with the specified image.
+     */
     public void fillPolygon(Bitmap image, Polygon polygon) {
         checkCanvas();
         // Code below adapted from: http://stackoverflow.com/a/3721521/492186

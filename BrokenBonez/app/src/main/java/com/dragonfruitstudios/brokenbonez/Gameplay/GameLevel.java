@@ -8,8 +8,12 @@ import android.util.Log;
 
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.Graphics;
-import com.dragonfruitstudios.brokenbonez.Game.Level;
-import com.dragonfruitstudios.brokenbonez.Game.LevelInfo;
+import com.dragonfruitstudios.brokenbonez.Game.Levels.ColorLayer;
+import com.dragonfruitstudios.brokenbonez.Game.Levels.Layer;
+import com.dragonfruitstudios.brokenbonez.Game.Levels.Level;
+import com.dragonfruitstudios.brokenbonez.Game.Levels.LevelInfo;
+import com.dragonfruitstudios.brokenbonez.Game.Levels.SolidLayer;
+import com.dragonfruitstudios.brokenbonez.Game.Levels.SolidObject;
 import com.dragonfruitstudios.brokenbonez.HighScores.HighScore;
 import com.dragonfruitstudios.brokenbonez.LevelObjects.LevelBoost;
 import com.dragonfruitstudios.brokenbonez.LevelObjects.LevelCoin;
@@ -58,13 +62,13 @@ public class GameLevel extends Level {
         // Y position (based on 768 high screen), scroll factor, image origin
         // (For ColorLayer):
         //     color height, color top, color bottom.
-        info.layers.add(new LevelInfo.ColorLayer("sky.png", 154f, 0.01f,
+        info.layers.add(new ColorLayer("sky.png", 154f, 0.01f,
                 GameView.ImageOrigin.MiddleLeft, 100f, "#1e3973", "#466ab9"));
-        info.layers.add(new LevelInfo.Layer("buildings1.png", 454f, 0.09f,
+        info.layers.add(new Layer("buildings1.png", 454f, 0.09f,
                 GameView.ImageOrigin.BottomLeft));
-        info.layers.add(new LevelInfo.ColorLayer("buildings2.png", 479f, 0.15f,
+        info.layers.add(new ColorLayer("buildings2.png", 479f, 0.15f,
                 GameView.ImageOrigin.BottomLeft, 20f, Color.TRANSPARENT, Color.BLACK));
-        info.layers.add(new LevelInfo.Layer("bushes.png", 518f, 0.8f,
+        info.layers.add(new Layer("bushes.png", 518f, 0.8f,
                 GameView.ImageOrigin.BottomLeft));
 
         // Load the SVG file which defines the level's geometry.
@@ -88,20 +92,20 @@ public class GameLevel extends Level {
         scaledBitmaps = info.loadAssets(gameState.getAssetLoader());
 
         Simulator physicsSimulator = gameState.getPhysicsSimulator();
-        for (LevelInfo.SolidLayer sl : info.solids) {
+        for (SolidLayer sl : info.solids) {
             physicsSimulator.addStaticShape(sl);
         }
 
         // Initialise the LevelObjects based on the ones specified in LevelInfo.
         levelObjects = new ArrayList<>();
-        ArrayList<LevelInfo.SolidObject> coins = info.findSolidObjects("coin");
-        ArrayList<LevelInfo.SolidObject> boosters = info.findSolidObjects("booster");
-        for (LevelInfo.SolidObject coin : coins) {
+        ArrayList<SolidObject> coins = info.findSolidObjects("coin");
+        ArrayList<SolidObject> boosters = info.findSolidObjects("booster");
+        for (SolidObject coin : coins) {
             VectorF pos = coin.pos.copy();
             Graphics.scalePos(pos, Graphics.getScreenWidth(), Graphics.getScreenHeight());
             levelObjects.add(new LevelCoin(getAssetLoader(), pos.x, pos.y, 0));
         }
-        for (LevelInfo.SolidObject booster : boosters) {
+        for (SolidObject booster : boosters) {
             VectorF pos = booster.pos.copy();
             Graphics.scalePos(pos, Graphics.getScreenWidth(), Graphics.getScreenHeight());
             levelObjects.add(new LevelBoost(getAssetLoader(), pos.x, pos.y, 0));
@@ -114,7 +118,7 @@ public class GameLevel extends Level {
 
         if (!layersScaled) {
             // Scale each SolidLayer's coordinates to the current phone's resolution.
-            for (LevelInfo.SolidLayer sl : info.solids) {
+            for (SolidLayer sl : info.solids) {
                 Graphics.scalePolygon(sl, w, h);
             }
             layersScaled = true;
@@ -153,13 +157,13 @@ public class GameLevel extends Level {
 
     public void draw(GameView gameView) {
         // Draw the different layers.
-        for (LevelInfo.Layer l : info.layers) {
+        for (Layer l : info.layers) {
             VectorF pos = bikePos.copy();
             pos.mult(new VectorF(-l.scrollFactor, 0));
             Bitmap img = scaledBitmaps.get(info.getLayerKey(l));
 
-            if (l instanceof LevelInfo.ColorLayer) {
-                LevelInfo.ColorLayer cLayer = ((LevelInfo.ColorLayer) l);
+            if (l instanceof ColorLayer) {
+                ColorLayer cLayer = ((ColorLayer) l);
 
                 // Draw the image
                 pos.add(0, Graphics.scaleY(l.yPos, gameView.getHeight()));
@@ -201,7 +205,7 @@ public class GameLevel extends Level {
 
         gameView.enableCamera();
         // Draw solid layers.
-        for (LevelInfo.SolidLayer sl : info.solids) {
+        for (SolidLayer sl : info.solids) {
             drawSolidLayer(sl, gameView);
         }
 
@@ -225,7 +229,7 @@ public class GameLevel extends Level {
 
     public void drawForeground(GameView view) {
         view.enableCamera();
-        for (LevelInfo.SolidLayer sl : info.solids) {
+        for (SolidLayer sl : info.solids) {
             drawSolidLayerForeground(sl, view);
         }
         view.disableCamera();
@@ -234,7 +238,7 @@ public class GameLevel extends Level {
     /**
      * Calculates the angle to draw gap between solid layers.
      */
-    private float calcFillAngle(LevelInfo.SolidLayer sl, int index) {
+    private float calcFillAngle(SolidLayer sl, int index) {
         ArrayList<Line> lines = sl.getLines();
         Line currentLine = lines.get(index);
         float currentAngle = currentLine.calcRotation();
@@ -254,7 +258,7 @@ public class GameLevel extends Level {
      * Calculates the difference in angle between the current solid layer and the next.
      * Can be used to determine whether there is a gap between the two layers.
      */
-    private float calcAngleDiff(LevelInfo.SolidLayer sl, int index) {
+    private float calcAngleDiff(SolidLayer sl, int index) {
         ArrayList<Line> lines = sl.getLines();
         Line currentLine = lines.get(index);
         float currentAngle = currentLine.calcRotation();
@@ -268,9 +272,9 @@ public class GameLevel extends Level {
         }
     }
 
-    private void drawSolidLayer(LevelInfo.SolidLayer sl, GameView gameView) {
+    private void drawSolidLayer(SolidLayer sl, GameView gameView) {
         // Draw the SolidLayer's fill image.
-        String fillKey = info.getSolidLayerKey(sl, LevelInfo.AssetType.Fill);
+        String fillKey = sl.getAssetKey(LevelInfo.AssetType.Fill);
         if (!fillKey.equals(info.getTransparentKey())) {
             Bitmap fillImage = scaledBitmaps.get(fillKey);
             if (sl.usesFillPolygon()) {
@@ -286,9 +290,9 @@ public class GameLevel extends Level {
         int slOffsetX = 0;
         // Draw the image beneath each line.
         for (int i = 0; i < sl.getLines().size(); i++) {
-            LevelInfo.SolidLayer.Info classInfo = info.getSolidLayerInfo(sl);
+            SolidLayer.Info classInfo = info.getSolidLayerInfo(sl);
             LevelInfo.AssetType assetType = sl.getAssetType(i);
-            String assetKey = info.getSolidLayerKey(sl, assetType);
+            String assetKey = sl.getAssetKey(assetType);
             // Don't draw if key is transparent and is to be drawn behind the bike.
             if (!assetKey.equals(info.getTransparentKey()) && !classInfo.surfaceInForeground) {
                 Bitmap asset = scaledBitmaps.get(assetKey);
@@ -333,14 +337,14 @@ public class GameLevel extends Level {
      * Draws a solid layer's surface in the foreground. This is primarily used for the drawing
      * of the bridge railings.
      */
-    private void drawSolidLayerForeground(LevelInfo.SolidLayer sl, GameView view) {
+    private void drawSolidLayerForeground(SolidLayer sl, GameView view) {
         // Grab the Info object for this specific SolidLayer.
-        LevelInfo.SolidLayer.Info classInfo = info.getSolidLayerInfo(sl);
+        SolidLayer.Info classInfo = info.getSolidLayerInfo(sl);
         // Only draw when the surface key isn't transparent, and the SolidLayer wasn't filled
         // automatically by the SolidLayer parser.
         if (!classInfo.surfaceKey.equals(info.getTransparentKey()) && !sl.usesFillPolygon()) {
             // Grab the AssetLoader key for this SolidLayer's Surface.
-            String surfaceKey = info.getSolidLayerKey(sl, LevelInfo.AssetType.Surface);
+            String surfaceKey = sl.getAssetKey(LevelInfo.AssetType.Surface);
             // Grab the image for this SolidLayer's surface key.
             Bitmap surfaceImage = scaledBitmaps.get(surfaceKey);
 
@@ -357,7 +361,7 @@ public class GameLevel extends Level {
         }
     }
 
-    private void drawFinishLine(LevelInfo.SolidObject so, GameView view) {
+    private void drawFinishLine(SolidObject so, GameView view) {
         String finishLineKey = info.getFinishLineKey();
         Bitmap finishLine = scaledBitmaps.get(finishLineKey);
         VectorF pos = so.pos.copy();
@@ -369,7 +373,7 @@ public class GameLevel extends Level {
         this.bikePos = bike.getPos();
 
         // Determine if Bike passed the finish line.
-        LevelInfo.SolidObject finishLine = info.getSolidObject("finish");
+        SolidObject finishLine = info.getSolidObject("finish");
         VectorF pos = finishLine.pos.copy();
         Graphics.scalePos(pos, Graphics.getScreenWidth(), Graphics.getScreenWidth());
         if (bikePos.x >= pos.x) {

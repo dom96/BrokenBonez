@@ -2,22 +2,15 @@ package com.dragonfruitstudios.brokenbonez;
 
 import android.graphics.Color;
 import android.hardware.SensorEvent;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Game.Graphics;
-import com.dragonfruitstudios.brokenbonez.Game.LevelInfo;
-import com.dragonfruitstudios.brokenbonez.Game.Scenes.BikeSelectionScene;
-import com.dragonfruitstudios.brokenbonez.Game.Scenes.CreditsScene;
+import com.dragonfruitstudios.brokenbonez.Game.Levels.LevelInfo;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.GameScene;
-import com.dragonfruitstudios.brokenbonez.Game.Scenes.HighScoreScene;
-import com.dragonfruitstudios.brokenbonez.Game.Scenes.LevelSelectionScene;
-import com.dragonfruitstudios.brokenbonez.Game.Scenes.MenuScene;
 import com.dragonfruitstudios.brokenbonez.Gameplay.Bike;
-import com.dragonfruitstudios.brokenbonez.Game.Scenes.SettingsScene;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.SplashScene;
 
 import java.util.concurrent.locks.Lock;

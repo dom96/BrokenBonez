@@ -7,8 +7,7 @@ import android.util.Log;
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Game.Graphics;
-import com.dragonfruitstudios.brokenbonez.Game.Level;
-import com.dragonfruitstudios.brokenbonez.Game.LevelInfo;
+import com.dragonfruitstudios.brokenbonez.Game.Levels.LevelInfo;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 import java.io.FileInputStream;

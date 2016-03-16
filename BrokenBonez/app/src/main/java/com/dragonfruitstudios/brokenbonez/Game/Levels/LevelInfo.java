@@ -1,4 +1,4 @@
-package com.dragonfruitstudios.brokenbonez.Game;
+package com.dragonfruitstudios.brokenbonez.Game.Levels;
 
 import android.app.Activity;
 import android.content.res.AssetManager;
@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.util.Log;
 
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
+import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Line;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Polygon;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Rect;
@@ -37,9 +38,14 @@ import javax.xml.parsers.ParserConfigurationException;
  * This class specifies information about a specific level.
  */
 public class LevelInfo {
+    /**
+     * Specifies one of the levels in the game. Used to select different levels.
+     */
     public enum LevelID {
         Unknown, Level1, Level2, Level3, Level4
     }
+
+    public enum AssetType {Surface, Fill, Transparent}
 
     private LevelID levelID;
     public ArrayList<Layer> layers;
@@ -52,136 +58,6 @@ public class LevelInfo {
     // Specifies the assets to use for a specific solidLayer class.
     private HashMap<String,SolidLayer.Info> slAssets;
 
-
-    public enum AssetType {Surface, Fill, Transparent}
-
-    /**
-     * This is a layer that the Bike will collide with (and ride over).
-     */
-    public static class SolidLayer extends Polygon {
-        // This maps directly to Polygon.lines and determines what image should be drawn over each
-        // line.
-        private ArrayList<AssetKey> assetKeys;
-        private String theClass;
-        private boolean selfClosed;
-
-        private SolidLayer(Polygon polygon) {
-            super(polygon.getLines());
-        }
-
-        public static SolidLayer createPolygon(ArrayList<Line> lines, AssetKey[] assetKeys) {
-            SolidLayer result = new SolidLayer(new Polygon(lines));
-            result.assetKeys = new ArrayList<AssetKey>();
-            for (AssetKey ak : assetKeys) {
-                for (int i = ak.indexStart; i <= ak.indexEnd; i++) {
-                    result.assetKeys.add(ak);
-                }
-            }
-            return result;
-        }
-
-        public AssetType getAssetType(int i) {
-            return assetKeys.get(i).assetType;
-        }
-
-        /**
-         * Determines whether this SolidLayer's Fill image should be drawn using `fillPolygon`.
-         *
-         * Currently `true` for Polygons which have been automatically closed by the SVG path
-         * parser.
-         */
-        public boolean usesFillPolygon() {
-            return !selfClosed;
-        }
-
-        static class AssetKey {
-            AssetType assetType;
-            int indexStart;
-            int indexEnd;
-
-            AssetKey(AssetType assetType, int indexStart, int indexEnd) {
-                this.assetType = assetType;
-                this.indexStart = indexStart;
-                this.indexEnd = indexEnd;
-            }
-        }
-
-        /**
-         * Stores information about a specific SolidLayer class' asset keys.
-         *
-         * Note: This is just a simple class that stores some information about asset keys,
-         * hence its fields are public.
-         */
-        public static class Info {
-            public String theClass;
-            public String surfaceKey;
-            public String fillKey;
-
-            public VectorF surfaceOffset;
-
-            public boolean surfaceInForeground;
-
-            Info(String theClass, String surfaceKey, String fillKey) {
-                this.theClass = theClass;
-                this.surfaceKey = surfaceKey;
-                this.fillKey = fillKey;
-                surfaceOffset = new VectorF(0, 0);
-            }
-        }
-    }
-
-    public static class SolidObject {
-        public VectorF pos;
-        public String theClass;
-
-        public SolidObject(VectorF pos, String theClass) {
-            this.pos = pos;
-            this.theClass = theClass;
-        }
-    }
-
-    public static class Layer {
-        public String path; // Relative to level image dir.
-        public float yPos; // Resolution independent factors used to place this layer along the vertical.
-        public float scrollFactor; // Factor used to scroll this layer when the bike moves.
-        public GameView.ImageOrigin origin;
-
-        public Layer(String path, float yPos, float scrollFactor, GameView.ImageOrigin origin) {
-            this.path = path;
-            this.yPos = yPos;
-            this.scrollFactor = scrollFactor;
-            this.origin = origin;
-        }
-    }
-
-    /**
-     * This layer is extended by the color specified if the image is too small. Used for the
-     * sky layer.
-     */
-    public static class ColorLayer extends Layer {
-        public float colorHeight;
-        public int colorTop; // Color specifying the color to put above the image.
-        public int colorBottom; // Color specifying the color to put below the image.
-
-        public ColorLayer(String path, float yPos, float scrollFactor,
-                          GameView.ImageOrigin origin, float colorHeight,
-                          String colorTop, String colorBottom) {
-            super(path, yPos, scrollFactor, origin);
-            this.colorHeight = colorHeight;
-            this.colorTop = Color.parseColor(colorTop);
-            this.colorBottom = Color.parseColor(colorBottom);
-        }
-
-        public ColorLayer(String path, float yPos, float scrollFactor,
-                          GameView.ImageOrigin origin, float colorHeight,
-                          int colorTop, int colorBottom) {
-            super(path, yPos, scrollFactor, origin);
-            this.colorHeight = colorHeight;
-            this.colorTop = colorTop;
-            this.colorBottom = colorBottom;
-        }
-    }
-
     public LevelInfo(LevelID levelID, String surfacePath, String groundPath, String finishPath) {
         this.levelID = levelID;
         this.surfacePath = surfacePath;
@@ -193,11 +69,19 @@ public class LevelInfo {
         this.slAssets = new HashMap<String,SolidLayer.Info>();
     }
 
+    /**
+     * Loads the specified asset at `path` by adding it to the AssetLoader, then adds it into
+     * the specified HashMap so that it can be scaled to fit the screen at a later time.
+     */
     private void loadAsset(AssetLoader loader, HashMap<String, Bitmap> scaled, String path) {
         loader.AddAssets(new String[] {path});
         scaled.put(path, loader.getBitmapByName(path));
     }
 
+    /**
+     * Loads the assets needed by this level. Returns a mapping from asset key to Bitmap, these
+     * should be used to hold a scaled version of the images.
+     */
     public HashMap<String, Bitmap> loadAssets(AssetLoader loader) {
         HashMap<String, Bitmap> result = new HashMap<>();
         loadAsset(loader, result, getSurfaceKey());
@@ -209,20 +93,15 @@ public class LevelInfo {
         }
         // Add the Solid layers' assets.
         for (SolidLayer sl : solids) {
-            // TODO: UGH. An `addAsset` method is desperately needed.
-            for (SolidLayer.AssetKey ak : sl.assetKeys) {
-                String key = getSolidLayerKey(sl, ak.assetType);
-                if (ak.assetType != AssetType.Transparent && key.length() > 0) {
-                    loadAsset(loader, result, key);
-                }
-            }
-
-            String fillKey = getSolidLayerKey(sl, AssetType.Fill);
-            if (!fillKey.equals(getTransparentKey())) {
-                loadAsset(loader, result, fillKey);
+            for (String key : sl.getAssetKeys()) {
+                loadAsset(loader, result, key);
             }
         }
         return result;
+    }
+
+    public HashMap<String,SolidLayer.Info> getSolidLayerAssets() {
+        return slAssets;
     }
 
     public void addInfo(String theClass, String surfaceKey, String fillKey) {
@@ -266,29 +145,12 @@ public class LevelInfo {
         return getLevelPath() + finishPath;
     }
 
-    public String getTransparentKey() {
+    public static String getTransparentKey() {
         return "";
     }
 
-    public String getSolidLayerKey(SolidLayer sl, AssetType assetType) {
-        if (!slAssets.containsKey(sl.theClass)) {
-            throw new RuntimeException("Couldn't find SL's class in LevelInfo's assets: " +
-                    sl.theClass);
-        }
-        switch (assetType) {
-            case Fill:
-                return slAssets.get(sl.theClass).fillKey;
-            case Surface:
-                return slAssets.get(sl.theClass).surfaceKey;
-            case Transparent:
-                return getTransparentKey();
-            default:
-                throw new InvalidParameterException("AssetType not implemented: " + assetType);
-        }
-    }
-
     public SolidLayer.Info getSolidLayerInfo(SolidLayer sl) {
-        return slAssets.get(sl.theClass);
+        return sl.getInfo();
     }
 
     /**
@@ -312,19 +174,6 @@ public class LevelInfo {
             return new ArrayList<>();
         }
         return objects.get(theClass);
-    }
-
-    public float calcGroundHeight(AssetLoader loader, int height) {
-        // For now we assume that the last layer is the ground.
-        Layer groundLayer = layers.get(layers.size() - 1);
-        Bitmap groundBitmap = loader.getBitmapByName(getLayerKey(groundLayer));
-        switch (groundLayer.origin) {
-            case BottomLeft:
-                return height*groundLayer.yPos - groundBitmap.getHeight();
-            default:
-                return 410;
-                //throw new RuntimeException("Not implemented TODO");
-        }
     }
 
     /**
@@ -489,9 +338,7 @@ public class LevelInfo {
             };
         }
         // Create a new SolidLayer using the specified `lines` and asset keys `keys`.
-        SolidLayer newLayer = SolidLayer.createPolygon(lines, keys);
-        newLayer.selfClosed = selfClosed;
-        newLayer.theClass = theClass;
+        SolidLayer newLayer = SolidLayer.createPolygon(this, lines, keys, theClass, selfClosed);
         return newLayer;
     }
 

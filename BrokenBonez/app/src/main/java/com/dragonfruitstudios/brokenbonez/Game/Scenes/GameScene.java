@@ -4,7 +4,7 @@ import android.graphics.Color;
 import android.hardware.SensorEvent;
 import android.view.MotionEvent;
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
-import com.dragonfruitstudios.brokenbonez.Game.LevelInfo;
+import com.dragonfruitstudios.brokenbonez.Game.Levels.LevelInfo;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
 import com.dragonfruitstudios.brokenbonez.Gameplay.Bike;
 import com.dragonfruitstudios.brokenbonez.Gameplay.GameState;
@@ -14,13 +14,18 @@ import com.dragonfruitstudios.brokenbonez.Menu.Settings;
 import com.dragonfruitstudios.brokenbonez.Menu.SettingsState;
 
 /**
- * Implements the game scene in which the bulk of the gameplay occurs.
+ * Implements the game scene in which the majority of the GamePlay occurs.
+ *
+ * This Scene has a method which starts a brand new game, based on a number of parameter which
+ * customise the game. This method is called `newGame`.
  */
 public class GameScene extends Scene {
     Settings settings;
     GameState state;
 
     public GameScene(AssetLoader assetLoader, GameSceneManager gameSceneManager) {
+        // Call Scene's constructor which will store the asset loader and game scene manager
+        // for us.
         super(assetLoader, gameSceneManager);
         // Create a default GameState instance.
         this.state = new GameState(this, assetLoader, this.gameSceneManager,
@@ -28,10 +33,17 @@ public class GameScene extends Scene {
                 Bike.BodyType.Bike, Color.BLUE);
     }
 
+    /**
+     * Starts a new game with the specified options.
+     * @param levelID The level to start the game on.
+     * @param characterType The character to put on the bike.
+     * @param bikeBodyType The bike body type the player will use in this game.
+     * @param bikeColor The bike color the player will use in this game.
+     */
     public void newGame(LevelInfo.LevelID levelID, Bike.CharacterType characterType,
                         Bike.BodyType bikeBodyType, int bikeColor) {
         // The easiest way to create a new game is to recreate the GameState. Resetting the state
-        // manually is a very difficult to do reliably.
+        // manually is very difficult to do reliably.
         this.state = new GameState(this, assetLoader, this.gameSceneManager,
                 levelID, characterType, bikeBodyType, bikeColor);
         // The state needs to receive at least one `updateSize` call to draw the Game properly.
@@ -55,7 +67,7 @@ public class GameScene extends Scene {
     @Override
     public void activate() {
         settings = SettingsState.load(gameSceneManager.gameView.getContext());
-        if(settings.boolSoundEnabled == true) {
+        if (settings.boolSoundEnabled) {
             state.getAssetLoader().getSoundByName("bikeEngine.mp3").play(true);
             state.getAssetLoader().getSoundByName("bikeEngine.mp3").setVolume(0.5f);
             state.getAssetLoader().getSoundByName("brokenboneztheme.ogg").setVolume(1f);
@@ -65,7 +77,7 @@ public class GameScene extends Scene {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        if (settings.boolAccelEnabled == true) {
+        if (settings.boolAccelEnabled) {
             state.setBikeTilt(Accelerometer.calculateTiltStrength(event));
         }
     }

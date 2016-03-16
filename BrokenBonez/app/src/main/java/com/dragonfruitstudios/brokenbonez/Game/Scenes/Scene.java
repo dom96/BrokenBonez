@@ -32,7 +32,7 @@ public abstract class Scene implements GameObject {
      */
     public abstract void onTouchEvent(MotionEvent event);
 
-    // These methods are optional but can be overriden to receive notifications about the events
+    // These methods are optional but can be overridden to receive notifications about the events
     // they represent.
 
     /**
@@ -55,5 +55,8 @@ public abstract class Scene implements GameObject {
      */
     public void deactivate() {}
 
+    /**
+     * Called when one of the device's sensors changes values.
+     */
     public void onSensorChanged(SensorEvent event) {}
 }
