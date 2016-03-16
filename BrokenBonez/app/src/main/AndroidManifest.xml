@@ -21,17 +21,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <!--specifies minimum and maximum api-level required to run-->
-        <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="23"/>
-        <!--allows an application to write to external storage-->
-        <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-        <!--allows using PowerManager WakeLocks to keep processor from sleeping or screen from dimming-->
-        <uses-permission android:name="android.permission.WAKE_LOCK"/>
-        <!--the device's touch screen is capable of tracking two or more fingers fully independently-->
-        <uses-feature android:name="android.hardware.touchscreen.multitouch.distinct" android:required="true"/>
-        <!--gives permission to use the phone's vibrator-->
-        <uses-permission android:name="android.permission.VIBRATE"/>
-
     </application>
+    <!--specifies minimum and maximum api-level required to run-->
+    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="23"/>
+    <!--allows an application to write to external storage-->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <!--allows using PowerManager WakeLocks to keep processor from sleeping or screen from dimming-->
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <!--the device's touch screen is capable of tracking two or more fingers fully independently-->
+    <uses-feature android:name="android.hardware.touchscreen.multitouch.distinct" android:required="true"/>
+    <!--gives permission to use the phone's vibrator-->
+    <uses-permission android:name="android.permission.VIBRATE"/>
 </manifest>
