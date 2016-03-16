@@ -62,13 +62,13 @@ public class GameLevel extends Level {
         // Y position (based on 768 high screen), scroll factor, image origin
         // (For ColorLayer):
         //     color height, color top, color bottom.
-        info.layers.add(new ColorLayer("sky.png", 154f, 0.01f,
+        info.addLayer(new ColorLayer("sky.png", 154f, 0.01f,
                 GameView.ImageOrigin.MiddleLeft, 100f, "#1e3973", "#466ab9"));
-        info.layers.add(new Layer("buildings1.png", 454f, 0.09f,
+        info.addLayer(new Layer("buildings1.png", 454f, 0.09f,
                 GameView.ImageOrigin.BottomLeft));
-        info.layers.add(new ColorLayer("buildings2.png", 479f, 0.15f,
+        info.addLayer(new ColorLayer("buildings2.png", 479f, 0.15f,
                 GameView.ImageOrigin.BottomLeft, 20f, Color.TRANSPARENT, Color.BLACK));
-        info.layers.add(new Layer("bushes.png", 518f, 0.8f,
+        info.addLayer(new Layer("bushes.png", 518f, 0.8f,
                 GameView.ImageOrigin.BottomLeft));
 
         // Load the SVG file which defines the level's geometry.
@@ -77,13 +77,13 @@ public class GameLevel extends Level {
         // Initialise the SolidLayer class asset keys.
         info.addInfo("plain", info.getSurfaceKey(), info.getImagePath("ground_base.png"),
                 new VectorF(0, 0));
-        info.addInfo("little_ramp", info.getTransparentKey(), info.getImagePath("little_ramp.png"),
+        info.addInfo("little_ramp", LevelInfo.getTransparentKey(), info.getImagePath("little_ramp.png"),
                 new VectorF(0, 0));
-        info.addInfo("building1", info.getTransparentKey(), info.getImagePath("building1.png"),
+        info.addInfo("building1", LevelInfo.getTransparentKey(), info.getImagePath("building1.png"),
                 new VectorF(0, 0));
-        info.addInfo("building2", info.getTransparentKey(), info.getImagePath("building2.png"),
+        info.addInfo("building2", LevelInfo.getTransparentKey(), info.getImagePath("building2.png"),
                 new VectorF(0, 0));
-        info.addInfo("little_ramp2", info.getTransparentKey(), info.getImagePath("little_ramp2.png"),
+        info.addInfo("little_ramp2", LevelInfo.getTransparentKey(), info.getImagePath("little_ramp2.png"),
                 new VectorF(0, 0));
         info.addInfo("bridge", info.getImagePath("bridge_rail.png"), info.getImagePath("bridge.png"),
                 new VectorF(-10, -39), true);
@@ -92,9 +92,7 @@ public class GameLevel extends Level {
         scaledBitmaps = info.loadAssets(gameState.getAssetLoader());
 
         Simulator physicsSimulator = gameState.getPhysicsSimulator();
-        for (SolidLayer sl : info.solids) {
-            physicsSimulator.addStaticShape(sl);
-        }
+        info.loadSolids(physicsSimulator);
 
         // Initialise the LevelObjects based on the ones specified in LevelInfo.
         levelObjects = new ArrayList<>();
@@ -118,7 +116,7 @@ public class GameLevel extends Level {
 
         if (!layersScaled) {
             // Scale each SolidLayer's coordinates to the current phone's resolution.
-            for (SolidLayer sl : info.solids) {
+            for (SolidLayer sl : info.getSolids()) {
                 Graphics.scalePolygon(sl, w, h);
             }
             layersScaled = true;
@@ -157,7 +155,7 @@ public class GameLevel extends Level {
 
     public void draw(GameView gameView) {
         // Draw the different layers.
-        for (Layer l : info.layers) {
+        for (Layer l : info.getLayers()) {
             VectorF pos = bikePos.copy();
             pos.mult(new VectorF(-l.scrollFactor, 0));
             Bitmap img = scaledBitmaps.get(info.getLayerKey(l));
@@ -205,7 +203,7 @@ public class GameLevel extends Level {
 
         gameView.enableCamera();
         // Draw solid layers.
-        for (SolidLayer sl : info.solids) {
+        for (SolidLayer sl : info.getSolids()) {
             drawSolidLayer(sl, gameView);
         }
 
@@ -229,7 +227,7 @@ public class GameLevel extends Level {
 
     public void drawForeground(GameView view) {
         view.enableCamera();
-        for (SolidLayer sl : info.solids) {
+        for (SolidLayer sl : info.getSolids()) {
             drawSolidLayerForeground(sl, view);
         }
         view.disableCamera();

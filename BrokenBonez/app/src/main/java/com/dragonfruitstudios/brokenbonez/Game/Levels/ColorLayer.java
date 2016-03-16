@@ -9,7 +9,7 @@ import com.dragonfruitstudios.brokenbonez.Game.GameView;
  * sky layer.
  */
 public class ColorLayer extends Layer {
-    public float colorHeight;
+    public float colorHeight; // How much of the colorTop/Bottom to draw above/below image.
     public int colorTop; // Color specifying the color to put above the image.
     public int colorBottom; // Color specifying the color to put below the image.
 

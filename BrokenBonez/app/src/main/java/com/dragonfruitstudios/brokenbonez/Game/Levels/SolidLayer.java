@@ -1,8 +1,5 @@
 package com.dragonfruitstudios.brokenbonez.Game.Levels;
 
-import android.graphics.Bitmap;
-
-import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Line;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Polygon;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
@@ -16,12 +13,12 @@ import java.util.HashMap;
  * the solid ground.
  */
 public class SolidLayer extends Polygon {
-
     // This maps directly to Polygon.lines and determines what image should be drawn over each
     // line.
     private ArrayList<AssetKey> assetKeys;
+    // The class to look up for assets.
     private String theClass;
-    private boolean selfClosed;
+    private boolean selfClosed; // Whether this Polygon was closed in the SVG.
 
     private LevelInfo owner; // The LevelInfo that this SolidLayer is a part of.
 
@@ -29,6 +26,11 @@ public class SolidLayer extends Polygon {
         super(polygon.getLines());
     }
 
+    /**
+     * Creates a new SolidLayer with the specified list of Lines representing it. The asset keys
+     * describe what assets will be used to draw each line in this SolidLayer, they are packed
+     * for efficiency.
+     */
     public static SolidLayer createPolygon(LevelInfo owner, ArrayList<Line> lines,
                                            AssetKey[] assetKeys, String theClass,
                                            boolean selfClosed) {
@@ -100,6 +102,10 @@ public class SolidLayer extends Polygon {
         return !selfClosed;
     }
 
+    /**
+     * A packed data structure which holds information about the asset type to use for drawing
+     * of specific lines.
+     */
     static class AssetKey {
         LevelInfo.AssetType assetType;
         int indexStart;
@@ -119,13 +125,13 @@ public class SolidLayer extends Polygon {
      * hence its fields are public.
      */
     public static class Info {
-        public String theClass;
-        public String surfaceKey;
-        public String fillKey;
+        public String theClass; // The SolidLayer class this info describes.
+        public String surfaceKey; // The asset key to use for the surface of this SolidLayer.
+        public String fillKey; // The asset key to use for the fill of this SolidLayer.
 
-        public VectorF surfaceOffset;
+        public VectorF surfaceOffset; // How much to offset the drawn image by.
 
-        public boolean surfaceInForeground;
+        public boolean surfaceInForeground; // Whether to draw this SolidLayer in the foreground.
 
         Info(String theClass, String surfaceKey, String fillKey) {
             this.theClass = theClass;

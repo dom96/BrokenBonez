@@ -11,6 +11,7 @@ import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Line;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Polygon;
 import com.dragonfruitstudios.brokenbonez.Math.Collisions.Rect;
+import com.dragonfruitstudios.brokenbonez.Math.Physics.Simulator;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 import junit.framework.Assert;
@@ -47,17 +48,25 @@ public class LevelInfo {
 
     public enum AssetType {Surface, Fill, Transparent}
 
-    private LevelID levelID;
-    public ArrayList<Layer> layers;
-    public String surfacePath; // Path to the image which is drawn for the bike to ride on.
-    public String groundPath; // Path to the image which can be drawn below surface.
-    public String finishPath; // Path to the image which signifies the finish line.
-    public ArrayList<SolidLayer> solids;
+    private LevelID levelID; // This level's ID.
+    private ArrayList<Layer> layers;
+    private String surfacePath; // Path to the image which is drawn for the bike to ride on.
+    private String groundPath; // Path to the image which can be drawn below surface.
+    private String finishPath; // Path to the image which signifies the finish line.
+    // A list of Polygon's describing solid ground.
+    private ArrayList<SolidLayer> solids;
     // A mapping between a class name and a list of Solid objects with that class specified in SVG.
-    public HashMap<String,ArrayList<SolidObject>> objects;
+    private HashMap<String,ArrayList<SolidObject>> objects;
     // Specifies the assets to use for a specific solidLayer class.
     private HashMap<String,SolidLayer.Info> slAssets;
 
+    /**
+     * Creates a new LevelInfo object with the specified parameters.
+     * @param levelID The LevelID of this info.
+     * @param surfacePath The path to the image representing the surface of this level.
+     * @param groundPath The path to the image representing the ground of this level.
+     * @param finishPath The path to the image representing the finish line of this level.
+     */
     public LevelInfo(LevelID levelID, String surfacePath, String groundPath, String finishPath) {
         this.levelID = levelID;
         this.surfacePath = surfacePath;
@@ -69,6 +78,10 @@ public class LevelInfo {
         this.slAssets = new HashMap<String,SolidLayer.Info>();
     }
 
+    public void addLayer(Layer layer) {
+        layers.add(layer);
+    }
+
     /**
      * Loads the specified asset at `path` by adding it to the AssetLoader, then adds it into
      * the specified HashMap so that it can be scaled to fit the screen at a later time.
@@ -76,6 +89,15 @@ public class LevelInfo {
     private void loadAsset(AssetLoader loader, HashMap<String, Bitmap> scaled, String path) {
         loader.AddAssets(new String[] {path});
         scaled.put(path, loader.getBitmapByName(path));
+    }
+
+    /**
+     * Adds the solids defined by this LevelInfo into the specified Physics simulator instance.
+     */
+    public void loadSolids(Simulator sim) {
+        for (SolidLayer sl : solids) {
+            sim.addStaticShape(sl);
+        }
     }
 
     /**
@@ -100,10 +122,19 @@ public class LevelInfo {
         return result;
     }
 
+    /**
+     * Retrieves a HashMap containing a mapping from class to SolidLayer.Info.
+     */
     public HashMap<String,SolidLayer.Info> getSolidLayerAssets() {
         return slAssets;
     }
 
+    /**
+     * Creates and adds a new SolidLayer.Info object into this LevelInfo's asset list.
+     * @param theClass The class of the SolidLayer (as specified in SVG) that this info references.
+     * @param surfaceKey The surface asset key to use for drawing the surface.
+     * @param fillKey The fill asset key to use for drawing the fill of the SolidLayer.
+     */
     public void addInfo(String theClass, String surfaceKey, String fillKey) {
         slAssets.put(theClass, new SolidLayer.Info(theClass, surfaceKey, fillKey));
     }
@@ -114,41 +145,19 @@ public class LevelInfo {
         slAssets.get(theClass).surfaceOffset = surfaceOffset;
     }
 
+    /**
+     * Same as above but can specify that the surface is in foreground. Only works for
+     * closed Polygons!
+     */
     public void addInfo(String theClass, String surfaceKey, String fillKey,
                         VectorF surfaceOffset, boolean surfaceInForeground) {
         addInfo(theClass, surfaceKey, fillKey, surfaceOffset);
         slAssets.get(theClass).surfaceInForeground = surfaceInForeground;
     }
 
-    private String getLevelPath() {
-        // Currently only support 1 level tileset, so this is simply hardcoded in.
-        return "levels/level1/";
-    }
-
-    public String getImagePath(String name) {
-        return getLevelPath() + name;
-    }
-
-    public String getLayerKey(Layer layer) {
-        return getLevelPath() + layer.path;
-    }
-
-    public String getSurfaceKey() {
-        return getLevelPath() + surfacePath;
-    }
-
-    public String getGroundKey() {
-        return getLevelPath() + groundPath;
-    }
-
-    public String getFinishLineKey() {
-        return getLevelPath() + finishPath;
-    }
-
-    public static String getTransparentKey() {
-        return "";
-    }
-
+    /**
+     * Retrieves the SolidLayer.Info for the specified SolidLayer. This is just a little shortcut.
+     */
     public SolidLayer.Info getSolidLayerInfo(SolidLayer sl) {
         return sl.getInfo();
     }
@@ -175,6 +184,16 @@ public class LevelInfo {
         }
         return objects.get(theClass);
     }
+
+    public ArrayList<SolidLayer> getSolids() {
+        return solids;
+    }
+
+    public ArrayList<Layer> getLayers() {
+        return layers;
+    }
+
+    // <editor-fold desc="Custom SVG parser.">
 
     /**
      * Takes a String containing `<path>` data. Parses that String into a list of Lines. The
@@ -398,6 +417,41 @@ public class LevelInfo {
         }
     }
 
+    // </editor-fold>
+
+    // <editor-fold desc="Getters for asset keys.">
+
+    private String getLevelPath() {
+        // Currently only support 1 level tileset, so this is simply hardcoded in.
+        return "levels/level1/";
+    }
+
+    public String getImagePath(String name) {
+        return getLevelPath() + name;
+    }
+
+    public String getLayerKey(Layer layer) {
+        return getLevelPath() + layer.path;
+    }
+
+    public String getSurfaceKey() {
+        return getLevelPath() + surfacePath;
+    }
+
+    public String getGroundKey() {
+        return getLevelPath() + groundPath;
+    }
+
+    public String getFinishLineKey() {
+        return getLevelPath() + finishPath;
+    }
+
+    public static String getTransparentKey() {
+        return "";
+    }
+
+    // </editor-fold>
+
     public static String getLevelName(LevelID levelID) {
         switch (levelID) {
             case Level1:
@@ -430,6 +484,9 @@ public class LevelInfo {
         return "";
     }
 
+    /**
+     * Returns the level after `levelID`.
+     */
     public static LevelID getNextLevel(LevelID levelID) {
         switch (levelID) {
             case Level1:
@@ -439,9 +496,9 @@ public class LevelInfo {
             case Level3:
                 return LevelID.Level4;
             case Level4:
-                return LevelID.Unknown;
+                return LevelID.Level1;
         }
-        return LevelID.Unknown;
+        return LevelID.Level1;
     }
 
 
