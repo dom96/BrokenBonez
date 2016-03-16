@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
+              "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="69.4444in" height="10.6667in"
+     viewBox="0 0 5000 768">
+  <path id="EndBuilding" class="building1"
+        fill="none" stroke="black" stroke-width="1"
+        d="M 4888.67,735.33
+           C 4888.67,735.33 4888.00,47.00 4888.00,47.00
+             4888.00,47.00 4501.33,47.67 4501.33,47.67
+             4501.33,47.67 4504.67,734.00 4504.67,734.00
+             4504.67,734.00 4889.33,734.67 4889.33,734.67" />
+  <path id="StartBuilding"  class="building2"
+        fill="none" stroke="black" stroke-width="1"
+        d="M 480.67,691.33
+           C 480.67,691.33 480.00,3.00 480.00,3.00
+             480.00,3.00 93.33,3.67 93.33,3.67
+             93.33,3.67 96.67,690.00 96.67,690.00
+             96.67,690.00 481.33,690.67 481.33,690.67" />
+  <path id="Ramp3"  class="little_ramp"
+        fill="none" stroke="black" stroke-width="1"
+        d="M 4064.67,499.00
+           C 4064.67,499.00 4378.67,499.00 4378.67,499.00
+             4378.67,499.00 4377.33,369.00 4377.33,369.00
+             4377.33,369.00 4064.67,499.00 4064.67,499.00" />
+  <path id="Finish" class="plain"
+        fill="none" stroke="black" stroke-width="1"
+        d="M 4378.00,498.00
+           C 4378.00,498.00 4504.00,497.00 4504.00,497.00" />
+  <path id="Ramp2" class="little_ramp2"
+        fill="none" stroke="black" stroke-width="1"
+        d="M 2167.67,494.00
+           C 2167.67,494.00 2481.67,494.00 2481.67,494.00
+             2481.67,494.00 2480.33,364.00 2480.33,364.00
+             2480.33,364.00 2167.67,494.00 2167.67,494.00" />
+  <path id="Ramp" class="little_ramp"
+        fill="none" stroke="black" stroke-width="1"
+        d="M 960.67,506.00
+           C 960.67,506.00 1274.67,506.00 1274.67,506.00
+             1274.67,506.00 1273.33,376.00 1273.33,376.00
+             1273.33,376.00 960.67,506.00 960.67,506.00" />
+ <path id="Terrain" class="plain"
+        fill="none" stroke="black" stroke-width="1"
+        d="M 1272.00,504.00
+           C 1272.00,504.00 2478.00,498.00 2478.00,498.00
+             2478.00,498.00 2823.00,450.00 2823.00,450.00
+             2823.00,450.00 2889.00,510.00 2889.00,510.00
+             2889.00,510.00 2997.00,489.00 2997.00,489.00
+             2997.00,489.00 3192.00,474.00 3192.00,474.00
+             3192.00,474.00 3411.00,504.00 3411.00,504.00
+             3411.00,504.00 4378.33,499.00 4378.33,499.00" />
+  <path id="boost" class="booster"
+        fill="none" stroke="black" stroke-width="1"
+        d="M 3494.00,460.00" />
+  <path id="coin" class="coin"
+        fill="none" stroke="black" stroke-width="1"
+        d="M 1444.00,328.00" />
+  <path id="Start" class="plain"
+        fill="none" stroke="black" stroke-width="1"
+        d="M 480.00,511.00
+           C 480.00,511.00 1274.67,506.00 1274.67,506.00" />
+  <path id="FinishLine" class="finish"
+        fill="none" stroke="black" stroke-width="1"
+        d="M 3943.33,500.00" />
+
+</svg>
