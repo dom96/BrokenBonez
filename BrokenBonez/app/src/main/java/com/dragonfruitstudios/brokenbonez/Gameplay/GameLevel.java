@@ -27,26 +27,27 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-// Currently just a simple class to draw the level.
-// TODO: Load level design from file.
-// TODO: Scroll the level based on camera position
+/**
+ * Used to draw a Game level as defined by a LevelInfo.
+ */
 public class GameLevel extends Level {
-    GameState gameState; // Used to grab assets, and physics simulator.
+    private GameState gameState; // Used to grab assets, and physics simulator.
 
-    VectorF startPoint; // Holds the coordinates which determine where the bike starts.
+    private VectorF startPoint; // Holds the coordinates which determine where the bike starts.
 
-    LevelInfo info; // Holds information about the current level.
+    private LevelInfo info; // Holds information about the current level.
 
-    VectorF bikePos;
-    LevelInfo.LevelID currentLevelID;
+    private VectorF bikePos; // The current bike position.
+    private LevelInfo.LevelID currentLevelID;
 
-    boolean layersScaled = false;
-    boolean bitmapsScaled = false;
-    HashMap<String,Bitmap> scaledBitmaps;
+    private boolean layersScaled = false; // Have the layers been scaled?
+    private boolean bitmapsScaled = false; // Have the bitmaps been scaled?
+    private HashMap<String,Bitmap> scaledBitmaps; // A mapping from asset key to scaled bitmap.
 
-    ArrayList<LevelObject> levelObjects;
+    private ArrayList<LevelObject> levelObjects; // A list of objects to draw on the level.
 
     public GameLevel(GameState state, LevelInfo.LevelID levelID) {
+        // Initialise field values.
         gameState = state;
 
         startPoint = new VectorF(0, 0); // Just a reasonable default.
@@ -54,13 +55,18 @@ public class GameLevel extends Level {
         layersScaled = false;
         bitmapsScaled = false;
         currentLevelID = levelID;
+
         String levelPath = LevelInfo.getLevelPath(levelID);
 
-        // Create a default level info object (TODO: This should be loaded from LevelInfo text file).
+        // Create a default level info object.
+        // TODO: Was planning on reading this information from an ini file but ran out of time.
+        // TODO: The support for different images is baked in and the LevelInfo class is very
+        // TODO: customisable.
         info = new LevelInfo(levelID, "surface.png", "ground.png", "finish.png");
-        // Parameters to constructors:
-        // Y position (based on 768 high screen), scroll factor, image origin
-        // (For ColorLayer):
+        // Create a number of layers for the level.
+        // Parameters to Layer constructors:
+        //   Y position (based on 768 high screen), scroll factor, image origin
+        //   (For ColorLayer):
         //     color height, color top, color bottom.
         info.addLayer(new ColorLayer("sky.png", 154f, 0.01f,
                 GameView.ImageOrigin.MiddleLeft, 100f, "#1e3973", "#466ab9"));
@@ -75,22 +81,29 @@ public class GameLevel extends Level {
         info.loadSVG(gameState.getAssetLoader(), levelPath, new VectorF(-600, 0));
 
         // Initialise the SolidLayer class asset keys.
+        // Create a class for the default ground.
         info.addInfo("plain", info.getSurfaceKey(), info.getImagePath("ground_base.png"),
                 new VectorF(0, 0));
-        info.addInfo("little_ramp", LevelInfo.getTransparentKey(), info.getImagePath("little_ramp.png"),
-                new VectorF(0, 0));
-        info.addInfo("building1", LevelInfo.getTransparentKey(), info.getImagePath("building1.png"),
-                new VectorF(0, 0));
-        info.addInfo("building2", LevelInfo.getTransparentKey(), info.getImagePath("building2.png"),
-                new VectorF(0, 0));
-        info.addInfo("little_ramp2", LevelInfo.getTransparentKey(), info.getImagePath("little_ramp2.png"),
-                new VectorF(0, 0));
-        info.addInfo("bridge", info.getImagePath("bridge_rail.png"), info.getImagePath("bridge.png"),
-                new VectorF(-10, -39), true);
+        // Create a class for the first ramp kind.
+        info.addInfo("little_ramp", LevelInfo.getTransparentKey(),
+                info.getImagePath("little_ramp.png"), new VectorF(0, 0));
+        // Create a class for the first building kind.
+        info.addInfo("building1", LevelInfo.getTransparentKey(),
+                info.getImagePath("building1.png"), new VectorF(0, 0));
+        // Create a class for the second building kind.
+        info.addInfo("building2", LevelInfo.getTransparentKey(),
+                info.getImagePath("building2.png"), new VectorF(0, 0));
+        // Create a class for the second ramp kind.
+        info.addInfo("little_ramp2", LevelInfo.getTransparentKey(),
+                info.getImagePath("little_ramp2.png"), new VectorF(0, 0));
+        // Create a class for the bridge.
+        info.addInfo("bridge", info.getImagePath("bridge_rail.png"),
+                info.getImagePath("bridge.png"), new VectorF(-10, -39), true);
 
         // Load bitmaps defined in LevelInfo.
         scaledBitmaps = info.loadAssets(gameState.getAssetLoader());
 
+        // Load the solid layers into the physics simulator, so that the bike can collide with them.
         Simulator physicsSimulator = gameState.getPhysicsSimulator();
         info.loadSolids(physicsSimulator);
 
@@ -111,7 +124,7 @@ public class GameLevel extends Level {
     }
 
     public void updateSize(int w, int h) {
-        Log.d("UpdateSize", "Updating size in Level: " + w + " " + h);
+        // Recalculate bike start point.
         startPoint = calcStartPoint(w, h);
 
         if (!layersScaled) {
@@ -156,50 +169,8 @@ public class GameLevel extends Level {
     public void draw(GameView gameView) {
         // Draw the different layers.
         for (Layer l : info.getLayers()) {
-            VectorF pos = bikePos.copy();
-            pos.mult(new VectorF(-l.scrollFactor, 0));
-            Bitmap img = scaledBitmaps.get(info.getLayerKey(l));
-
-            if (l instanceof ColorLayer) {
-                ColorLayer cLayer = ((ColorLayer) l);
-
-                // Draw the image
-                pos.add(0, Graphics.scaleY(l.yPos, gameView.getHeight()));
-                drawScrolled(gameView, img, l.scrollFactor, pos, l.origin);
-
-                float imgTop = 0;
-                float imgBottom = 0;
-                float scaledColorHeight = Graphics.scaleY(cLayer.colorHeight, gameView.getHeight());
-                switch (l.origin) {
-                    case MiddleLeft:
-                    case Middle:
-                        imgTop = pos.y - (img.getHeight()/2);
-                        imgBottom = pos.y + (img.getHeight()/2);
-                        gameView.drawRect(0, imgTop - scaledColorHeight,
-                                gameView.getWidth(), imgTop, cLayer.colorTop);
-                        gameView.drawRect(0, imgBottom,
-                                gameView.getWidth(), imgBottom + scaledColorHeight,
-                                cLayer.colorBottom);
-                        break;
-                    case TopLeft:
-                        break;
-                    case BottomLeft:
-                        imgTop = pos.y - (img.getHeight());
-                        imgBottom = pos.y;
-                        gameView.drawRect(0, imgTop - scaledColorHeight,
-                                gameView.getWidth(), imgTop, cLayer.colorTop);
-                        gameView.drawRect(0, imgBottom,
-                                gameView.getWidth(), imgBottom + scaledColorHeight,
-                                cLayer.colorBottom);
-                        break;
-                }
-            }
-            else {
-                pos.add(0, Graphics.scaleY(l.yPos, gameView.getHeight()));
-                drawScrolled(gameView, img, l.scrollFactor, pos, l.origin);
-            }
+            drawLayer(gameView, l);
         }
-
 
         gameView.enableCamera();
         // Draw solid layers.
@@ -231,6 +202,56 @@ public class GameLevel extends Level {
             drawSolidLayerForeground(sl, view);
         }
         view.disableCamera();
+    }
+
+    private void drawLayer(GameView gameView, Layer l) {
+        // Copy the bike position so that we can make changes to it.
+        VectorF pos = bikePos.copy();
+        // Multiply the position by the scrollFactor so that it moves left appropriate distance.
+        pos.mult(new VectorF(-l.scrollFactor, 0));
+        Bitmap img = scaledBitmaps.get(info.getLayerKey(l));
+
+        // Check what type the Layer actually is.
+        if (l instanceof ColorLayer) {
+            ColorLayer cLayer = ((ColorLayer) l);
+
+            // Draw the image
+            pos.add(0, Graphics.scaleY(l.yPos, gameView.getHeight()));
+            drawScrolled(gameView, img, l.scrollFactor, pos, l.origin);
+
+            // Draw the color above and below the image.
+            float imgTop = 0;
+            float imgBottom = 0;
+            float scaledColorHeight = Graphics.scaleY(cLayer.colorHeight, gameView.getHeight());
+            switch (l.origin) {
+                case MiddleLeft:
+                case Middle:
+                    imgTop = pos.y - (img.getHeight()/2);
+                    imgBottom = pos.y + (img.getHeight()/2);
+                    gameView.drawRect(0, imgTop - scaledColorHeight,
+                            gameView.getWidth(), imgTop, cLayer.colorTop);
+                    gameView.drawRect(0, imgBottom,
+                            gameView.getWidth(), imgBottom + scaledColorHeight,
+                            cLayer.colorBottom);
+                    break;
+                case TopLeft:
+                    break;
+                case BottomLeft:
+                    imgTop = pos.y - (img.getHeight());
+                    imgBottom = pos.y;
+                    gameView.drawRect(0, imgTop - scaledColorHeight,
+                            gameView.getWidth(), imgTop, cLayer.colorTop);
+                    gameView.drawRect(0, imgBottom,
+                            gameView.getWidth(), imgBottom + scaledColorHeight,
+                            cLayer.colorBottom);
+                    break;
+            }
+        }
+        else {
+            // Simply draw the image.
+            pos.add(0, Graphics.scaleY(l.yPos, gameView.getHeight()));
+            drawScrolled(gameView, img, l.scrollFactor, pos, l.origin);
+        }
     }
 
     /**
@@ -273,7 +294,7 @@ public class GameLevel extends Level {
     private void drawSolidLayer(SolidLayer sl, GameView gameView) {
         // Draw the SolidLayer's fill image.
         String fillKey = sl.getAssetKey(LevelInfo.AssetType.Fill);
-        if (!fillKey.equals(info.getTransparentKey())) {
+        if (!fillKey.equals(LevelInfo.getTransparentKey())) {
             Bitmap fillImage = scaledBitmaps.get(fillKey);
             if (sl.usesFillPolygon()) {
                 gameView.fillPolygon(fillImage, sl);
@@ -285,14 +306,17 @@ public class GameLevel extends Level {
             }
         }
 
-        int slOffsetX = 0;
+        int slOffsetX = 0; // Where to start at in the next surface image.
         // Draw the image beneath each line.
         for (int i = 0; i < sl.getLines().size(); i++) {
+            // Grab the asset info for this SolidLayer's class.
             SolidLayer.Info classInfo = info.getSolidLayerInfo(sl);
+            // Find the asset type to draw for this SolidLayer line.
             LevelInfo.AssetType assetType = sl.getAssetType(i);
+            // Get the asset key for that asset type.
             String assetKey = sl.getAssetKey(assetType);
-            // Don't draw if key is transparent and is to be drawn behind the bike.
-            if (!assetKey.equals(info.getTransparentKey()) && !classInfo.surfaceInForeground) {
+            // Don't draw if key is transparent or is to be drawn behind the bike.
+            if (!assetKey.equals(LevelInfo.getTransparentKey()) && !classInfo.surfaceInForeground) {
                 Bitmap asset = scaledBitmaps.get(assetKey);
                 Line line = sl.getLines().get(i).copy();
 
@@ -340,7 +364,7 @@ public class GameLevel extends Level {
         SolidLayer.Info classInfo = info.getSolidLayerInfo(sl);
         // Only draw when the surface key isn't transparent, and the SolidLayer wasn't filled
         // automatically by the SolidLayer parser.
-        if (!classInfo.surfaceKey.equals(info.getTransparentKey()) && !sl.usesFillPolygon()) {
+        if (!classInfo.surfaceKey.equals(LevelInfo.getTransparentKey()) && !sl.usesFillPolygon()) {
             // Grab the AssetLoader key for this SolidLayer's Surface.
             String surfaceKey = sl.getAssetKey(LevelInfo.AssetType.Surface);
             // Grab the image for this SolidLayer's surface key.
@@ -351,7 +375,8 @@ public class GameLevel extends Level {
             // Compute a rectangle to draw the image into.
             RectF dest = new RectF(sl.getRect());
             dest.offset(classInfo.surfaceOffset.x, classInfo.surfaceOffset.y);
-            // TODO: This is a bit rough and is bridge railing specific.
+            // TODO: This is a bit rough and is bridge railing specific and likely also
+            // TODO: resolution specific.
             dest.bottom = dest.top + (surfaceImage.getHeight()-40);
 
             // Draw the image.
@@ -368,6 +393,7 @@ public class GameLevel extends Level {
     }
 
     public void update(float lastUpdate, Bike bike, HighScore score) {
+        // Set the bike position.
         this.bikePos = bike.getPos();
 
         // Determine if Bike passed the finish line.
@@ -396,7 +422,6 @@ public class GameLevel extends Level {
      * Returns the Bike's starting point.
      */
     public VectorF getStartPoint() {
-        Log.d("StartPoint", startPoint.toString());
         return startPoint;
     }
 
