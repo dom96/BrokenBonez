@@ -36,7 +36,7 @@ public class ParticleManager implements GameObject{
     }
 
     public void draw(GameView view){
-        if(settings.isBoolParticlesEnabled()) {
+        if(settings.isBoolParticlesEnabled() && ! ( smokeParticleSystem == null)) {
             smokeParticleSystem.doDraw(view);
         }
     }
