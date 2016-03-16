@@ -20,16 +20,16 @@ import com.dragonfruitstudios.brokenbonez.GameSceneManager;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
 public class SplashState implements GameObject {
-    AssetLoader assetLoader;
-    GameSceneManager gameSceneManager;
-    Bitmap splashScreen;
+    private AssetLoader assetLoader;
+    private GameSceneManager gameSceneManager;
+    private Bitmap splashScreen;
     boolean splashOn = true;
-    boolean splashWait = true;
-    float waitTime = 0;
+    private boolean splashWait = true;
+    private float waitTime = 0;
     VectorF pos;
     float rotation;
-    boolean hasDrawn = false;
-    boolean hasInitialized = false;
+    private boolean hasDrawn = false;
+    private boolean hasInitialized = false;
 
 
     public SplashState(AssetLoader assetLoader, GameSceneManager gameSceneManager) {

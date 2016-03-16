@@ -3,7 +3,6 @@ package com.dragonfruitstudios.brokenbonez.Input;
 import android.graphics.PointF;
 import android.view.MotionEvent;
 
-/** Touch-Handler**/
 public class TouchHandler {
     static float accel;
     public enum ControlIsActive {ACTION_GAS_DOWN, ACTION_GAS_UP, ACTION_BRAKE_DOWN, ACTION_BRAKE_UP, ACTION_NONE}

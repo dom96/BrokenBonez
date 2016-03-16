@@ -1,6 +1,5 @@
 package com.dragonfruitstudios.brokenbonez.Menu;
 
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.view.MotionEvent;
