@@ -2,12 +2,15 @@ package com.dragonfruitstudios.brokenbonez.Menu;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.MotionEvent;
 import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.GameObject;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
+import com.dragonfruitstudios.brokenbonez.Math.VectorF;
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -22,21 +25,34 @@ public class SettingsState implements GameObject {
     ImageButton accelerometerDisabled;
     ImageButton particlesEnabled;
     ImageButton particlesDisabled;
+    Bitmap sound;
+    Bitmap accelerometer;
+    Bitmap particles;
     AssetLoader assetLoader;
     GameSceneManager gameSceneManager;
     Settings settings;
+    VectorF soundPos;
+    VectorF accelerometerPos;
+    VectorF particlesPos;
 
     public SettingsState(AssetLoader assetLoader, GameSceneManager gameSceneManager) {
         this.assetLoader = assetLoader;
         this.gameSceneManager = gameSceneManager;
+        this.assetLoader.AddAssets(new String[]{"menu/accelerometer.png", "menu/sound.png", "menu/particles.png"});
         soundEnabled = new ImageButton("menu/checked.png", assetLoader, (getScreenWidth() / 4), (getScreenHeight() / 4), 150, 150);
         soundDisabled = new ImageButton("menu/unchecked.png", assetLoader, (getScreenWidth() / 4), (getScreenHeight() / 4), 150, 150);
         accelerometerEnabled = new ImageButton("menu/checked.png", assetLoader, (getScreenWidth() / 4), (getScreenHeight() / 2), 150, 150);
         accelerometerDisabled = new ImageButton("menu/unchecked.png", assetLoader, (getScreenWidth() / 4), (getScreenHeight() / 2), 150, 150);
         particlesEnabled = new ImageButton("menu/checked.png", assetLoader, (getScreenWidth() / 4), (getScreenHeight() / 4 * 3), 150, 150);
         particlesDisabled = new ImageButton("menu/unchecked.png", assetLoader, (getScreenWidth() / 4), (getScreenHeight() / 4 * 3), 150, 150);
+        sound = assetLoader.getBitmapByName("menu/sound.png");
+        accelerometer = assetLoader.getBitmapByName("menu/accelerometer.png");
+        particles = assetLoader.getBitmapByName("menu/particles.png");
         createDefaultSettings();
         settings = SettingsState.load(gameSceneManager.gameView.getContext());
+        soundPos = new VectorF(getScreenWidth() / 4 * 2, getScreenHeight() / 4);
+        accelerometerPos = new VectorF(getScreenWidth() / 4 * 2, getScreenHeight() / 2);
+        particlesPos = new VectorF(getScreenWidth() / 4 * 2, getScreenHeight() / 4 * 3);
     }
 
     public int getScreenWidth() {
@@ -56,6 +72,10 @@ public class SettingsState implements GameObject {
     }
 
     public void draw(GameView view) {
+        view.drawImage(sound, soundPos, 0, GameView.ImageOrigin.TopLeft);
+        view.drawImage(accelerometer, accelerometerPos, 0, GameView.ImageOrigin.TopLeft);
+        view.drawImage(particles, particlesPos, 0, GameView.ImageOrigin.TopLeft);
+
         if(settings.boolSoundEnabled == true) {
             soundEnabled.draw(view);
         } else {
