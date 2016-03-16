@@ -26,4 +26,11 @@ public class MenuScene extends Scene {
     public void onTouchEvent(MotionEvent event) {
        state.onTouchEvent(event);
     }
+
+    @Override
+    public void activate(){
+        if (assetLoader.getSoundByName("brokenboneztheme.ogg").isPlaying()) {
+            assetLoader.getSoundByName("brokenboneztheme.ogg").pause();
+        }
+    }
 }

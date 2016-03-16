@@ -45,7 +45,7 @@ public class GameState {
         this.assetLoader = assetLoader;
 
         this.assetLoader.AddAssets(new String[]{"bikeEngine.mp3", "bikeEngineRev.mp3",
-                "brokenboneztheme.ogg"});
+                "brokenboneztheme.ogg", "crash.mp3", "win.mp3"});
 
         // Create a new physics simulator.
         this.physicsSimulator = new Simulator();
@@ -204,11 +204,13 @@ public class GameState {
             gameEnded = true;
             setSlowMotion(true);
             if (!crashed) {
+                assetLoader.getSoundByName("win.mp3").play();
                 if (!ghost.isFinished()) {
                     ghost.finish();
                 }
                 finishOverlay.enable(false, ghost.getCurrentTime(), ghost.getTimeDiff());
             } else {
+                assetLoader.getSoundByName("crash.mp3").play();
                 finishOverlay.enable(true, ghost.getCurrentTime(), -1);
             }
         }

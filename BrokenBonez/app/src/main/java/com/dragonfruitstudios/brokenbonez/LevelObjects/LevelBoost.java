@@ -31,7 +31,7 @@ public class LevelBoost extends LevelObject {
     public void draw(GameView gameView) {
         this.rect.draw(gameView);
         if (this.getVisible()) {
-            gameView.drawImage(assets.getBitmapByName(boostImage), this.getVector(), this.rotation, GameView.ImageOrigin.Middle);
+            gameView.drawImage(assets.getBitmapByName(boostImage), this.getVector(), this.rotation, GameView.ImageOrigin.TopLeft);
         }
     }
 

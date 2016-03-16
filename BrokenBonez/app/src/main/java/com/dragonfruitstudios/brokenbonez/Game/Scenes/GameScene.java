@@ -58,7 +58,7 @@ public class GameScene extends Scene {
         if(settings.isBoolSoundEnabled()) {
             state.getAssetLoader().getSoundByName("bikeEngine.mp3").play(true);
             state.getAssetLoader().getSoundByName("bikeEngine.mp3").setVolume(0.5f);
-            state.getAssetLoader().getSoundByName("brokenboneztheme.ogg").setVolume(1f);
+            state.getAssetLoader().getSoundByName("brokenboneztheme.ogg").setVolume(0.6f);
             state.getAssetLoader().getSoundByName("brokenboneztheme.ogg").play(true);
         }
     }

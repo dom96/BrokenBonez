@@ -30,7 +30,7 @@ public class LevelCoin extends LevelObject {
     @Override
     public void draw(GameView gameView) {
         if (this.getVisible()) {
-            gameView.drawImage(assets.getBitmapByName(coinImage), this.getVector(), this.rotation, GameView.ImageOrigin.Middle);
+            gameView.drawImage(assets.getBitmapByName(coinImage), this.getVector(), this.rotation, GameView.ImageOrigin.TopLeft);
         }
     }
 

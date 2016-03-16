@@ -35,7 +35,7 @@ public class SplashState implements GameObject {
     public SplashState(AssetLoader assetLoader, GameSceneManager gameSceneManager) {
         this.assetLoader = assetLoader;
         this.gameSceneManager = gameSceneManager;
-        this.assetLoader.AddAssets(new String[]{"menu/dragonfruitstudiossplash.png"});
+        this.assetLoader.AddAssets(new String[]{"menu/dragonfruitstudiossplash.png", "brokenboneztheme.ogg"});
         splashScreen = assetLoader.getBitmapByName("menu/dragonfruitstudiossplash.png");
         pos = new VectorF(0, 0);
         rotation = 0;
