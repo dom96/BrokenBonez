@@ -20,7 +20,7 @@ public class CreditsScene extends Scene {
     public void activate(){
         this.settings = new Settings(gameSceneManager);
         if(settings.isBoolSoundEnabled()) {
-            state.getAssetLoader().getSoundByName("brokenboneztheme.ogg").setVolume(1f);
+            state.getAssetLoader().getSoundByName("brokenboneztheme.ogg").setVolume(0.6f);
             state.getAssetLoader().getSoundByName("brokenboneztheme.ogg").play(true);
         }
     }
