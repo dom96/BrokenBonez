@@ -9,12 +9,11 @@ import com.dragonfruitstudios.brokenbonez.Game.LevelInfo;
 import com.dragonfruitstudios.brokenbonez.Game.Scenes.GameScene;
 import com.dragonfruitstudios.brokenbonez.GameLoop;
 import com.dragonfruitstudios.brokenbonez.Input.TouchHandler;
-import com.dragonfruitstudios.brokenbonez.Math.Collisions.Rect;
-import com.dragonfruitstudios.brokenbonez.Math.Physics.DynamicBody;
 import com.dragonfruitstudios.brokenbonez.Math.Physics.Simulator;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
 import com.dragonfruitstudios.brokenbonez.HighScores.HighScore;
 import java.io.IOException;
+import com.dragonfruitstudios.brokenbonez.Menu.Settings;
 import com.dragonfruitstudios.brokenbonez.ParticleSystem.ParticleManager;
 
 public class GameState {
@@ -33,6 +32,7 @@ public class GameState {
     private boolean slowMotion;
     private boolean askingForHighScore; // determines whether the `askName` dialog is shown.
     private boolean gameEnded;
+    private Settings settings;
 
 
     public GameState(GameScene gameScene, AssetLoader assetLoader, GameSceneManager gameSceneManager,
@@ -69,6 +69,8 @@ public class GameState {
             bike.setColor(bikeColor);
         }
         bike.setBodyType(bikeBodyType);
+
+        this.settings = new Settings(gameSceneManager);
     }
 
     public void update(float lastUpdate) {
@@ -116,7 +118,7 @@ public class GameState {
                 case ACTION_GAS_DOWN:
                 case ACTION_BRAKE_DOWN:
                     setBikeAcceleration(TouchHandler.getAccel());
-                    if ( ! getAssetLoader().getSoundByName("bikeEngineRev.mp3").isPlaying()){
+                    if ( (! getAssetLoader().getSoundByName("bikeEngineRev.mp3").isPlaying()) && this.settings.isBoolSoundEnabled()){
                         getAssetLoader().getSoundByName("bikeEngineRev.mp3").play(false);   //Play only if is not already playing
                     }
                     break;

@@ -10,6 +10,7 @@ import com.dragonfruitstudios.brokenbonez.AssetLoading.AssetLoader;
 import com.dragonfruitstudios.brokenbonez.Game.GameObject;
 import com.dragonfruitstudios.brokenbonez.Game.GameView;
 import com.dragonfruitstudios.brokenbonez.Game.Graphics;
+import com.dragonfruitstudios.brokenbonez.Game.Scenes.GameScene;
 import com.dragonfruitstudios.brokenbonez.GameSceneManager;
 import com.dragonfruitstudios.brokenbonez.Math.VectorF;
 
@@ -27,6 +28,7 @@ public class MenuState implements GameObject {
     VectorF pos;
     float rotation;
     GameSceneManager gameSceneManager;
+    Settings savedSettings;
 
     public MenuState(AssetLoader assetLoader, GameSceneManager gameSceneManager) {
         this.assetLoader = assetLoader;
@@ -40,6 +42,7 @@ public class MenuState implements GameObject {
         background = assetLoader.getBitmapByName("menu/tv.png");
         pos = new VectorF(0, 0);
         rotation = 0;
+        this.savedSettings = new Settings(gameSceneManager);
     }
 
     @Override
@@ -73,13 +76,13 @@ public class MenuState implements GameObject {
 
     @Override
     public void draw(GameView view) {
-        view.drawImage(background, new Rect(0,0, 1200, 920), new RectF(0,0,Graphics.getScreenWidth(), Graphics.getScreenHeight()), 0);
+        view.drawImage(background, new Rect(0, 0, 1200, 920), new RectF(0, 0, Graphics.getScreenWidth(), Graphics.getScreenHeight()), 0);
         startGame.draw(view);
         hiScore.draw(view);
         credits.draw(view);
         settings.draw(view);
         if(getNoiseOn() == true){
-            view.drawImage(noise, new Rect(0,0, 1200, 920), new RectF(0,0,Graphics.getScreenWidth(), Graphics.getScreenHeight()), 0);
+            view.drawImage(noise, new Rect(0, 0, 1200, 920), new RectF(0, 0, Graphics.getScreenWidth(), Graphics.getScreenHeight()), 0);
         }
     }
 
@@ -98,7 +101,9 @@ public class MenuState implements GameObject {
         settings.onTouchEvent(event);
 
         if(startGame.onTouchEvent(event) == true){
-            assetLoader.getSoundByName("staticnoise.mp3").play(false);
+            if (savedSettings.isBoolSoundEnabled()) {
+                assetLoader.getSoundByName("staticnoise.mp3").play(false);
+            }
             setNoiseOn();
             setNoiseWait();
         }

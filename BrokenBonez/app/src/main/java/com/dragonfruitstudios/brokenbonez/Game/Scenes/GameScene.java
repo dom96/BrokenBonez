@@ -54,8 +54,8 @@ public class GameScene extends Scene {
 
     @Override
     public void activate() {
-        settings = SettingsState.load(gameSceneManager.gameView.getContext());
-        if(settings.boolSoundEnabled == true) {
+        this.settings = new Settings(gameSceneManager);
+        if(settings.isBoolSoundEnabled()) {
             state.getAssetLoader().getSoundByName("bikeEngine.mp3").play(true);
             state.getAssetLoader().getSoundByName("bikeEngine.mp3").setVolume(0.5f);
             state.getAssetLoader().getSoundByName("brokenboneztheme.ogg").setVolume(1f);
@@ -65,7 +65,7 @@ public class GameScene extends Scene {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        if (settings.boolAccelEnabled == true) {
+        if (settings.isBoolAccelEnabled()) {
             state.setBikeTilt(Accelerometer.calculateTiltStrength(event));
         }
     }
