@@ -87,7 +87,7 @@ public class HighScoreScene extends Scene {
         for (int i = this.currentHighScores.size() -1; i >= 0; i--) {
             highScore = currentHighScores.get(i);
             gameView.drawText("Name:" + "                     " + "Time(Sec):" + "                        " + "Score:", getScreenWidth() / 2, 200, Color.WHITE, 66);
-            gameView.drawText("                                                      " + highScore.name + "                         " + highScore.time/1000 + "                              " + highScore.score, getScreenWidth() / 4, (300 + (i * 40)), Color.WHITE, 66);
+            gameView.drawText("                                                      " + highScore.name + "                         " + highScore.time/1000 + "                              " + highScore.score, getScreenWidth() / 4, (300 + (i * 60)), Color.WHITE, 66);
         }
     }
 }
