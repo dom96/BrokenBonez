@@ -210,6 +210,7 @@ public class LevelInfo {
         // Only `curveto` is supported as that's all that GIMP generates.
         // Yep, I know I probably could have found some library to parse the SVG for me, but
         // parsing manually is more fun.
+        // TODO: I would have simplified this, but simply didn't have the time.
         ArrayList<Line> result = new ArrayList<>();
         int i = 0;
 

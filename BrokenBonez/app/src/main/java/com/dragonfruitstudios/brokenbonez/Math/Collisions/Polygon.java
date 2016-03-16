@@ -150,12 +150,10 @@ public class Polygon extends Intersector implements Drawable {
         if (odd && !result.hasCollisions()) {
             // Need to find the normal and penetration depth.
             // Do this by finding the line closest to `point`.
-            Line closestLine = lines.get(0);
             float closestDist = lines.get(0).distanceSquared(point);
             for (int i = 1; i < lines.size(); i++) {
                 float dist = lines.get(i).distanceSquared(point);
                 if (dist < closestDist) {
-                    closestLine = lines.get(i);
                     closestDist = dist;
                 }
             }
