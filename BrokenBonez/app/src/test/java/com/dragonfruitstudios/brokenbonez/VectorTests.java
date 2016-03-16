@@ -76,4 +76,11 @@ public class VectorTests {
         assertEquals(1, vec1.normalised().x, 0.001);
     }
 
+    @Test
+    public void multAdd_isCorrect() {
+        VectorF copy = vec1.copy();
+        copy.multAdd(new VectorF(0.5f, 0), 5);
+        assertEquals(7.5f, copy.x, 0.001);
+    }
+
 }

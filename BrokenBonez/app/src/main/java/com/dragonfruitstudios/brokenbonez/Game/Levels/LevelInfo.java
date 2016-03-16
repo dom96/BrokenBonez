@@ -25,6 +25,7 @@ import org.xml.sax.SAXException;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -376,20 +377,28 @@ public class LevelInfo {
         }
     }
 
+    public void loadSVG(AssetLoader loader, String path, VectorF pos) {
+        AssetManager assetManager = loader.getAssetManager();
+        try {
+            loadSVG(assetManager.open("levels/" + path), pos);
+        }
+        catch (IOException exc) {
+            Log.e("LevelInfo", "Error parsing SVG: " + exc.toString());
+        }
+    }
+
     /**
      * Parses the SVG file at `levels/<path>` and adds the paths defined in it into
      * this LevelInfo's solid layer's list. The `pos` parameter specifies the starting position
      * of the paths.
      */
-    public void loadSVG(AssetLoader loader, String path, VectorF pos) {
-        AssetManager assetManager = loader.getAssetManager();
-
+    public void loadSVG(InputStream stream, VectorF pos) {
         Document dom;
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 
         try {
             DocumentBuilder db = dbf.newDocumentBuilder();
-            dom = db.parse(assetManager.open("levels/" + path));
+            dom = db.parse(stream);
 
             Element doc = dom.getDocumentElement();
             NodeList elements = doc.getElementsByTagName("path");
