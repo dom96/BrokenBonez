@@ -2,7 +2,7 @@
 
 This game was created as a group project for the CSC2021 QUB module.
 
-[![Check out the GIF](http://picheta.me/private/images/brokenbonez/brokenbonez.gif)](![BrokenBonez game gif](http://picheta.me/private/images/brokenbonez/brokenbonez.gif)
+[![Check out the GIF](http://picheta.me/private/images/brokenbonez/brokenbonez.gif)](http://picheta.me/private/images/brokenbonez/brokenbonez.gif)
 
 ![BrokenBonez game screen](http://picheta.me/private/images/brokenbonez/game.png)
 ![BrokenBonez level select](http://picheta.me/private/images/brokenbonez/level_select.png)
