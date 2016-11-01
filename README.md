@@ -2,6 +2,11 @@
 
 This game was created as a group project for the CSC2021 QUB module.
 
+![BrokenBonez game screen](http://picheta.me/private/images/brokenbonez/game.png)
+![BrokenBonez game gif](http://picheta.me/private/images/brokenbonez/brokenbonez.gif)
+![BrokenBonez level select](http://picheta.me/private/images/brokenbonez/level_select.png)
+![BrokenBonez game 2](http://picheta.me/private/images/brokenbonez/game2.png)
+
 ## License
 
 The game code is licensed under the MIT license.
